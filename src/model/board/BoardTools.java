@@ -29,7 +29,7 @@ public class BoardTools {
     public static boolean isLand (final int coordinate) {
         return (!isRiver (coordinate)
                 && !isDen (coordinate, PlayerColor.BLUE) && !isDen (coordinate, PlayerColor.RED)
-                && !isTrap (coordinate, PlayerColor.BLUE) && !isTrap (coordinate, PlayerColor.RED));
+                && !isEnemyTrap (coordinate, PlayerColor.BLUE) && !isEnemyTrap (coordinate, PlayerColor.RED));
     }
 
     public static boolean isRiver(final int coordinate) {
@@ -52,16 +52,18 @@ public class BoardTools {
     }
 
     public static boolean isRiverOrDen(final int coordinate, PlayerColor pieceColor) {
-        return isRiver(coordinate) || isDen(coordinate, pieceColor);
+        return (isRiver(coordinate) || isDen(coordinate, pieceColor));
     }
 
-    public static boolean isTrap(final int coordinate, PlayerColor pieceColor) {
+    public static boolean isEnemyTrap(final int coordinate, PlayerColor pieceColor) {
         if (pieceColor == PlayerColor.BLUE) {
-            return (coordinate == 52 || coordinate == 58 || coordinate == 60);
-        } else if (pieceColor == PlayerColor.RED) {
             return (coordinate == 2 || coordinate == 4 || coordinate == 10);
+        } else if (pieceColor == PlayerColor.RED) {
+            return (coordinate == 52 || coordinate == 58 || coordinate == 60);
         } else {
             return false;
         }
     }
+
+
 }

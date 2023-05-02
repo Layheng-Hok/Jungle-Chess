@@ -16,8 +16,8 @@ import static model.board.Move.*;
 public abstract class CommonPiece extends Piece {
     private final int[] POTENTIAL_MOVE_COORDINATES = {-7, -1, 1, 7};
 
-    protected CommonPiece(final int pieceCoordinate, final PlayerColor pieceColor) {
-        super(pieceCoordinate, pieceColor);
+    protected CommonPiece(final int pieceCoordinate, final PlayerColor pieceColor, int pieceRank) {
+        super(pieceCoordinate, pieceColor, pieceRank);
     }
 
     @Override
@@ -32,11 +32,21 @@ public abstract class CommonPiece extends Piece {
                 final Terrain potentialDestinationTerrain = board.getTerrain(potentialDestinationCoordinate);
                 if (!potentialDestinationTerrain.isTerrainOccupied()) {
                     validMoves.add(new MajorMove(board, this, potentialDestinationCoordinate));
+                    if (BoardTools.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
+                        this.defensePieceRank = 0;
+                    } else {
+                        this.defensePieceRank = this.attackPieceRank;
+                    }
                 } else {
                     final Piece pieceAtDestination = potentialDestinationTerrain.getPiece();
                     final PlayerColor pieceColor = pieceAtDestination.getPieceColor();
-                    if (this.pieceColor != pieceColor) {
+                    if (this.pieceColor != pieceColor && this.attackPieceRank >= pieceAtDestination.defensePieceRank) {
                         validMoves.add(new AttackMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
+                        if (BoardTools.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
+                            this.defensePieceRank = 0;
+                        } else {
+                            this.defensePieceRank = this.attackPieceRank;
+                        }
                     }
                 }
             }
@@ -48,7 +58,7 @@ public abstract class CommonPiece extends Piece {
         return (BoardTools.COLUMN_ZERO[currentCoordinate] && (potentialOffset == -1));
     }
 
-   private static boolean isColumnSixExclusion(final int currentCoordinate, final int potentialOffset) {
+    private static boolean isColumnSixExclusion(final int currentCoordinate, final int potentialOffset) {
         return (BoardTools.COLUMN_SIX[currentCoordinate] && (potentialOffset == 1));
     }
 }

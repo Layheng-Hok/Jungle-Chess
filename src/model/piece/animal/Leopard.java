@@ -5,6 +5,6 @@ import model.player.PlayerColor;
 
 public class Leopard extends CommonPiece {
     Leopard(final int pieceCoordinate, final PlayerColor pieceColor) {
-        super(pieceCoordinate, pieceColor);
+        super(pieceCoordinate, pieceColor, AnimalRank.LEOPARD.ordinal());
     }
 }
