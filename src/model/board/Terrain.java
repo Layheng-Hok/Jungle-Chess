@@ -1,7 +1,6 @@
 package model.board;
 
 import model.piece.Piece;
-import model.player.PlayerColor;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,7 +12,7 @@ public abstract class Terrain {
 
     private static Map<Integer, EmptyTerrain> constructAllPossibleEmptyTerrains() {
         final Map<Integer, EmptyTerrain> emptyTerrainsMap = new HashMap<>();
-        for (int i = 0; i < BoardTools.NUM_TERRAINS; i++) {
+        for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
             emptyTerrainsMap.put(i, new EmptyTerrain(i));
         }
         return Collections.unmodifiableMap(emptyTerrainsMap);
@@ -21,6 +20,10 @@ public abstract class Terrain {
 
     private Terrain(final int terrainCoordinate) {
         this.terrainCoordinate = terrainCoordinate;
+    }
+
+    public static Terrain constructTerrain(int i, Piece piece) {
+        return piece != null ? new OccupiedTerrain(i, piece) : EMPTY_TERRAINS.get(i);
     }
 
     public abstract boolean isTerrainOccupied();

@@ -2,14 +2,14 @@ package model.board;
 
 import model.player.PlayerColor;
 
-public class BoardTools {
+public class BoardUtils {
     public static final boolean[] COLUMN_ZERO = populateColumn(0);
     public static final boolean[] COLUMN_SIX = populateColumn(6);
 
     public static final int NUM_TERRAINS = 63;
     public static final int NUM_TERRAINS_PER_ROW = 7;
 
-    private BoardTools() {
+    private BoardUtils() {
         throw new RuntimeException("You cannot instantiate an object of \"BoardTools\" class.");
     }
 

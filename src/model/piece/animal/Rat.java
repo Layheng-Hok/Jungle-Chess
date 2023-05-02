@@ -1,7 +1,7 @@
 package model.piece.animal;
 
 import model.board.Board;
-import model.board.BoardTools;
+import model.board.BoardUtils;
 import model.board.Move;
 import model.board.Terrain;
 import model.piece.Piece;
@@ -26,14 +26,14 @@ public class Rat extends Piece {
         final List<Move> validMoves = new ArrayList<>();
         for (final int currentPotentialOffset : POTENTIAL_MOVE_COORDINATES) {
             int potentialDestinationCoordinate = this.pieceCoordinate + currentPotentialOffset;
-            if (BoardTools.isInBoundary(potentialDestinationCoordinate) && !BoardTools.isDen(potentialDestinationCoordinate, this.pieceColor)) {
+            if (BoardUtils.isInBoundary(potentialDestinationCoordinate) && !BoardUtils.isDen(potentialDestinationCoordinate, this.pieceColor)) {
                 if (isColumnZeroExclusion(this.pieceCoordinate, currentPotentialOffset) || isColumnSixExclusion(this.pieceCoordinate, currentPotentialOffset)) {
                     continue;
                 }
                 final Terrain potentialDestinationTerrain = board.getTerrain(potentialDestinationCoordinate);
                 if (!potentialDestinationTerrain.isTerrainOccupied()) {
                     validMoves.add(new MajorMove(board, this, potentialDestinationCoordinate));
-                    if (BoardTools.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
+                    if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
                         this.defensePieceRank = 0;
                     } else {
                         this.defensePieceRank = this.attackPieceRank;
@@ -44,10 +44,10 @@ public class Rat extends Piece {
                     if (this.pieceColor != pieceColor && this.attackPieceRank >= pieceAtDestination.getDefensePieceRank()) {
                         if (pieceAtDestination.getDefensePieceRank() == AnimalRank.ELEPHANT.ordinal() ||
                                 pieceAtDestination.getDefensePieceRank() == AnimalRank.RAT.ordinal()) {
-                            if (BoardTools.isLand(this.pieceCoordinate) && !BoardTools.isRiver(potentialDestinationCoordinate) ||
-                                    BoardTools.isRiver(this.pieceCoordinate) && BoardTools.isRiver(potentialDestinationCoordinate)) {
+                            if (BoardUtils.isLand(this.pieceCoordinate) && !BoardUtils.isRiver(potentialDestinationCoordinate) ||
+                                    BoardUtils.isRiver(this.pieceCoordinate) && BoardUtils.isRiver(potentialDestinationCoordinate)) {
                                 validMoves.add(new AttackMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
-                                if (BoardTools.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
+                                if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
                                     this.defensePieceRank = 0;
                                 } else {
                                     this.defensePieceRank = this.attackPieceRank;
@@ -62,10 +62,10 @@ public class Rat extends Piece {
     }
 
     private static boolean isColumnZeroExclusion(final int currentCoordinate, final int potentialOffset) {
-        return (BoardTools.COLUMN_ZERO[currentCoordinate] && (potentialOffset == -1));
+        return (BoardUtils.COLUMN_ZERO[currentCoordinate] && (potentialOffset == -1));
     }
 
     private static boolean isColumnSixExclusion(final int currentCoordinate, final int potentialOffset) {
-        return (BoardTools.COLUMN_SIX[currentCoordinate] && (potentialOffset == 1));
+        return (BoardUtils.COLUMN_SIX[currentCoordinate] && (potentialOffset == 1));
     }
 }

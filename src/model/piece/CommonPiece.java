@@ -1,7 +1,7 @@
 package model.piece;
 
 import model.board.Board;
-import model.board.BoardTools;
+import model.board.BoardUtils;
 import model.board.Move;
 import model.board.Terrain;
 import model.player.PlayerColor;
@@ -25,14 +25,14 @@ public abstract class CommonPiece extends Piece {
         final List<Move> validMoves = new ArrayList<>();
         for (final int currentPotentialOffset : POTENTIAL_MOVE_COORDINATES) {
             int potentialDestinationCoordinate = this.pieceCoordinate + currentPotentialOffset;
-            if (BoardTools.isInBoundary(potentialDestinationCoordinate) && !BoardTools.isRiverOrDen(potentialDestinationCoordinate, this.pieceColor)) {
+            if (BoardUtils.isInBoundary(potentialDestinationCoordinate) && !BoardUtils.isRiverOrDen(potentialDestinationCoordinate, this.pieceColor)) {
                 if (isColumnZeroExclusion(this.pieceCoordinate, currentPotentialOffset) || isColumnSixExclusion(this.pieceCoordinate, currentPotentialOffset)) {
                     continue;
                 }
                 final Terrain potentialDestinationTerrain = board.getTerrain(potentialDestinationCoordinate);
                 if (!potentialDestinationTerrain.isTerrainOccupied()) {
                     validMoves.add(new MajorMove(board, this, potentialDestinationCoordinate));
-                    if (BoardTools.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
+                    if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
                         this.defensePieceRank = 0;
                     } else {
                         this.defensePieceRank = this.attackPieceRank;
@@ -42,7 +42,7 @@ public abstract class CommonPiece extends Piece {
                     final PlayerColor pieceColor = pieceAtDestination.getPieceColor();
                     if (this.pieceColor != pieceColor && this.attackPieceRank >= pieceAtDestination.defensePieceRank) {
                         validMoves.add(new AttackMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
-                        if (BoardTools.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
+                        if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
                             this.defensePieceRank = 0;
                         } else {
                             this.defensePieceRank = this.attackPieceRank;
@@ -55,10 +55,10 @@ public abstract class CommonPiece extends Piece {
     }
 
     private static boolean isColumnZeroExclusion(final int currentCoordinate, final int potentialOffset) {
-        return (BoardTools.COLUMN_ZERO[currentCoordinate] && (potentialOffset == -1));
+        return (BoardUtils.COLUMN_ZERO[currentCoordinate] && (potentialOffset == -1));
     }
 
     private static boolean isColumnSixExclusion(final int currentCoordinate, final int potentialOffset) {
-        return (BoardTools.COLUMN_SIX[currentCoordinate] && (potentialOffset == 1));
+        return (BoardUtils.COLUMN_SIX[currentCoordinate] && (potentialOffset == 1));
     }
 }

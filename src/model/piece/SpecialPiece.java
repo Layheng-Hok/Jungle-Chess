@@ -1,7 +1,7 @@
 package model.piece;
 
 import model.board.Board;
-import model.board.BoardTools;
+import model.board.BoardUtils;
 import model.board.Move;
 import model.board.Terrain;
 import model.player.PlayerColor;
@@ -27,7 +27,7 @@ public abstract class SpecialPiece extends Piece {
             Terrain potentialDestinationTerrain = board.getTerrain(potentialDestinationCoordinate);
             Terrain tempPotentialDestinationTerrain = board.getTerrain(tempPotentialDestinationCoordinate);
             if ((currentPotentialOffset == POTENTIAL_MOVE_COORDINATES[0] || currentPotentialOffset == POTENTIAL_MOVE_COORDINATES[3])
-                    && BoardTools.isRiver(potentialDestinationCoordinate)) {
+                    && BoardUtils.isRiver(potentialDestinationCoordinate)) {
                 boolean isWaterTerrainOccupied = false;
                 for (int i = 0; i < 3; i++) {
                     potentialDestinationTerrain = board.getTerrain(tempPotentialDestinationCoordinate);
@@ -42,7 +42,7 @@ public abstract class SpecialPiece extends Piece {
                     potentialDestinationTerrain = board.getTerrain(currentPotentialOffset * 4);
                 }
             } else if ((currentPotentialOffset == POTENTIAL_MOVE_COORDINATES[1] || currentPotentialOffset == POTENTIAL_MOVE_COORDINATES[2])
-                    && BoardTools.isRiver(potentialDestinationCoordinate)) {
+                    && BoardUtils.isRiver(potentialDestinationCoordinate)) {
                 boolean isWaterTerrainOccupied = false;
                 for (int i = 0; i < 2; i++) {
                     potentialDestinationTerrain = board.getTerrain(tempPotentialDestinationCoordinate);
@@ -57,13 +57,13 @@ public abstract class SpecialPiece extends Piece {
                     potentialDestinationTerrain = board.getTerrain(currentPotentialOffset * 3);
                 }
             }
-            if (BoardTools.isInBoundary(potentialDestinationCoordinate) && !BoardTools.isDen(potentialDestinationCoordinate, this.pieceColor)) {
+            if (BoardUtils.isInBoundary(potentialDestinationCoordinate) && !BoardUtils.isDen(potentialDestinationCoordinate, this.pieceColor)) {
                 if (isColumnZeroExclusion(this.pieceCoordinate, currentPotentialOffset) || isColumnSixExclusion(this.pieceCoordinate, currentPotentialOffset)) {
                     continue;
                 }
                 if (!potentialDestinationTerrain.isTerrainOccupied()) {
                     validMoves.add(new Move.MajorMove(board, this, potentialDestinationCoordinate));
-                    if (BoardTools.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
+                    if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
                         this.defensePieceRank = 0;
                     } else {
                         this.defensePieceRank = this.attackPieceRank;
@@ -73,7 +73,7 @@ public abstract class SpecialPiece extends Piece {
                     final PlayerColor pieceColor = pieceAtDestination.getPieceColor();
                     if (this.pieceColor != pieceColor && this.attackPieceRank >= pieceAtDestination.defensePieceRank) {
                         validMoves.add(new Move.AttackMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
-                        if (BoardTools.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
+                        if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
                             this.defensePieceRank = 0;
                         } else {
                             this.defensePieceRank = this.attackPieceRank;
@@ -86,10 +86,10 @@ public abstract class SpecialPiece extends Piece {
     }
 
     private static boolean isColumnZeroExclusion(final int currentCoordinate, final int potentialOffset) {
-        return (BoardTools.COLUMN_ZERO[currentCoordinate] && (potentialOffset == -1));
+        return (BoardUtils.COLUMN_ZERO[currentCoordinate] && (potentialOffset == -1));
     }
 
     private static boolean isColumnSixExclusion(final int currentCoordinate, final int potentialOffset) {
-        return (BoardTools.COLUMN_SIX[currentCoordinate] && (potentialOffset == 1));
+        return (BoardUtils.COLUMN_SIX[currentCoordinate] && (potentialOffset == 1));
     }
 }
