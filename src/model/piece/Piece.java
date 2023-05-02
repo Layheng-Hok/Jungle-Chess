@@ -10,13 +10,12 @@ public abstract class Piece {
     protected final int pieceCoordinate;
     protected final PlayerColor pieceColor;
 
-    Piece(final int pieceCoordinate, final PlayerColor pieceColor) {
+    protected Piece(final int pieceCoordinate, final PlayerColor pieceColor) {
         this.pieceCoordinate = pieceCoordinate;
         this.pieceColor = pieceColor;
     }
 
     public abstract Collection<Move> determineValidMoves(final Board board);
-
 
     public PlayerColor getPieceColor() {
         return this.pieceColor;

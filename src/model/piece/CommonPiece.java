@@ -11,15 +11,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class Elephant extends Piece {
+import static model.board.Move.*;
+
+public abstract class CommonPiece extends Piece {
     private final int[] POTENTIAL_MOVE_COORDINATES = {-7, -1, 1, 7};
 
-    Elephant(final int pieceCoordinate, final PlayerColor pieceColor) {
+    protected CommonPiece(final int pieceCoordinate, final PlayerColor pieceColor) {
         super(pieceCoordinate, pieceColor);
     }
 
     @Override
-    public Collection<Move> determineValidMoves(Board board) {
+    public Collection<Move> determineValidMoves(final Board board) {
         final List<Move> validMoves = new ArrayList<>();
         for (final int currentPotentialOffset : POTENTIAL_MOVE_COORDINATES) {
             int potentialDestinationCoordinate = this.pieceCoordinate + currentPotentialOffset;
@@ -29,12 +31,12 @@ public class Elephant extends Piece {
                 }
                 final Terrain potentialDestinationTerrain = board.getTerrain(potentialDestinationCoordinate);
                 if (!potentialDestinationTerrain.isTerrainOccupied()) {
-                    validMoves.add(new Move());
+                    validMoves.add(new MajorMove(board, this, potentialDestinationCoordinate));
                 } else {
                     final Piece pieceAtDestination = potentialDestinationTerrain.getPiece();
                     final PlayerColor pieceColor = pieceAtDestination.getPieceColor();
                     if (this.pieceColor != pieceColor) {
-                        validMoves.add(new Move());
+                        validMoves.add(new AttackMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
                     }
                 }
             }

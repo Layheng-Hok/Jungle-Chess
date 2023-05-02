@@ -13,13 +13,13 @@ public abstract class Terrain {
 
     private static Map<Integer, EmptyTerrain> constructAllPossibleEmptyTerrains() {
         final Map<Integer, EmptyTerrain> emptyTerrainsMap = new HashMap<>();
-        for (int i = 0; i < 63; i++) {
+        for (int i = 0; i < BoardTools.NUM_TERRAINS; i++) {
             emptyTerrainsMap.put(i, new EmptyTerrain(i));
         }
         return Collections.unmodifiableMap(emptyTerrainsMap);
     }
 
-    Terrain(int terrainCoordinate) {
+    private Terrain(final int terrainCoordinate) {
         this.terrainCoordinate = terrainCoordinate;
     }
 
@@ -28,8 +28,8 @@ public abstract class Terrain {
     public abstract Piece getPiece();
 
     public static final class EmptyTerrain extends Terrain {
-        private EmptyTerrain(final int coordinate) {
-            super(coordinate);
+        private EmptyTerrain(final int terrainCoordinate) {
+            super(terrainCoordinate);
         }
 
         @Override
@@ -46,8 +46,8 @@ public abstract class Terrain {
     public static final class OccupiedTerrain extends Terrain {
         private final Piece pieceOnTerrain;
 
-        private OccupiedTerrain(int coordinate, Piece pieceOnTerrain) {
-            super(coordinate);
+        private OccupiedTerrain(final int terrainCoordinate, final Piece pieceOnTerrain) {
+            super(terrainCoordinate);
             this.pieceOnTerrain = pieceOnTerrain;
         }
 

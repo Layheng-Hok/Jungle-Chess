@@ -3,18 +3,36 @@ package model.board;
 import model.player.PlayerColor;
 
 public class BoardTools {
-    public static final boolean[] COLUMN_ZERO = null;
-    public static final boolean[] COLUMN_SIX = null;
+    public static final boolean[] COLUMN_ZERO = populateColumn(0);
+    public static final boolean[] COLUMN_SIX = populateColumn(6);
+
+    public static final int NUM_TERRAINS = 63;
+    public static final int NUM_TERRAINS_PER_ROW = 7;
 
     private BoardTools() {
         throw new RuntimeException("You cannot instantiate an object of \"BoardTools\" class.");
     }
 
-    public static boolean isInBoundary(int coordinate) {
+    private static boolean[] populateColumn(int columnIndex) {
+        final boolean[] column = new boolean[NUM_TERRAINS];
+        while (columnIndex < NUM_TERRAINS) {
+            column[columnIndex] = true;
+            columnIndex += NUM_TERRAINS_PER_ROW;
+        }
+        return column;
+    }
+
+    public static boolean isInBoundary(final int coordinate) {
         return coordinate >= 0 && coordinate < 63;
     }
 
-    public static boolean isRiver(int coordinate) {
+    public static boolean isLand (final int coordinate) {
+        return (!isRiver (coordinate)
+                && !isDen (coordinate, PlayerColor.BLUE) && !isDen (coordinate, PlayerColor.RED)
+                && !isTrap (coordinate, PlayerColor.BLUE) && !isTrap (coordinate, PlayerColor.RED));
+    }
+
+    public static boolean isRiver(final int coordinate) {
         return (coordinate == 22 || coordinate == 23 ||
                 coordinate == 29 || coordinate == 30 ||
                 coordinate == 36 || coordinate == 37 ||
@@ -23,7 +41,7 @@ public class BoardTools {
                 coordinate == 39 || coordinate == 40);
     }
 
-    public static boolean isDen(int coordinate, PlayerColor pieceColor) {
+    public static boolean isDen(final int coordinate, PlayerColor pieceColor) {
         if (pieceColor == PlayerColor.BLUE) {
             return (coordinate == 59);
         } else if (pieceColor == PlayerColor.RED) {
@@ -33,11 +51,11 @@ public class BoardTools {
         }
     }
 
-    public static boolean isRiverOrDen(int coordinate, PlayerColor pieceColor) {
+    public static boolean isRiverOrDen(final int coordinate, PlayerColor pieceColor) {
         return isRiver(coordinate) || isDen(coordinate, pieceColor);
     }
 
-    public static boolean isTrap(int coordinate, PlayerColor pieceColor) {
+    public static boolean isTrap(final int coordinate, PlayerColor pieceColor) {
         if (pieceColor == PlayerColor.BLUE) {
             return (coordinate == 52 || coordinate == 58 || coordinate == 60);
         } else if (pieceColor == PlayerColor.RED) {
