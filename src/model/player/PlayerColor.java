@@ -2,5 +2,13 @@ package model.player;
 
 public enum PlayerColor {
     BLUE,
-    RED
+    RED;
+
+    public boolean isBlue() {
+        return this == PlayerColor.BLUE;
+    }
+
+    public boolean isRed() {
+        return this == PlayerColor.RED;
+    }
 }

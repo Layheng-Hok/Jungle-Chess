@@ -7,4 +7,14 @@ public class Tiger extends SpecialPiece {
     public Tiger(final int pieceCoordinate, final PlayerColor pieceColor) {
         super(pieceCoordinate, pieceColor, AnimalRank.TIGER.ordinal());
     }
+
+    @Override
+    public String toString() {
+        return AnimalRank.TIGER.toString();
+    }
+
+    @Override
+    public String getPieceRank() {
+        return AnimalRank.TIGER.getPieceRank();
+    }
 }

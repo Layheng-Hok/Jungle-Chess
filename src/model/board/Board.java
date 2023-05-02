@@ -1,29 +1,64 @@
 package model.board;
 
 import model.piece.Piece;
-import model.piece.animal.Cat;
-import model.piece.animal.Dog;
-import model.piece.animal.Rat;
-import model.piece.animal.Wolf;
+import model.piece.animal.*;
 import model.player.PlayerColor;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Board {
-    private final List<Terrain> gameBoard;
+    private final List<Terrain> chessboard;
+    private final Collection<Piece> bluePieces;
+    private final Collection<Piece> redPieces;
 
     private Board(Builder builder) {
-        this.gameBoard = constructGameBoard(builder);
+        this.chessboard = constructChessboard(builder);
+        this.bluePieces = determineActivePieces(this.chessboard, PlayerColor.BLUE);
+        this.redPieces = determineActivePieces(this.chessboard, PlayerColor.RED);
+
+        final Collection<Move> blueStandardValidMoves = determineValidMoves(this.bluePieces);
+        final Collection<Move> redStandardValidMoves = determineValidMoves(this.redPieces);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
+            final String terrainText = this.chessboard.get(i).toString();
+            stringBuilder.append(String.format("%3s", terrainText));
+            if ((i + 1) % BoardUtils.NUM_TERRAINS_PER_ROW == 0) {
+                stringBuilder.append("\n");
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    private Collection<Move> determineValidMoves(Collection<Piece> pieces) {
+        final List<Move> validMoves = new ArrayList<>();
+        for (final Piece piece : pieces) {
+            validMoves.addAll(piece.determineValidMoves(this));
+        }
+        return Collections.unmodifiableList(validMoves);
+    }
+
+    private static Collection determineActivePieces(List<Terrain> chessboard, PlayerColor playerColor) {
+        final List<Piece> activePieces = new ArrayList<>();
+        for (final Terrain terrain : chessboard) {
+            if (terrain.isTerrainOccupied()) {
+                final Piece piece = terrain.getPiece();
+                if (piece.getPieceColor() == playerColor) {
+                    activePieces.add(piece);
+                }
+            }
+        }
+        return Collections.unmodifiableList(activePieces);
     }
 
     public Terrain getTerrain(int terrainCoordinate) {
-        return null;
+        return chessboard.get(terrainCoordinate);
     }
 
-    private static List<Terrain> constructGameBoard(final Builder builder) {
+    private static List<Terrain> constructChessboard(final Builder builder) {
         final Terrain[] terrains = new Terrain[BoardUtils.NUM_TERRAINS];
         for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
             terrains[i] = Terrain.constructTerrain(i, builder.boardConfig.get(i));
@@ -33,12 +68,27 @@ public class Board {
 
     public static Board constructStandardBoard() {
         final Builder builder = new Builder();
-        // blue layout
+
         builder.setPiece(new Rat(48, PlayerColor.BLUE));
         builder.setPiece(new Cat(50, PlayerColor.BLUE));
-        builder.setPiece(new Dog(59, PlayerColor.BLUE));
+        builder.setPiece(new Dog(54, PlayerColor.BLUE));
         builder.setPiece(new Wolf(44, PlayerColor.BLUE));
-        builder.set
+        builder.setPiece(new Leopard(46, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(56, PlayerColor.BLUE));
+        builder.setPiece(new Lion(62, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(42, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(14, PlayerColor.RED));
+        builder.setPiece(new Cat(12, PlayerColor.RED));
+        builder.setPiece(new Dog(8, PlayerColor.RED));
+        builder.setPiece(new Wolf(18, PlayerColor.RED));
+        builder.setPiece(new Leopard(16, PlayerColor.RED));
+        builder.setPiece(new Tiger(6, PlayerColor.RED));
+        builder.setPiece(new Lion(0, PlayerColor.RED));
+        builder.setPiece(new Elephant(20, PlayerColor.RED));
+
+        builder.setMovePlayer(PlayerColor.BLUE);
+        return builder.build();
     }
 
     public static class Builder {
@@ -46,6 +96,7 @@ public class Board {
         PlayerColor nextMovePlayer;
 
         public Builder() {
+            this.boardConfig = new HashMap<>();
         }
 
         public Builder setPiece(final Piece piece) {

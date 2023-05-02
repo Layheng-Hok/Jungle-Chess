@@ -22,6 +22,16 @@ public class Rat extends Piece {
     }
 
     @Override
+    public String toString() {
+        return AnimalRank.RAT.toString();
+    }
+
+    @Override
+    public String getPieceRank() {
+        return AnimalRank.RAT.getPieceRank();
+    }
+
+    @Override
     public Collection<Move> determineValidMoves(final Board board) {
         final List<Move> validMoves = new ArrayList<>();
         for (final int currentPotentialOffset : POTENTIAL_MOVE_COORDINATES) {

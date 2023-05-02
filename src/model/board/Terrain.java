@@ -22,8 +22,8 @@ public abstract class Terrain {
         this.terrainCoordinate = terrainCoordinate;
     }
 
-    public static Terrain constructTerrain(int i, Piece piece) {
-        return piece != null ? new OccupiedTerrain(i, piece) : EMPTY_TERRAINS.get(i);
+    public static Terrain constructTerrain(int terrainCoordinate, Piece piece) {
+        return piece != null ? new OccupiedTerrain(terrainCoordinate, piece) : EMPTY_TERRAINS.get(terrainCoordinate);
     }
 
     public abstract boolean isTerrainOccupied();
@@ -33,6 +33,11 @@ public abstract class Terrain {
     public static final class EmptyTerrain extends Terrain {
         private EmptyTerrain(final int terrainCoordinate) {
             super(terrainCoordinate);
+        }
+
+        @Override
+        public String toString() {
+            return "口";
         }
 
         @Override
@@ -52,6 +57,12 @@ public abstract class Terrain {
         private OccupiedTerrain(final int terrainCoordinate, final Piece pieceOnTerrain) {
             super(terrainCoordinate);
             this.pieceOnTerrain = pieceOnTerrain;
+        }
+
+        @Override
+        public String toString() {
+            return getPiece().getPieceColor().isRed() ?
+                    getPiece().toString() : getPiece().getPieceRank();
         }
 
         @Override

@@ -38,4 +38,6 @@ public abstract class Piece {
     public int getDefensePieceRank() {
         return this.defensePieceRank;
     }
+
+    public abstract String getPieceRank();
 }
