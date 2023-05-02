@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-//  class for Lion and Tiger to inherit
 public abstract class SpecialPiece extends Piece {
     private final int[] POTENTIAL_MOVE_COORDINATES = {-7, -1, 1, 7};
 

@@ -17,7 +17,7 @@ import static model.board.Move.*;
 public class Rat extends Piece {
     private final int[] POTENTIAL_MOVE_COORDINATES = {-7, -1, 1, 7};
 
-    protected Rat(final int pieceCoordinate, final PlayerColor pieceColor) {
+    public Rat(final int pieceCoordinate, final PlayerColor pieceColor) {
         super(pieceCoordinate, pieceColor, AnimalRank.RAT.ordinal());
     }
 
