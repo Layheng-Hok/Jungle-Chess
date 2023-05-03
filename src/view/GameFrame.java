@@ -14,7 +14,7 @@ public class GameFrame {
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(1000, 800);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(450, 350);
     private static final Dimension TILE_PANEL_DIMENSION = new Dimension(12, 12);
-    ImageIcon logo = new ImageIcon("resource/JungleChessLogo.jpg");
+    ImageIcon logo = new ImageIcon("resource/images/JungleChessLogo.jpg");
 
     public GameFrame() {
         this.gameFrame = new JFrame("Jungle Chess (斗兽棋)");
