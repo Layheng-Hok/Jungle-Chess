@@ -76,6 +76,8 @@ public abstract class Move {
         public StandardMove(final Board board, final Piece movedPiece, final int destinationCoordinate) {
             super(board, movedPiece, destinationCoordinate);
         }
+
+
     }
 
     public static class CaptureMove extends Move {
