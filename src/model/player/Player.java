@@ -10,26 +10,34 @@ public abstract class Player {
     protected final Board board;
     protected final Collection<Move> validMoves;
 
-    protected Player(Board board, Collection<Move> validMoves, Collection<Move> opponentMoves) {
+    Player(Board board, Collection<Move> validMoves, Collection<Move> opponentMoves) {
         this.board = board;
         this.validMoves = validMoves;
     }
 
     public abstract Collection<Piece> getActivePieces();
 
-    public abstract PlayerColor getAlly();
+    public abstract PlayerColor getAllyColor();
 
-    public abstract Player getEnemy();
+    public abstract Player getEnemyPlayer();
 
     public boolean isMoveValid (final Move move) {
         return this.validMoves.contains(move);
     }
 
     public boolean isDenPenetrated() {
-        return false;
+       return false;
     }
 
     public MoveTransition makeMove (final Move move) {
-        return null;
+        if (!isMoveValid(move)) {
+            return new MoveTransition(this.board, move, MoveStatus.INVALID_MOVE);
+        }
+        final Board transitionBoard = move.execute();
+        return new MoveTransition(transitionBoard, move, MoveStatus.DONE);
+    }
+
+    public Collection<Move> getValidMoves() {
+        return this.validMoves;
     }
 }

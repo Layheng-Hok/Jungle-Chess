@@ -1,14 +1,51 @@
 package model.player;
 
 public enum PlayerColor {
-    BLUE,
-    RED;
+    BLUE {
+        @Override
+        public int getDirection() {
+            return -1;
+        }
 
-    public boolean isBlue() {
-        return this == PlayerColor.BLUE;
-    }
+        @Override
+        public boolean isBlue() {
+            return true;
+        }
 
-    public boolean isRed() {
-        return this == PlayerColor.RED;
-    }
+        @Override
+        public boolean isRed() {
+            return false;
+        }
+
+        @Override
+        public Player choosePlayer(BluePlayer bluePlayer, RedPlayer redPlayer) {
+            return bluePlayer;
+        }
+    },
+    RED {
+        @Override
+        public int getDirection() {
+            return 1;
+        }
+
+        @Override
+        public boolean isBlue() {
+            return false;
+        }
+
+        @Override
+        public boolean isRed() {
+            return true;
+        }
+
+        @Override
+        public Player choosePlayer(BluePlayer bluePlayer, RedPlayer redPlayer) {
+            return redPlayer;
+        }
+    };
+
+    public abstract int getDirection();
+    public abstract boolean isBlue();
+    public abstract boolean isRed();
+    public abstract Player choosePlayer(BluePlayer bluePlayer, RedPlayer redPlayer);
 }

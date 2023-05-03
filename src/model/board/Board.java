@@ -15,6 +15,7 @@ public class Board {
     private final Collection<Piece> redPieces;
     private final BluePlayer bluePlayer;
     private final RedPlayer redPlayer;
+    private final Player currentPlayer;
 
     private Board(Builder builder) {
         this.chessboard = constructChessboard(builder);
@@ -24,6 +25,7 @@ public class Board {
         final Collection<Move> redStandardValidMoves = determineValidMoves(this.redPieces);
         this.bluePlayer = new BluePlayer(this, blueStandardValidMoves, redStandardValidMoves);
         this.redPlayer = new RedPlayer(this, blueStandardValidMoves, redStandardValidMoves);
+        this.currentPlayer = builder.nextMovePlayer.choosePlayer(this.bluePlayer, this.redPlayer);
     }
 
     @Override
@@ -45,6 +47,10 @@ public class Board {
 
     public Player redPlayer() {
         return this.redPlayer;
+    }
+
+    public Player currentPlayer() {
+        return this.currentPlayer;
     }
 
     public Collection<Piece> getBluePieces() {
@@ -109,7 +115,7 @@ public class Board {
         builder.setPiece(new Lion(0, PlayerColor.RED));
         builder.setPiece(new Elephant(20, PlayerColor.RED));
 
-        builder.setMovePlayer(PlayerColor.BLUE);
+        builder.setNextMovePlayer(PlayerColor.BLUE);
         return builder.build();
     }
 
@@ -126,7 +132,7 @@ public class Board {
             return this;
         }
 
-        public Builder setMovePlayer(final PlayerColor nextPlayerColor) {
+        public Builder setNextMovePlayer(final PlayerColor nextPlayerColor) {
             this.nextMovePlayer = nextPlayerColor;
             return this;
         }

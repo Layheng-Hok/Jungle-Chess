@@ -6,8 +6,8 @@ import model.piece.Piece;
 
 import java.util.Collection;
 
-public class BluePlayer extends Player{
-    public BluePlayer(Board board, Collection<Move> blueStandardValidMoves, Collection<Move> redStandardValidMoves) {
+public class BluePlayer extends Player {
+    public BluePlayer(final Board board, final Collection<Move> blueStandardValidMoves, final Collection<Move> redStandardValidMoves) {
         super(board, blueStandardValidMoves, redStandardValidMoves);
     }
 
@@ -17,12 +17,12 @@ public class BluePlayer extends Player{
     }
 
     @Override
-    public PlayerColor getAlly() {
+    public PlayerColor getAllyColor() {
         return PlayerColor.BLUE;
     }
 
     @Override
-    public Player getEnemy() {
+    public Player getEnemyPlayer() {
         return this.board.redPlayer();
     }
 }
