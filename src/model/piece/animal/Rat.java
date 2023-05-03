@@ -26,6 +26,12 @@ public class Rat extends Piece {
         return Animal.RAT.toString();
     }
 
+
+    @Override
+    public Rat movePiece(Move move) {
+        return new Rat(move.getDestinationCoordinate(), move.getMovedPiece().getPieceColor());
+    }
+
     @Override
     public String getPieceRank() {
         return Animal.RAT.getPieceRank();
@@ -42,7 +48,7 @@ public class Rat extends Piece {
                 }
                 final Terrain potentialDestinationTerrain = board.getTerrain(potentialDestinationCoordinate);
                 if (!potentialDestinationTerrain.isTerrainOccupied()) {
-                    validMoves.add(new MajorMove(board, this, potentialDestinationCoordinate));
+                    validMoves.add(new StandardMove(board, this, potentialDestinationCoordinate));
                     if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
                         this.defensePieceRank = 0;
                     } else {
@@ -56,7 +62,7 @@ public class Rat extends Piece {
                                 pieceAtDestination.getDefensePieceRank() == Animal.RAT.ordinal()) {
                             if (BoardUtils.isLand(this.pieceCoordinate) && !BoardUtils.isRiver(potentialDestinationCoordinate) ||
                                     BoardUtils.isRiver(this.pieceCoordinate) && BoardUtils.isRiver(potentialDestinationCoordinate)) {
-                                validMoves.add(new AttackMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
+                                validMoves.add(new CaptureMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
                                 if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
                                     this.defensePieceRank = 0;
                                 } else {

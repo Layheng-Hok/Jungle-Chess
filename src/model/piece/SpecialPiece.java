@@ -63,7 +63,7 @@ public abstract class SpecialPiece extends Piece {
                     }
                 }
                 if (!potentialDestinationTerrain.isTerrainOccupied()) {
-                    validMoves.add(new Move.MajorMove(board, this, potentialDestinationCoordinate));
+                    validMoves.add(new Move.StandardMove(board, this, potentialDestinationCoordinate));
                     if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
                         this.defensePieceRank = 0;
                     } else {
@@ -73,7 +73,7 @@ public abstract class SpecialPiece extends Piece {
                     final Piece pieceAtDestination = potentialDestinationTerrain.getPiece();
                     final PlayerColor pieceColor = pieceAtDestination.getPieceColor();
                     if (this.pieceColor != pieceColor && this.attackPieceRank >= pieceAtDestination.defensePieceRank) {
-                        validMoves.add(new Move.AttackMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
+                        validMoves.add(new Move.CaptureMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
                         if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
                             this.defensePieceRank = 0;
                         } else {

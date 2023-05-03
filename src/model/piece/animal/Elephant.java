@@ -1,6 +1,8 @@
 package model.piece.animal;
 
+import model.board.Move;
 import model.piece.CommonPiece;
+import model.piece.Piece;
 import model.player.PlayerColor;
 
 public class Elephant extends CommonPiece {
@@ -11,6 +13,11 @@ public class Elephant extends CommonPiece {
     @Override
     public String toString() {
         return Animal.ELEPHANT.toString();
+    }
+
+    @Override
+    public Elephant movePiece(Move move) {
+        return new Elephant(move.getDestinationCoordinate(), move.getMovedPiece().getPieceColor());
     }
 
     @Override

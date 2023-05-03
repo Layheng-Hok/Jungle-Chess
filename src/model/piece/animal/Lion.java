@@ -1,5 +1,7 @@
 package model.piece.animal;
 
+import model.board.Move;
+import model.piece.Piece;
 import model.piece.SpecialPiece;
 import model.player.PlayerColor;
 
@@ -11,6 +13,11 @@ public class Lion extends SpecialPiece {
     @Override
     public String toString() {
         return Animal.LION.toString();
+    }
+
+    @Override
+    public Lion movePiece(Move move) {
+        return new Lion(move.getDestinationCoordinate(), move.getMovedPiece().getPieceColor());
     }
 
     @Override

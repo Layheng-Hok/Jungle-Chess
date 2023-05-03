@@ -32,7 +32,7 @@ public abstract class CommonPiece extends Piece {
                 }
                 final Terrain potentialDestinationTerrain = board.getTerrain(potentialDestinationCoordinate);
                 if (!potentialDestinationTerrain.isTerrainOccupied()) {
-                    validMoves.add(new MajorMove(board, this, potentialDestinationCoordinate));
+                    validMoves.add(new StandardMove(board, this, potentialDestinationCoordinate));
                     if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
                         this.defensePieceRank = 0;
                     } else {
@@ -42,7 +42,7 @@ public abstract class CommonPiece extends Piece {
                     final Piece pieceAtDestination = potentialDestinationTerrain.getPiece();
                     final PlayerColor pieceColor = pieceAtDestination.getPieceColor();
                     if (this.pieceColor != pieceColor && this.attackPieceRank >= pieceAtDestination.defensePieceRank) {
-                        validMoves.add(new AttackMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
+                        validMoves.add(new CaptureMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
                         if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
                             this.defensePieceRank = 0;
                         } else {

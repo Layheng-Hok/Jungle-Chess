@@ -119,6 +119,14 @@ public class Board {
         return builder.build();
     }
 
+    public Iterable<Move> getAllValidMoves() {
+        List<Move> allMoves = new ArrayList<>();
+        allMoves.addAll(this.bluePlayer.getValidMoves());
+        allMoves.addAll(this.redPlayer.getValidMoves());
+        return Collections.unmodifiableList(allMoves);
+    }
+
+
     public static class Builder {
         Map<Integer, Piece> boardConfig;
         PlayerColor nextMovePlayer;

@@ -14,6 +14,7 @@ public abstract class Piece {
     protected final int attackPieceRank;
     protected int defensePieceRank;
     protected final boolean isFirstMove;
+    private final int cachedHashCode;
 
     protected Piece(final Animal pieceType, final int pieceCoordinate, final PlayerColor pieceColor, final int attackPieceRank) {
         this.pieceType = pieceType;
@@ -22,9 +23,40 @@ public abstract class Piece {
         this.attackPieceRank = attackPieceRank;
         this.defensePieceRank = attackPieceRank;
         this.isFirstMove = false;
+        this.cachedHashCode = computeHashCode();
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof Piece)) {
+            return false;
+        }
+        final Piece otherPiece = (Piece) other;
+        return this.pieceType == otherPiece.getPieceType()
+                && this.pieceColor == otherPiece.getPieceColor()
+                && this.pieceCoordinate == otherPiece.getPieceCoordinate()
+                && this.isFirstMove == otherPiece.isFirstMove();
+    }
+
+    @Override
+    public int hashCode() {
+      return this.cachedHashCode;
+    }
+
+    private int computeHashCode() {
+        int result = this.pieceType.hashCode();
+        result = 31 * result + this.pieceColor.hashCode();
+        result = 31 * result + this.pieceCoordinate;
+        result = 31 * result + (this.isFirstMove ? 1 : 0);
+        return result;
     }
 
     public abstract Collection<Move> determineValidMoves(final Board board);
+
+    public abstract Piece movePiece(final Move move);
 
     public int getPieceCoordinate() {
         return this.pieceCoordinate;
