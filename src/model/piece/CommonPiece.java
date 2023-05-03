@@ -4,6 +4,7 @@ import model.board.Board;
 import model.board.BoardUtils;
 import model.board.Move;
 import model.board.Terrain;
+import model.piece.animal.Animal;
 import model.player.PlayerColor;
 
 import java.util.ArrayList;
@@ -16,8 +17,8 @@ import static model.board.Move.*;
 public abstract class CommonPiece extends Piece {
     private final int[] POTENTIAL_MOVE_COORDINATES = {-7, -1, 1, 7};
 
-    protected CommonPiece(final int pieceCoordinate, final PlayerColor pieceColor, int pieceRank) {
-        super(pieceCoordinate, pieceColor, pieceRank);
+    protected CommonPiece(final Animal pieceType, final int pieceCoordinate, final PlayerColor pieceColor, int pieceRank) {
+        super(pieceType, pieceCoordinate, pieceColor, pieceRank);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package model.piece.animal;
 
-public enum AnimalRank {
+public enum Animal {
     TRAPPED_ANIMAL ("0", "困"),
     RAT ("一", "鼠"),
     CAT ("二", "猫"),
@@ -14,7 +14,7 @@ public enum AnimalRank {
     private final String pieceRank;
     private final String pieceName;
 
-    AnimalRank (final String pieceRank, final String pieceName) {
+    Animal(final String pieceRank, final String pieceName) {
         this.pieceRank = pieceRank;
         this.pieceName = pieceName;
     }

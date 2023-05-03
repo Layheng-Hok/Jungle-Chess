@@ -18,17 +18,17 @@ public class Rat extends Piece {
     private final int[] POTENTIAL_MOVE_COORDINATES = {-7, -1, 1, 7};
 
     public Rat(final int pieceCoordinate, final PlayerColor pieceColor) {
-        super(pieceCoordinate, pieceColor, AnimalRank.RAT.ordinal());
+        super(Animal.RAT, pieceCoordinate, pieceColor, Animal.RAT.ordinal());
     }
 
     @Override
     public String toString() {
-        return AnimalRank.RAT.toString();
+        return Animal.RAT.toString();
     }
 
     @Override
     public String getPieceRank() {
-        return AnimalRank.RAT.getPieceRank();
+        return Animal.RAT.getPieceRank();
     }
 
     @Override
@@ -52,8 +52,8 @@ public class Rat extends Piece {
                     final Piece pieceAtDestination = potentialDestinationTerrain.getPiece();
                     final PlayerColor pieceColor = pieceAtDestination.getPieceColor();
                     if (this.pieceColor != pieceColor && this.attackPieceRank >= pieceAtDestination.getDefensePieceRank()) {
-                        if (pieceAtDestination.getDefensePieceRank() == AnimalRank.ELEPHANT.ordinal() ||
-                                pieceAtDestination.getDefensePieceRank() == AnimalRank.RAT.ordinal()) {
+                        if (pieceAtDestination.getDefensePieceRank() == Animal.ELEPHANT.ordinal() ||
+                                pieceAtDestination.getDefensePieceRank() == Animal.RAT.ordinal()) {
                             if (BoardUtils.isLand(this.pieceCoordinate) && !BoardUtils.isRiver(potentialDestinationCoordinate) ||
                                     BoardUtils.isRiver(this.pieceCoordinate) && BoardUtils.isRiver(potentialDestinationCoordinate)) {
                                 validMoves.add(new AttackMove(board, this, potentialDestinationCoordinate, pieceAtDestination));

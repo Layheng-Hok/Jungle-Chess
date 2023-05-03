@@ -5,16 +5,16 @@ import model.player.PlayerColor;
 
 public class Dog extends CommonPiece {
     public Dog(final int pieceCoordinate, final PlayerColor pieceColor) {
-        super(pieceCoordinate, pieceColor, AnimalRank.DOG.ordinal());
+        super(Animal.DOG, pieceCoordinate, pieceColor, Animal.DOG.ordinal());
     }
 
     @Override
     public String toString() {
-        return AnimalRank.DOG.toString();
+        return Animal.DOG.toString();
     }
 
     @Override
     public String getPieceRank() {
-        return AnimalRank.DOG.getPieceRank();
+        return Animal.DOG.getPieceRank();
     }
 }

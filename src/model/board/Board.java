@@ -2,7 +2,10 @@ package model.board;
 
 import model.piece.Piece;
 import model.piece.animal.*;
+import model.player.BluePlayer;
+import model.player.Player;
 import model.player.PlayerColor;
+import model.player.RedPlayer;
 
 import java.util.*;
 
@@ -10,14 +13,17 @@ public class Board {
     private final List<Terrain> chessboard;
     private final Collection<Piece> bluePieces;
     private final Collection<Piece> redPieces;
+    private final BluePlayer bluePlayer;
+    private final RedPlayer redPlayer;
 
     private Board(Builder builder) {
         this.chessboard = constructChessboard(builder);
         this.bluePieces = determineActivePieces(this.chessboard, PlayerColor.BLUE);
         this.redPieces = determineActivePieces(this.chessboard, PlayerColor.RED);
-
         final Collection<Move> blueStandardValidMoves = determineValidMoves(this.bluePieces);
         final Collection<Move> redStandardValidMoves = determineValidMoves(this.redPieces);
+        this.bluePlayer = new BluePlayer(this, blueStandardValidMoves, redStandardValidMoves);
+        this.redPlayer = new RedPlayer(this, blueStandardValidMoves, redStandardValidMoves);
     }
 
     @Override
@@ -31,6 +37,22 @@ public class Board {
             }
         }
         return stringBuilder.toString();
+    }
+
+    public Player bluePlayer() {
+        return this.bluePlayer;
+    }
+
+    public Player redPlayer() {
+        return this.redPlayer;
+    }
+
+    public Collection<Piece> getBluePieces() {
+        return this.bluePieces;
+    }
+
+    public Collection<Piece> getRedPieces() {
+        return this.redPieces;
     }
 
     private Collection<Move> determineValidMoves(Collection<Piece> pieces) {

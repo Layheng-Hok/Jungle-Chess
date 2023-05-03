@@ -5,16 +5,16 @@ import model.player.PlayerColor;
 
 public class Cat extends CommonPiece {
     public Cat(final int pieceCoordinate, final PlayerColor pieceColor) {
-        super(pieceCoordinate, pieceColor, AnimalRank.CAT.ordinal());
+        super(Animal.CAT, pieceCoordinate, pieceColor, Animal.CAT.ordinal());
     }
 
     @Override
     public String toString() {
-        return AnimalRank.CAT.toString();
+        return Animal.CAT.toString();
     }
 
     @Override
     public String getPieceRank() {
-        return AnimalRank.CAT.getPieceRank();
+        return Animal.CAT.getPieceRank();
     }
 }
