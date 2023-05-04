@@ -10,6 +10,10 @@ public class BluePlayer extends Player {
     public BluePlayer(final Board board, final Collection<Move> blueStandardValidMoves, final Collection<Move> redStandardValidMoves) {
         super(board, blueStandardValidMoves, redStandardValidMoves);
     }
+    @Override
+    public String toString() {
+        return "Blue";
+    }
 
     @Override
     public Collection<Piece> getActivePieces() {

@@ -3,11 +3,20 @@ package model.board;
 import model.player.PlayerColor;
 
 public class BoardUtils {
-    public static final boolean[] COLUMN_ZERO = populateColumn(0);
-    public static final boolean[] COLUMN_SIX = populateColumn(6);
-
     public static final int NUM_TERRAINS = 63;
     public static final int NUM_TERRAINS_PER_ROW = 7;
+    public static final boolean[] COLUMN_ZERO = populateColumn(0);
+    public static final boolean[] COLUMN_SIX = populateColumn(6);
+    public static final boolean[] ROW_ZERO = populateRow(0);
+    public static final boolean[] ROW_ONE = populateRow(7);
+    public static final boolean[] ROW_TWO = populateRow(14);
+    public static final boolean[] ROW_THREE = populateRow(21);
+    public static final boolean[] ROW_FOUR = populateRow(28);
+    public static final boolean[] ROW_FIVE = populateRow(35);
+    public static final boolean[] ROW_SIX = populateRow(42);
+    public static final boolean[] ROW_SEVEN = populateRow(49);
+    public static final boolean[] ROW_EIGHT = populateRow(56);
+
 
     private BoardUtils() {
         throw new RuntimeException("You cannot instantiate an object of \"BoardTools\" class.");
@@ -15,21 +24,30 @@ public class BoardUtils {
 
     private static boolean[] populateColumn(int columnIndex) {
         final boolean[] column = new boolean[NUM_TERRAINS];
-        while (columnIndex < NUM_TERRAINS) {
+        do {
             column[columnIndex] = true;
             columnIndex += NUM_TERRAINS_PER_ROW;
-        }
+        } while (columnIndex < NUM_TERRAINS);
         return column;
+    }
+
+    private static boolean[] populateRow(int rowIndex) {
+        final boolean[] row = new boolean[NUM_TERRAINS];
+        do {
+            row[rowIndex] = true;
+            rowIndex++;
+        } while (rowIndex % NUM_TERRAINS_PER_ROW != 0);
+        return row;
     }
 
     public static boolean isInBoundary(final int coordinate) {
         return coordinate >= 0 && coordinate < 63;
     }
 
-    public static boolean isLand (final int coordinate) {
-        return (!isRiver (coordinate)
-                && !isDen (coordinate, PlayerColor.BLUE) && !isDen (coordinate, PlayerColor.RED)
-                && !isEnemyTrap (coordinate, PlayerColor.BLUE) && !isEnemyTrap (coordinate, PlayerColor.RED));
+    public static boolean isLand(final int coordinate) {
+        return (!isRiver(coordinate)
+                && !isDen(coordinate, PlayerColor.BLUE) && !isDen(coordinate, PlayerColor.RED)
+                && !isEnemyTrap(coordinate, PlayerColor.BLUE) && !isEnemyTrap(coordinate, PlayerColor.RED));
     }
 
     public static boolean isRiver(final int coordinate) {

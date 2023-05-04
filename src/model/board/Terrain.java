@@ -37,7 +37,7 @@ public abstract class Terrain {
 
         @Override
         public String toString() {
-            return "口";
+            return "*";
         }
 
         @Override
@@ -61,8 +61,7 @@ public abstract class Terrain {
 
         @Override
         public String toString() {
-            return getPiece().getPieceColor().isRed() ?
-                    getPiece().toString() : getPiece().getPieceRank();
+            return getPiece().getPieceColor().isRed() ? getPiece().toString().toLowerCase() : getPiece().toString();
         }
 
         @Override

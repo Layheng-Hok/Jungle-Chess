@@ -12,6 +12,11 @@ public class RedPlayer extends Player {
     }
 
     @Override
+    public String toString() {
+        return "Red";
+    }
+
+    @Override
     public Collection<Piece> getActivePieces() {
         return this.board.getRedPieces();
     }

@@ -1,20 +1,29 @@
 package view;
 
+import model.board.Board;
 import model.board.BoardUtils;
+import model.player.PlayerColor;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameFrame {
     private final JFrame gameFrame;
     private final BoardPanel boardPanel;
-    private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(1000, 800);
-    private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(450, 350);
-    private static final Dimension TILE_PANEL_DIMENSION = new Dimension(12, 12);
-    ImageIcon logo = new ImageIcon("resource/images/JungleChessLogo.jpg");
+    private final Board chessBoard;
+    private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(525, 675);
+    private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(525, 675);
+    private static final Dimension TILE_PANEL_DIMENSION = new Dimension(15, 15);
+    private final ImageIcon logo = new ImageIcon("resource/images/junglechesslogo.jpg");
+    private static final String defaultPieceImagesPath = "resource/images/";
 
     public GameFrame() {
         this.gameFrame = new JFrame("Jungle Chess (斗兽棋)");
@@ -23,6 +32,7 @@ public class GameFrame {
         final JMenuBar gameFrameMenuBar = createGameFrameMenuBar();
         this.gameFrame.setJMenuBar(gameFrameMenuBar);
         this.gameFrame.setSize(OUTER_FRAME_DIMENSION);
+        this.chessBoard = Board.constructStandardBoard();
         this.gameFrame.setLocationRelativeTo(null);
         this.boardPanel = new BoardPanel();
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
@@ -39,31 +49,50 @@ public class GameFrame {
     private JMenu createFileMenu() {
         final JMenu fileMenu = new JMenu("File");
         final JMenuItem openPGN = new JMenuItem("Load PGN File");
-        openPGN.addActionListener(new AbstractAction() {
+        openPGN.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Open up that pgn file!");
             }
         });
         fileMenu.add(openPGN);
+        final JMenuItem exitMenuItem = new JMenuItem("Save & Exit");
+        exitMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameFrame.dispose();
+                System.exit(0);
+            }
+        });
+        fileMenu.add(exitMenuItem);
         return fileMenu;
     }
 
     private class BoardPanel extends JPanel {
         final List<TerrainPanel> boardTerrain;
+        private final Image boardImage;
 
         BoardPanel() {
             super(new GridLayout(9, 7));
             this.boardTerrain = new ArrayList<>();
+            this.boardImage = new ImageIcon("resource/images/chessboard.png").getImage();
             for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                 final TerrainPanel terrainPanel = new TerrainPanel(this, i);
                 this.boardTerrain.add(terrainPanel);
                 add(terrainPanel);
             }
             setPreferredSize(BOARD_PANEL_DIMENSION);
+            setMaximumSize(getPreferredSize());
             validate();
         }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(boardImage, 0, 0, getWidth(), getHeight(), this);
+        }
     }
+
 
     private class TerrainPanel extends JPanel {
         private final int terrainCoordinate;
@@ -72,11 +101,42 @@ public class GameFrame {
             super(new GridBagLayout());
             this.terrainCoordinate = terrainCoordinate;
             setPreferredSize(TILE_PANEL_DIMENSION);
-            assignTerrainImage();
+            assignTerrainColor(this, terrainCoordinate);
+            assignTerrainPieceIcon(chessBoard);
             validate();
         }
 
-        private void assignTerrainImage() {
+        private void assignTerrainPieceIcon (final Board board) {
+            this.removeAll();
+           if(board.getTerrain(this.terrainCoordinate).isTerrainOccupied()) {
+              try {
+                  final BufferedImage image =
+                          ImageIO.read(new File(defaultPieceImagesPath +
+                                  board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().substring(0, 1) +
+                                  board.getTerrain(this.terrainCoordinate).getPiece().toString() + ".png"));
+                 add(new JLabel(new ImageIcon(image)));
+              } catch (IOException e) {
+                  e.printStackTrace();
+              }
+           }
+        }
+
+        private static void assignTerrainColor(final TerrainPanel terrainPanel, final int coordinate) {
+            if (BoardUtils.isLand(coordinate)) {
+                terrainPanel.setBackground(new Color(0x28B463));
+            } else if (BoardUtils.isRiver(coordinate)) {
+                terrainPanel.setBackground(new Color(0x63B8FF));
+            } else if (BoardUtils.isEnemyTrap(coordinate, PlayerColor.BLUE)) {
+                terrainPanel.setBackground(new Color(0xE67E22));
+            } else if (BoardUtils.isEnemyTrap(coordinate, PlayerColor.RED)) {
+                terrainPanel.setBackground(new Color(0xE67E22));
+            } else if (BoardUtils.isDen(coordinate, PlayerColor.BLUE)) {
+                terrainPanel.setBackground(new Color(0x3498DB));
+            } else if (BoardUtils.isDen(coordinate, PlayerColor.RED)) {
+                terrainPanel.setBackground(new Color(0xEC7063));
+            }
+            //terrainPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            terrainPanel.setOpaque(false);
         }
     }
 }
