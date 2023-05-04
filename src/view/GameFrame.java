@@ -101,42 +101,47 @@ public class GameFrame {
             super(new GridBagLayout());
             this.terrainCoordinate = terrainCoordinate;
             setPreferredSize(TILE_PANEL_DIMENSION);
-            assignTerrainColor(this, terrainCoordinate);
+            assignTerrainColor( terrainCoordinate);
             assignTerrainPieceIcon(chessBoard);
             validate();
         }
 
-        private void assignTerrainPieceIcon (final Board board) {
+        private void assignTerrainPieceIcon(final Board board) {
             this.removeAll();
-           if(board.getTerrain(this.terrainCoordinate).isTerrainOccupied()) {
-              try {
-                  final BufferedImage image =
-                          ImageIO.read(new File(defaultPieceImagesPath +
-                                  board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().substring(0, 1) +
-                                  board.getTerrain(this.terrainCoordinate).getPiece().toString() + ".png"));
-                 add(new JLabel(new ImageIcon(image)));
-              } catch (IOException e) {
-                  e.printStackTrace();
-              }
-           }
+            if (board.getTerrain(this.terrainCoordinate).isTerrainOccupied()) {
+                try {
+                    final BufferedImage image = ImageIO.read(new File(defaultPieceImagesPath
+                            + board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().substring(0, 1)
+                            + board.getTerrain(this.terrainCoordinate).getPiece().toString() + ".png"));
+                    ImageIcon icon = new ImageIcon(image);
+                    int labelWidth = 65;
+                    int labelHeight = 65;
+                    Image scaledImage = icon.getImage().getScaledInstance(labelWidth, labelHeight, Image.SCALE_SMOOTH);
+                    icon = new ImageIcon(scaledImage);
+                    JLabel label = new JLabel(icon);
+                    add(label);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
-        private static void assignTerrainColor(final TerrainPanel terrainPanel, final int coordinate) {
+        private void assignTerrainColor(final int coordinate) {
             if (BoardUtils.isLand(coordinate)) {
-                terrainPanel.setBackground(new Color(0x28B463));
+                setBackground(new Color(0x28B463));
             } else if (BoardUtils.isRiver(coordinate)) {
-                terrainPanel.setBackground(new Color(0x63B8FF));
+                setBackground(new Color(0x63B8FF));
             } else if (BoardUtils.isEnemyTrap(coordinate, PlayerColor.BLUE)) {
-                terrainPanel.setBackground(new Color(0xE67E22));
+                setBackground(new Color(0xE67E22));
             } else if (BoardUtils.isEnemyTrap(coordinate, PlayerColor.RED)) {
-                terrainPanel.setBackground(new Color(0xE67E22));
+                setBackground(new Color(0xE67E22));
             } else if (BoardUtils.isDen(coordinate, PlayerColor.BLUE)) {
-                terrainPanel.setBackground(new Color(0x3498DB));
+                setBackground(new Color(0x3498DB));
             } else if (BoardUtils.isDen(coordinate, PlayerColor.RED)) {
-                terrainPanel.setBackground(new Color(0xEC7063));
+                setBackground(new Color(0xEC7063));
             }
-            //terrainPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            terrainPanel.setOpaque(false);
+            // setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            setOpaque(false);
         }
     }
 }
