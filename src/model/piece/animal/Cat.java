@@ -7,7 +7,11 @@ import model.player.PlayerColor;
 
 public class Cat extends CommonPiece {
     public Cat(final int pieceCoordinate, final PlayerColor pieceColor) {
-        super(Animal.CAT, pieceCoordinate, pieceColor, Animal.CAT.ordinal());
+        super(Animal.CAT, pieceCoordinate, pieceColor, Animal.CAT.ordinal(), true);
+    }
+
+    public Cat(final int pieceCoordinate, final PlayerColor pieceColor, final boolean isFirstMove) {
+        super(Animal.CAT, pieceCoordinate, pieceColor, Animal.CAT.ordinal(), isFirstMove);
     }
 
     @Override

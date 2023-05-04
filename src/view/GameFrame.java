@@ -2,6 +2,10 @@ package view;
 
 import model.board.Board;
 import model.board.BoardUtils;
+import model.board.Move;
+import model.board.Terrain;
+import model.piece.Piece;
+import model.player.MoveTransition;
 import model.player.PlayerColor;
 
 import javax.imageio.ImageIO;
@@ -9,16 +13,28 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+
+import static javax.swing.SwingUtilities.isLeftMouseButton;
+import static javax.swing.SwingUtilities.isRightMouseButton;
 
 public class GameFrame {
     private final JFrame gameFrame;
     private final BoardPanel boardPanel;
-    private final Board chessBoard;
+    private Board chessBoard;
+    private Terrain sourceTerrain;
+    private Terrain destinationTerrain;
+    private Piece humanMovedPiece;
+    private BoardDirection boardDirection;
+    private boolean highlightValidMoves;
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(525, 675);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(525, 675);
     private static final Dimension TILE_PANEL_DIMENSION = new Dimension(15, 15);
@@ -35,14 +51,17 @@ public class GameFrame {
         this.chessBoard = Board.constructStandardBoard();
         this.gameFrame.setLocationRelativeTo(null);
         this.boardPanel = new BoardPanel();
+        this.boardDirection = BoardDirection.NORMAL;
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
         this.gameFrame.setVisible(true);
         this.gameFrame.setIconImage(logo.getImage());
+        this.highlightValidMoves = true;
     }
 
     private JMenuBar createGameFrameMenuBar() {
         final JMenuBar gameFrameMenuBar = new JMenuBar();
         gameFrameMenuBar.add(createFileMenu());
+        gameFrameMenuBar.add(createPreferencesMenu());
         return gameFrameMenuBar;
     }
 
@@ -68,17 +87,71 @@ public class GameFrame {
         return fileMenu;
     }
 
+    private JMenu createPreferencesMenu() {
+        final JMenu preferencesMenu = new JMenu("Preferences");
+        final JMenuItem flipBoardMenuItem = new JMenuItem("Change Side");
+        flipBoardMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boardDirection = boardDirection.opposite();
+                boardPanel.drawBoard(chessBoard);
+            }
+        });
+        preferencesMenu.add(flipBoardMenuItem);
+        preferencesMenu.addSeparator();
+        final JCheckBoxMenuItem validMoveHighlighterCheckbox = new JCheckBoxMenuItem("Highlight Valid Moves", true);
+        validMoveHighlighterCheckbox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                highlightValidMoves = validMoveHighlighterCheckbox.isSelected();
+            }
+        });
+        preferencesMenu.add(validMoveHighlighterCheckbox);
+        return preferencesMenu;
+    }
+
+    enum BoardDirection {
+        NORMAL {
+            @Override
+            List<TerrainPanel> traverse(final List<TerrainPanel> boardTiles) {
+                return boardTiles;
+            }
+
+            @Override
+            BoardDirection opposite() {
+                return FLIPPED;
+            }
+        },
+        FLIPPED {
+            @Override
+            List<TerrainPanel> traverse(final List<TerrainPanel> boardTiles) {
+                List<TerrainPanel> reversedTiles = new ArrayList<>(boardTiles);
+                Collections.reverse(reversedTiles);
+                return reversedTiles;
+            }
+
+            @Override
+            BoardDirection opposite() {
+                return NORMAL;
+            }
+        };
+
+        abstract List<TerrainPanel> traverse(final List<TerrainPanel> boardTiles);
+        abstract BoardDirection opposite();
+
+    }
+
     private class BoardPanel extends JPanel {
-        final List<TerrainPanel> boardTerrain;
+        final List<TerrainPanel> boardTerrains;
         private final Image boardImage;
 
         BoardPanel() {
             super(new GridLayout(9, 7));
-            this.boardTerrain = new ArrayList<>();
+            this.boardTerrains = new ArrayList<>();
             this.boardImage = new ImageIcon("resource/images/chessboard.png").getImage();
             for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                 final TerrainPanel terrainPanel = new TerrainPanel(this, i);
-                this.boardTerrain.add(terrainPanel);
+                this.boardTerrains.add(terrainPanel);
                 add(terrainPanel);
             }
             setPreferredSize(BOARD_PANEL_DIMENSION);
@@ -91,8 +164,17 @@ public class GameFrame {
             super.paintComponent(g);
             g.drawImage(boardImage, 0, 0, getWidth(), getHeight(), this);
         }
-    }
 
+        public void drawBoard(final Board board) {
+            removeAll();
+            for (final TerrainPanel terrainPanel : boardDirection.traverse(boardTerrains)) {
+                terrainPanel.drawTerrain(board);
+                add(terrainPanel);
+            }
+            validate();
+            repaint();
+        }
+    }
 
     private class TerrainPanel extends JPanel {
         private final int terrainCoordinate;
@@ -101,9 +183,93 @@ public class GameFrame {
             super(new GridBagLayout());
             this.terrainCoordinate = terrainCoordinate;
             setPreferredSize(TILE_PANEL_DIMENSION);
-            assignTerrainColor( terrainCoordinate);
+            assignTerrainColor(terrainCoordinate);
             assignTerrainPieceIcon(chessBoard);
+            addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(final MouseEvent e) {
+                    if (isRightMouseButton(e)) {
+                        sourceTerrain = null;
+                        destinationTerrain = null;
+                        humanMovedPiece = null;
+                    } else if (isLeftMouseButton(e)) {
+                        if (sourceTerrain == null) {
+                            sourceTerrain = chessBoard.getTerrain(terrainCoordinate);
+                            humanMovedPiece = sourceTerrain.getPiece();
+                            if (humanMovedPiece == null) {
+                                sourceTerrain = null;
+                            } else {
+                                destinationTerrain = chessBoard.getTerrain(terrainCoordinate);
+                                final Move move = Move.MoveFactory.createMove(chessBoard, sourceTerrain.getTerrainCoordinate(), destinationTerrain.getTerrainCoordinate());
+                                final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
+                                if (transition.getMoveStatus().isDone()) {
+                                    chessBoard = transition.getTransitionBoard();
+                                }
+                                sourceTerrain = null;
+                                destinationTerrain = null;
+                                humanMovedPiece = null;
+                            }
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    boardPanel.drawBoard(chessBoard);
+                                }
+                            });
+                        }
+                    }
+                }
+
+                @Override
+                public void mousePressed(final MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseReleased(final MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(final MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseExited(final MouseEvent e) {
+
+                }
+            });
+
             validate();
+        }
+
+        public void drawTerrain (final Board board) {
+            assignTerrainColor(this.terrainCoordinate);
+            assignTerrainPieceIcon(board);
+            highlightValidMoves(board);
+            validate();
+            repaint();
+        }
+
+        private void highlightValidMoves (final Board board) {
+            if (highlightValidMoves) {
+                for (final Move move : pieceValidMoves(board)) {
+                    if (move.getDestinationCoordinate() == this.terrainCoordinate) {
+                        try {
+                            add(new JLabel(new ImageIcon(ImageIO.read(new File("resource/images/yellowdot.png")))));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+
+        private Collection<Move> pieceValidMoves (final Board board) {
+            if (humanMovedPiece != null && humanMovedPiece.getPieceColor()== board.currentPlayer().getAllyColor()) {
+                return humanMovedPiece.determineValidMoves(board);
+            }
+            return Collections.emptyList();
         }
 
         private void assignTerrainPieceIcon(final Board board) {
@@ -125,6 +291,7 @@ public class GameFrame {
                 }
             }
         }
+
 
         private void assignTerrainColor(final int coordinate) {
             if (BoardUtils.isLand(coordinate)) {

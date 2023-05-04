@@ -7,7 +7,11 @@ import model.player.PlayerColor;
 
 public class Elephant extends CommonPiece {
     public Elephant(final int pieceCoordinate, final PlayerColor pieceColor) {
-        super(Animal.ELEPHANT, pieceCoordinate, pieceColor, Animal.ELEPHANT.ordinal());
+        super(Animal.ELEPHANT, pieceCoordinate, pieceColor, Animal.ELEPHANT.ordinal(), true);
+    }
+
+    public Elephant(final int pieceCoordinate, final PlayerColor pieceColor, final boolean isFirstMove) {
+        super(Animal.CAT, pieceCoordinate, pieceColor, Animal.CAT.ordinal(), isFirstMove);
     }
 
     @Override

@@ -17,8 +17,8 @@ import static model.board.Move.*;
 public abstract class CommonPiece extends Piece {
     private final int[] POTENTIAL_MOVE_COORDINATES = {-7, -1, 1, 7};
 
-    protected CommonPiece(final Animal pieceType, final int pieceCoordinate, final PlayerColor pieceColor, int pieceRank) {
-        super(pieceType, pieceCoordinate, pieceColor, pieceRank);
+    protected CommonPiece(final Animal pieceType, final int pieceCoordinate, final PlayerColor pieceColor, int pieceRank, boolean isFirstMove) {
+        super(pieceType, pieceCoordinate, pieceColor, pieceRank, isFirstMove);
     }
 
     @Override

@@ -7,7 +7,11 @@ import model.player.PlayerColor;
 
 public class Tiger extends SpecialPiece {
     public Tiger(final int pieceCoordinate, final PlayerColor pieceColor) {
-        super(Animal.TIGER, pieceCoordinate, pieceColor, Animal.TIGER.ordinal());
+        super(Animal.TIGER, pieceCoordinate, pieceColor, Animal.TIGER.ordinal(), true);
+    }
+
+    public Tiger(final int pieceCoordinate, final PlayerColor pieceColor, final boolean isFirstMove) {
+        super(Animal.CAT, pieceCoordinate, pieceColor, Animal.CAT.ordinal(), isFirstMove);
     }
 
     @Override

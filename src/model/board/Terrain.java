@@ -30,6 +30,10 @@ public abstract class Terrain {
 
     public abstract Piece getPiece();
 
+    public int getTerrainCoordinate() {
+        return this.terrainCoordinate;
+    }
+
     public static final class EmptyTerrain extends Terrain {
         private EmptyTerrain(final int terrainCoordinate) {
             super(terrainCoordinate);

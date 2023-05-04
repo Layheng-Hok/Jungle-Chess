@@ -18,7 +18,11 @@ public class Rat extends Piece {
     private final int[] POTENTIAL_MOVE_COORDINATES = {-7, -1, 1, 7};
 
     public Rat(final int pieceCoordinate, final PlayerColor pieceColor) {
-        super(Animal.RAT, pieceCoordinate, pieceColor, Animal.RAT.ordinal());
+        super(Animal.RAT, pieceCoordinate, pieceColor, Animal.RAT.ordinal(), true);
+    }
+
+    public Rat(final int pieceCoordinate, final PlayerColor pieceColor, final boolean isFirstMove) {
+        super(Animal.CAT, pieceCoordinate, pieceColor, Animal.CAT.ordinal(), isFirstMove);
     }
 
     @Override

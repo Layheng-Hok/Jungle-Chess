@@ -3,9 +3,10 @@ package model.board;
 import model.piece.Piece;
 
 public abstract class Move {
-    final Board board;
-    final Piece movedPiece;
-    final int destinationCoordinate;
+    protected Board board;
+    protected final Piece movedPiece;
+    protected int destinationCoordinate;
+    protected final boolean isFirstMove;
 
     public static final Move NULL_MOVE = new NullMove();
 
@@ -13,6 +14,14 @@ public abstract class Move {
         this.board = board;
         this.movedPiece = movedPiece;
         this.destinationCoordinate = destinationCoordinate;
+        this.isFirstMove = movedPiece.isFirstMove();
+    }
+
+    private Move(final Board board, final int destinationCoordinate) {
+        this.board = board;
+        this.destinationCoordinate = destinationCoordinate;
+        this.movedPiece = null;
+        this.isFirstMove = false;
     }
 
     @Override
@@ -76,8 +85,6 @@ public abstract class Move {
         public StandardMove(final Board board, final Piece movedPiece, final int destinationCoordinate) {
             super(board, movedPiece, destinationCoordinate);
         }
-
-
     }
 
     public static class CaptureMove extends Move {
@@ -139,26 +146,50 @@ public abstract class Move {
         }
     }
 
-    public static final class NullMove extends Move {
-        public NullMove() {
-            super(null, null, -1);
+    static class NullMove
+            extends Move {
+
+        NullMove() {
+            super(null, -1);
+        }
+
+        @Override
+        public int getCurrentCoordinate() {
+            return -1;
+        }
+
+        @Override
+        public int getDestinationCoordinate() {
+            return -1;
         }
 
         @Override
         public Board execute() {
-            throw new RuntimeException("You cannot execute a null move.");
+            throw new RuntimeException("cannot execute null move!");
+        }
+
+        @Override
+        public String toString() {
+            return "Null Move";
         }
     }
 
     public static class MoveFactory {
+
         private MoveFactory() {
-            throw new RuntimeException("You cannot instantiate an object of \"Move Factory\" class.");
+            throw new RuntimeException("Not instantiatable!");
         }
 
-        public static Move createMove(final Board board, final int currentCoordinate, final int destinationCoordinate) {
+        public static Move getNullMove() {
+            return NULL_MOVE;
+        }
+
+        public static Move createMove(final Board board,
+                                      final int currentCoordinate,
+                                      final int destinationCoordinate) {
             for (final Move move : board.getAllValidMoves()) {
-                if (move.getCurrentCoordinate() == currentCoordinate
-                        && move.getDestinationCoordinate() == destinationCoordinate) {
+                if (move.getCurrentCoordinate() == currentCoordinate &&
+                        move.getDestinationCoordinate() == destinationCoordinate) {
                     return move;
                 }
             }

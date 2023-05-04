@@ -16,13 +16,13 @@ public abstract class Piece {
     protected final boolean isFirstMove;
     private final int cachedHashCode;
 
-    protected Piece(final Animal pieceType, final int pieceCoordinate, final PlayerColor pieceColor, final int attackPieceRank) {
+    protected Piece(final Animal pieceType, final int pieceCoordinate, final PlayerColor pieceColor, final int attackPieceRank, final boolean isFirstMove) {
         this.pieceType = pieceType;
         this.pieceCoordinate = pieceCoordinate;
         this.pieceColor = pieceColor;
         this.attackPieceRank = attackPieceRank;
         this.defensePieceRank = attackPieceRank;
-        this.isFirstMove = false;
+        this.isFirstMove = isFirstMove;
         this.cachedHashCode = computeHashCode();
     }
 
