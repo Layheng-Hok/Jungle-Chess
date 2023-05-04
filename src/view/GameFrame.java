@@ -69,6 +69,7 @@ public class GameFrame {
         this.gameFrame.setIconImage(logo.getImage());
         this.highlightValidMoves = true;
         this.gameFrame.setVisible(true);
+        this.gameFrame.setResizable(false);
     }
 
     private JMenuBar createGameFrameMenuBar() {
