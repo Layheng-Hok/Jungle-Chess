@@ -43,10 +43,13 @@ public abstract class SpecialPiece extends Piece {
                         tempPotentialDestinationCoordinate += currentPotentialOffset;
                     }
                     if (!isRiverTerrainOccupied) {
-                        potentialDestinationCoordinate += currentPotentialOffset * 4;
-                        potentialDestinationTerrain = board.getTerrain(currentPotentialOffset * 4);
+                        if (BoardUtils.isInBoundary(tempPotentialDestinationCoordinate)) {
+                            potentialDestinationCoordinate = tempPotentialDestinationCoordinate;
+                            potentialDestinationTerrain = board.getTerrain(tempPotentialDestinationCoordinate);
+                        }
                     }
-                } else if ((currentPotentialOffset == POTENTIAL_MOVE_COORDINATES[1] || currentPotentialOffset == POTENTIAL_MOVE_COORDINATES[2])
+                }
+                if ((currentPotentialOffset == POTENTIAL_MOVE_COORDINATES[1] || currentPotentialOffset == POTENTIAL_MOVE_COORDINATES[2])
                         && BoardUtils.isRiver(potentialDestinationCoordinate)) {
                     boolean isRiverTerrainOccupied = false;
                     for (int i = 0; i < 2; i++) {
@@ -58,8 +61,10 @@ public abstract class SpecialPiece extends Piece {
                         tempPotentialDestinationCoordinate += currentPotentialOffset;
                     }
                     if (!isRiverTerrainOccupied) {
-                        potentialDestinationCoordinate += currentPotentialOffset * 3;
-                        potentialDestinationTerrain = board.getTerrain(currentPotentialOffset * 3);
+                        if (BoardUtils.isInBoundary(tempPotentialDestinationCoordinate)) {
+                            potentialDestinationCoordinate = tempPotentialDestinationCoordinate;
+                            potentialDestinationTerrain = board.getTerrain(tempPotentialDestinationCoordinate);
+                        }
                     }
                 }
                 if (!potentialDestinationTerrain.isTerrainOccupied()) {

@@ -6,6 +6,5 @@ public class ChessGame {
         Board board = Board.constructStandardBoard();
         System.out.println(board);
         GameFrame gameFrame = new GameFrame();
-        System.out.println();
     }
 }
