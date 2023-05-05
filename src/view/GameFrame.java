@@ -137,6 +137,7 @@ public class GameFrame {
         };
 
         abstract List<TerrainPanel> traverse(final List<TerrainPanel> boardTiles);
+
         abstract BoardDirection opposite();
 
     }
@@ -159,12 +160,6 @@ public class GameFrame {
             validate();
         }
 
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            g.drawImage(boardImage, 0, 0, getWidth(), getHeight(), this);
-        }
-
         public void drawBoard(final Board board) {
             removeAll();
             for (final TerrainPanel terrainPanel : boardDirection.traverse(boardTerrains)) {
@@ -173,6 +168,12 @@ public class GameFrame {
             }
             validate();
             repaint();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(boardImage, 0, 0, getWidth(), getHeight(), this);
         }
     }
 
@@ -190,32 +191,33 @@ public class GameFrame {
                 public void mouseClicked(final MouseEvent e) {
                     if (isRightMouseButton(e)) {
                         sourceTerrain = null;
-                        destinationTerrain = null;
                         humanMovedPiece = null;
                     } else if (isLeftMouseButton(e)) {
                         if (sourceTerrain == null) {
                             sourceTerrain = chessBoard.getTerrain(terrainCoordinate);
                             humanMovedPiece = sourceTerrain.getPiece();
                             if (humanMovedPiece == null) {
+                                System.out.println("Clicked on an empty terrain");
                                 sourceTerrain = null;
-                            } else {
-                                destinationTerrain = chessBoard.getTerrain(terrainCoordinate);
-                                final Move move = Move.MoveFactory.createMove(chessBoard, sourceTerrain.getTerrainCoordinate(), destinationTerrain.getTerrainCoordinate());
-                                final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
-                                if (transition.getMoveStatus().isDone()) {
-                                    chessBoard = transition.getTransitionBoard();
-                                }
-                                sourceTerrain = null;
-                                destinationTerrain = null;
-                                humanMovedPiece = null;
                             }
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    boardPanel.drawBoard(chessBoard);
-                                }
-                            });
+                        } else {
+                            System.out.println("Clicked on a piece");
+                            destinationTerrain = chessBoard.getTerrain(terrainCoordinate);
+                            final Move move = Move.MoveFactory.createMove(chessBoard, sourceTerrain.getTerrainCoordinate(), destinationTerrain.getTerrainCoordinate());
+                            final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
+                            if (transition.getMoveStatus().isDone()) {
+                                chessBoard = transition.getTransitionBoard();
+                            }
+                            sourceTerrain = null;
+                            destinationTerrain = null;
+                            humanMovedPiece = null;
                         }
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                boardPanel.drawBoard(chessBoard);
+                            }
+                        });
                     }
                 }
 
@@ -243,15 +245,15 @@ public class GameFrame {
             validate();
         }
 
-        public void drawTerrain (final Board board) {
-            assignTerrainColor(this.terrainCoordinate);
+        public void drawTerrain(final Board board) {
+            assignTerrainColor(terrainCoordinate);
             assignTerrainPieceIcon(board);
             highlightValidMoves(board);
             validate();
             repaint();
         }
 
-        private void highlightValidMoves (final Board board) {
+        private void highlightValidMoves(final Board board) {
             if (highlightValidMoves) {
                 for (final Move move : pieceValidMoves(board)) {
                     if (move.getDestinationCoordinate() == this.terrainCoordinate) {
@@ -265,8 +267,8 @@ public class GameFrame {
             }
         }
 
-        private Collection<Move> pieceValidMoves (final Board board) {
-            if (humanMovedPiece != null && humanMovedPiece.getPieceColor()== board.currentPlayer().getAllyColor()) {
+        private Collection<Move> pieceValidMoves(final Board board) {
+            if (humanMovedPiece != null && humanMovedPiece.getPieceColor() == board.currentPlayer().getAllyColor()) {
                 return humanMovedPiece.determineValidMoves(board);
             }
             return Collections.emptyList();
