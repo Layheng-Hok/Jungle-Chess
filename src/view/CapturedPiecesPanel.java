@@ -31,6 +31,9 @@ public class CapturedPiecesPanel extends JPanel {
         this.add(this.eastPanel, BorderLayout.EAST);
         this.add(this.westPanel, BorderLayout.WEST);
         setPreferredSize(CAPTURED_PIECES_PANEL_DIMENSION);
+        this.westPanel.setOpaque(false);
+        this.eastPanel.setOpaque(false);
+        this.setOpaque(false);
     }
 
     @Override
@@ -73,10 +76,15 @@ public class CapturedPiecesPanel extends JPanel {
             try {
                 final BufferedImage image = ImageIO.read(new File(defaultImagesPath +
                         capturedPiece.getPieceColor().toString().toLowerCase() +
-                        capturedPiece.toString() + ".png"));
-                final ImageIcon icon = new ImageIcon(image);
-                final JLabel imageLabel = new JLabel();
-                this.westPanel.add(imageLabel);
+                        capturedPiece.toString().toLowerCase() + ".png"));
+                ImageIcon icon = new ImageIcon(image);
+                int labelWidth = 50;
+                int labelHeight = 50;
+                Image scaledImage = icon.getImage().getScaledInstance(labelWidth, labelHeight, Image.SCALE_SMOOTH);
+                icon = new ImageIcon(scaledImage);
+                JLabel label = new JLabel(icon);
+                this.westPanel.add(label);
+                label.setOpaque(false);
             } catch (final IOException e) {
                 e.printStackTrace();
             }
@@ -85,10 +93,15 @@ public class CapturedPiecesPanel extends JPanel {
             try {
                 final BufferedImage image = ImageIO.read(new File(defaultImagesPath +
                         capturedPiece.getPieceColor().toString().toLowerCase() +
-                        capturedPiece.toString() + ".png"));
-                final ImageIcon icon = new ImageIcon(image);
-                final JLabel imageLabel = new JLabel();
-                this.eastPanel.add(imageLabel);
+                        capturedPiece.toString().toLowerCase() + ".png"));
+                ImageIcon icon = new ImageIcon(image);
+                int labelWidth = 50;
+                int labelHeight = 50;
+                Image scaledImage = icon.getImage().getScaledInstance(labelWidth, labelHeight, Image.SCALE_SMOOTH);
+                icon = new ImageIcon(scaledImage);
+                JLabel label = new JLabel(icon);
+                this.eastPanel.add(label);
+                label.setOpaque(false);
             } catch (final IOException e) {
                 e.printStackTrace();
             }

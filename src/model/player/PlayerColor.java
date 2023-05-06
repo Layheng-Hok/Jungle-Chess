@@ -8,6 +8,11 @@ public enum PlayerColor {
         }
 
         @Override
+        public int getInverseDirection() {
+            return 1;
+        }
+
+        @Override
         public boolean isBlue() {
             return true;
         }
@@ -29,6 +34,11 @@ public enum PlayerColor {
         }
 
         @Override
+        public int getInverseDirection() {
+            return -1;
+        }
+
+        @Override
         public boolean isBlue() {
             return false;
         }
@@ -45,6 +55,7 @@ public enum PlayerColor {
     };
 
     public abstract int getDirection();
+    public abstract int getInverseDirection();
     public abstract boolean isBlue();
     public abstract boolean isRed();
     public abstract Player choosePlayer(BluePlayer bluePlayer, RedPlayer redPlayer);

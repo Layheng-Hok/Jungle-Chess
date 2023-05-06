@@ -83,6 +83,16 @@ public abstract class Move {
         return builder.build();
     }
 
+    String disambiguationFile() {
+        for (final Move move : this.board.currentPlayer().getValidMoves()) {
+            if (move.getDestinationCoordinate() == this.destinationCoordinate && !this.equals(move) &&
+                    this.movedPiece.getPieceType().equals(move.getMovedPiece().getPieceType())) {
+                return BoardUtils.getPositionAtCoordinate(this.movedPiece.getPieceCoordinate()).substring(0, 1);
+            }
+        }
+        return "";
+    }
+
     public static final class StandardMove extends Move {
         public StandardMove(final Board board, final Piece movedPiece, final int destinationCoordinate) {
             super(board, movedPiece, destinationCoordinate);
@@ -95,7 +105,7 @@ public abstract class Move {
 
         @Override
         public String toString() {
-            return movedPiece.getPieceType().toString() + BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
+            return movedPiece.getPieceType().toString() + disambiguationFile() + BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
         }
     }
 
@@ -133,6 +143,12 @@ public abstract class Move {
         @Override
         public Piece getCapturedPiece() {
             return this.attackedPiece;
+        }
+
+        @Override
+        public String toString() {
+            return movedPiece.getPieceType() + disambiguationFile() + "x" +
+                    BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
         }
     }
 

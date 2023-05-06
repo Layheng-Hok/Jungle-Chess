@@ -35,7 +35,7 @@ public class Board {
         final StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
             final String terrainText = this.chessboard.get(i).toString();
-            stringBuilder.append(String.format("%3s", terrainText));
+            stringBuilder.append(String.format("%4s", terrainText));
             if ((i + 1) % BoardUtils.NUM_TERRAINS_PER_ROW == 0) {
                 stringBuilder.append("\n");
             }
