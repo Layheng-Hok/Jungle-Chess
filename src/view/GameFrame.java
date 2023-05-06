@@ -28,6 +28,10 @@ import static javax.swing.SwingUtilities.isRightMouseButton;
 
 public class GameFrame {
     private final JFrame gameFrame;
+    private final LeftPanel leftPanel;
+    private final RightPanel rightPanel;
+    private final PlayerPanel playerPanel;
+    private final CapturedPiecesPanel capturedPiecesPanel;
     private final BoardPanel boardPanel;
     private Board chessBoard;
     private Terrain sourceTerrain;
@@ -35,9 +39,9 @@ public class GameFrame {
     private Piece humanMovedPiece;
     private BoardDirection boardDirection;
     private boolean highlightValidMoves;
-    private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(525, 675);
-    private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(525, 675);
-    private static final Dimension TILE_PANEL_DIMENSION = new Dimension(15, 15);
+    private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
+    private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(500, 650);
+    private static final Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
     private final ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
     public static final String defaultImagesPath = "resource/images/";
 
@@ -50,12 +54,20 @@ public class GameFrame {
         this.gameFrame.setSize(OUTER_FRAME_DIMENSION);
         this.chessBoard = Board.constructStandardBoard();
         this.gameFrame.setLocationRelativeTo(null);
+        this.leftPanel = new LeftPanel();
+        this.rightPanel = new RightPanel();
+        this.playerPanel = new PlayerPanel();
+        this.capturedPiecesPanel = new CapturedPiecesPanel();
         this.boardPanel = new BoardPanel();
         this.boardDirection = BoardDirection.NORMAL;
+        this.gameFrame.add(this.leftPanel, BorderLayout.WEST);
+        this.gameFrame.add(this.rightPanel, BorderLayout.EAST);
+        this.gameFrame.add(this.playerPanel, BorderLayout.NORTH);
+        this.gameFrame.add(this.capturedPiecesPanel, BorderLayout.SOUTH);
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
-        this.gameFrame.setVisible(true);
         this.gameFrame.setIconImage(logo.getImage());
         this.highlightValidMoves = true;
+        this.gameFrame.setVisible(true);
     }
 
     private JMenuBar createGameFrameMenuBar() {
@@ -174,6 +186,39 @@ public class GameFrame {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             g.drawImage(boardImage, 0, 0, getWidth(), getHeight(), this);
+        }
+    }
+
+    private class LeftPanel extends JPanel {
+        private final Image leftPanelImage;
+
+        LeftPanel() {
+            super(new BorderLayout());
+            this.leftPanelImage = new ImageIcon(defaultImagesPath + "leftpanel.png").getImage();
+            setPreferredSize(new Dimension(25, 675));
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(leftPanelImage, 0, 0, getWidth(), getHeight(), this);
+        }
+    }
+
+    private class RightPanel extends JPanel {
+        private final Image rightPanelImage;
+
+        RightPanel() {
+            super(new BorderLayout());
+            this.rightPanelImage = new ImageIcon(defaultImagesPath + "rightpanel.png").getImage();
+            setPreferredSize(new Dimension(25, 675));
+
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(rightPanelImage, 0, 0, getWidth(), getHeight(), this);
         }
     }
 

@@ -5,7 +5,6 @@ import model.piece.Piece;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -15,27 +14,31 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static view.GameFrame.*;
+import static view.GameFrame.MoveLog;
+import static view.GameFrame.defaultImagesPath;
 
 public class CapturedPiecesPanel extends JPanel {
     private final JPanel westPanel;
     private final JPanel eastPanel;
-    private static final EtchedBorder PANEL_BORDER = new EtchedBorder(EtchedBorder.RAISED);
-    private static final Color PANEL_COLOR = Color.decode("OxFDF5E6");
-    private static final Dimension CAPTURED_PIECES_PANEL_DIMENSION = new Dimension(20, 40);
+    private static final Dimension CAPTURED_PIECES_PANEL_DIMENSION = new Dimension(530, 100);
+    private final Image bottomPanelImage;
 
     public CapturedPiecesPanel() {
         super(new BorderLayout());
-        setBackground(PANEL_COLOR);
-        setBorder(PANEL_BORDER);
+        this.bottomPanelImage = new ImageIcon(defaultImagesPath + "bottompanel.png").getImage();
         this.eastPanel = new JPanel(new GridLayout(2, 4));
         this.westPanel = new JPanel(new GridLayout(2, 4));
-        this.eastPanel.setBackground(PANEL_COLOR);
-        this.westPanel.setBackground(PANEL_COLOR);
         this.add(this.eastPanel, BorderLayout.EAST);
         this.add(this.westPanel, BorderLayout.WEST);
         setPreferredSize(CAPTURED_PIECES_PANEL_DIMENSION);
     }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(bottomPanelImage, 0, 0, getWidth(), getHeight(), this);
+    }
+
 
     public void redo(final MoveLog moveLog) {
         this.eastPanel.removeAll();
@@ -57,13 +60,13 @@ public class CapturedPiecesPanel extends JPanel {
         Collections.sort(blueCapturedPieces, new Comparator<Piece>() {
             @Override
             public int compare(Piece o1, Piece o2) {
-                return Integer.compare(o1.getPieceValue(), o2.getPieceValue());
+                return Integer.compare(o1.getAttackPieceRank(), o2.getAttackPieceRank());
             }
         });
         Collections.sort(redCapturedPieces, new Comparator<Piece>() {
             @Override
             public int compare(Piece o1, Piece o2) {
-                return Integer.compare(o1.getPieceValue(), o2.getPieceValue());
+                return Integer.compare(o1.getAttackPieceRank(), o2.getAttackPieceRank());
             }
         });
         for (final Piece capturedPiece : blueCapturedPieces) {

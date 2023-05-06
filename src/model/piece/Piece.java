@@ -74,6 +74,10 @@ public abstract class Piece {
         return this.pieceColor;
     }
 
+    public int getAttackPieceRank() {
+        return this.attackPieceRank;
+    }
+
     public int getDefensePieceRank() {
         return this.defensePieceRank;
     }
