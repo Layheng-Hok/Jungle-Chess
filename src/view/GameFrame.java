@@ -32,10 +32,10 @@ public class GameFrame {
     private final RightPanel rightPanel;
     private final PlayerPanel playerPanel;
     private final CapturedPiecesPanel capturedPiecesPanel;
+    private final MoveLog moveLog;
     private final BoardPanel boardPanel;
     private Board chessBoard;
-    private Terrain sourceTerrain;
-    private Terrain destinationTerrain;
+    private Piece sourceTerrain;
     private Piece humanMovedPiece;
     private BoardDirection boardDirection;
     private boolean highlightValidMoves;
@@ -59,6 +59,7 @@ public class GameFrame {
         this.playerPanel = new PlayerPanel();
         this.capturedPiecesPanel = new CapturedPiecesPanel();
         this.boardPanel = new BoardPanel();
+        this.moveLog = new MoveLog();
         this.boardDirection = BoardDirection.NORMAL;
         this.gameFrame.add(this.leftPanel, BorderLayout.WEST);
         this.gameFrame.add(this.rightPanel, BorderLayout.EAST);
@@ -223,9 +224,10 @@ public class GameFrame {
     }
 
     public static class MoveLog {
+
         private final List<Move> moves;
 
-        public MoveLog(List<Move> moves) {
+        MoveLog() {
             this.moves = new ArrayList<>();
         }
 
@@ -233,7 +235,7 @@ public class GameFrame {
             return this.moves;
         }
 
-        public void addMove(final Move move) {
+        void addMove(final Move move) {
             this.moves.add(move);
         }
 
@@ -241,19 +243,19 @@ public class GameFrame {
             return this.moves.size();
         }
 
-        public void clear() {
+        void clear() {
             this.moves.clear();
         }
 
-        private Move removeMove(int index) {
+        Move removeMove(final int index) {
             return this.moves.remove(index);
         }
 
-        private boolean removeMove(final Move move) {
+        boolean removeMove(final Move move) {
             return this.moves.remove(move);
         }
-    }
 
+    }
 
     private class TerrainPanel extends JPanel {
         private final int terrainCoordinate;
@@ -272,25 +274,25 @@ public class GameFrame {
                         humanMovedPiece = null;
                     } else if (isLeftMouseButton(e)) {
                         if (sourceTerrain == null) {
-                            sourceTerrain = chessBoard.getTerrain(terrainCoordinate);
-                            humanMovedPiece = sourceTerrain.getPiece();
+                            sourceTerrain = chessBoard.getPiece(terrainCoordinate);
+                            humanMovedPiece = sourceTerrain;
                             if (humanMovedPiece == null) {
                                 sourceTerrain = null;
                             }
                         } else {
-                            destinationTerrain = chessBoard.getTerrain(terrainCoordinate);
-                            final Move move = Move.MoveFactory.createMove(chessBoard, sourceTerrain.getTerrainCoordinate(), destinationTerrain.getTerrainCoordinate());
+                            final Move move = Move.MoveFactory.createMove(chessBoard, sourceTerrain.getPieceCoordinate(), terrainCoordinate);
                             final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
                                 chessBoard = transition.getTransitionBoard();
+                                moveLog.addMove(move);
                             }
                             sourceTerrain = null;
-                            destinationTerrain = null;
                             humanMovedPiece = null;
                         }
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
+                                capturedPiecesPanel.redo(moveLog);
                                 boardPanel.drawBoard(chessBoard);
                             }
                         });
@@ -352,7 +354,7 @@ public class GameFrame {
 
         private void assignTerrainPieceIcon(final Board board) {
             this.removeAll();
-            if (board.getTerrain(this.terrainCoordinate).isTerrainOccupied()) {
+            if (board.getPiece(this.terrainCoordinate) != null) {
                 try {
                     final BufferedImage image = ImageIO.read(new File(defaultImagesPath
                             + board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().toLowerCase()
@@ -369,7 +371,6 @@ public class GameFrame {
                 }
             }
         }
-
 
         private void assignTerrainColor(final int coordinate) {
             if (BoardUtils.isLand(coordinate)) {

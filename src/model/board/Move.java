@@ -126,11 +126,6 @@ public abstract class Move {
         }
 
         @Override
-        public Board execute() {
-            return null;
-        }
-
-        @Override
         public boolean isCapture() {
             return true;
         }
@@ -141,8 +136,7 @@ public abstract class Move {
         }
     }
 
-    static class NullMove
-            extends Move {
+    static class NullMove extends Move {
 
         NullMove() {
             super(null, -1);

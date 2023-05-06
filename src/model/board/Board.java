@@ -11,6 +11,7 @@ import java.util.*;
 
 public class Board {
     private final List<Terrain> chessboard;
+    private final Map<Integer, Piece> boardConfig;
     private final Collection<Piece> bluePieces;
     private final Collection<Piece> redPieces;
     private final BluePlayer bluePlayer;
@@ -19,6 +20,7 @@ public class Board {
 
     private Board(Builder builder) {
         this.chessboard = constructChessboard(builder);
+        this.boardConfig = Collections.unmodifiableMap(builder.boardConfig);
         this.bluePieces = determineActivePieces(this.chessboard, PlayerColor.BLUE);
         this.redPieces = determineActivePieces(this.chessboard, PlayerColor.RED);
         final Collection<Move> blueStandardValidMoves = determineValidMoves(this.bluePieces);
@@ -126,6 +128,9 @@ public class Board {
         return Collections.unmodifiableList(allMoves);
     }
 
+    public Piece getPiece(final int coordinate) {
+        return this.boardConfig.get(coordinate);
+    }
 
     public static class Builder {
         Map<Integer, Piece> boardConfig;
