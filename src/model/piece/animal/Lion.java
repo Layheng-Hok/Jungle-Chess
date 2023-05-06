@@ -1,7 +1,6 @@
 package model.piece.animal;
 
 import model.board.Move;
-import model.piece.Piece;
 import model.piece.SpecialPiece;
 import model.player.PlayerColor;
 

@@ -40,8 +40,8 @@ public abstract class CommonPiece extends Piece {
                     }
                 } else {
                     final Piece pieceAtDestination = potentialDestinationTerrain.getPiece();
-                    final PlayerColor pieceColor = pieceAtDestination.getPieceColor();
-                    if (this.pieceColor != pieceColor && this.attackPieceRank >= pieceAtDestination.defensePieceRank) {
+                    final PlayerColor pieceAtDestinationColor = pieceAtDestination.getPieceColor();
+                    if (this.pieceColor != pieceAtDestinationColor && this.attackPieceRank >= pieceAtDestination.defensePieceRank) {
                         validMoves.add(new CaptureMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
                         if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
                             this.defensePieceRank = 0;

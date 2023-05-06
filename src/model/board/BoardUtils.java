@@ -2,7 +2,10 @@ package model.board;
 
 import model.player.PlayerColor;
 
+import java.util.*;
+
 public class BoardUtils {
+    public static final int START_TERRAIN_INDEX = 0;
     public static final int NUM_TERRAINS = 63;
     public static final int NUM_TERRAINS_PER_ROW = 7;
     public static final boolean[] COLUMN_ZERO = populateColumn(0);
@@ -16,29 +19,14 @@ public class BoardUtils {
     public static final boolean[] ROW_SIX = populateRow(42);
     public static final boolean[] ROW_SEVEN = populateRow(49);
     public static final boolean[] ROW_EIGHT = populateRow(56);
+    public final List<String> ALGEBRAIC_NOTATION = initializeAlgebraicNotation();
+    public final Map<String, Integer> POSITION_TO_COORDINATE = initializePositionToCoordinateMap();
 
 
     private BoardUtils() {
         throw new RuntimeException("You cannot instantiate an object of \"BoardTools\" class.");
     }
 
-    private static boolean[] populateColumn(int columnIndex) {
-        final boolean[] column = new boolean[NUM_TERRAINS];
-        do {
-            column[columnIndex] = true;
-            columnIndex += NUM_TERRAINS_PER_ROW;
-        } while (columnIndex < NUM_TERRAINS);
-        return column;
-    }
-
-    private static boolean[] populateRow(int rowIndex) {
-        final boolean[] row = new boolean[NUM_TERRAINS];
-        do {
-            row[rowIndex] = true;
-            rowIndex++;
-        } while (rowIndex % NUM_TERRAINS_PER_ROW != 0);
-        return row;
-    }
 
     public static boolean isInBoundary(final int coordinate) {
         return coordinate >= 0 && coordinate < 63;
@@ -83,5 +71,43 @@ public class BoardUtils {
         }
     }
 
+    private static boolean[] populateColumn(int columnIndex) {
+        final boolean[] column = new boolean[NUM_TERRAINS];
+        do {
+            column[columnIndex] = true;
+            columnIndex += NUM_TERRAINS_PER_ROW;
+        } while (columnIndex < NUM_TERRAINS);
+        return column;
+    }
 
+    private static boolean[] populateRow(int rowIndex) {
+        final boolean[] row = new boolean[NUM_TERRAINS];
+        do {
+            row[rowIndex] = true;
+            rowIndex++;
+        } while (rowIndex % NUM_TERRAINS_PER_ROW != 0);
+        return row;
+    }
+
+    private Map<String, Integer> initializePositionToCoordinateMap() {
+        final Map<String, Integer> positionToCoordinate = new HashMap<>();
+        for (int i = START_TERRAIN_INDEX; i < NUM_TERRAINS; i++) {
+            positionToCoordinate.put(ALGEBRAIC_NOTATION.get(i), i);
+        }
+        return Collections.unmodifiableMap(positionToCoordinate);
+    }
+
+    private static List<String> initializeAlgebraicNotation() {
+        return Collections.unmodifiableList(Arrays.asList(
+                "(0,0)", "(0,1)", "(0,2)", "(0,3)", "(0,4)", "(0,5)", "(0,6)",
+                "(1,0)", "(1,1)", "(1,2)", "(1,3)", "(1,4)", "(1,5)", "(1,6)"));
+    }
+
+    public int getCoordinateAtPosition(final String position) {
+        return POSITION_TO_COORDINATE.get(position);
+    }
+
+    public String getPositionAtCoordinate(final int coordinate) {
+        return ALGEBRAIC_NOTATION.get(coordinate);
+    }
 }

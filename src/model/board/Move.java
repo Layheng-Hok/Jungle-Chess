@@ -30,6 +30,7 @@ public abstract class Move {
         int result = 1;
         result = prime * result + this.destinationCoordinate;
         result = prime * result + this.movedPiece.hashCode();
+        result = prime * result + this.movedPiece.getPieceCoordinate();
         return result;
     }
 
@@ -42,7 +43,8 @@ public abstract class Move {
             return false;
         }
         final Move otherMove = (Move) other;
-        return this.getDestinationCoordinate() == otherMove.getDestinationCoordinate()
+        return this.getCurrentCoordinate() == otherMove.getCurrentCoordinate()
+                && this.getDestinationCoordinate() == otherMove.getDestinationCoordinate()
                 && this.getMovedPiece().equals(otherMove.getMovedPiece());
     }
 
@@ -85,6 +87,16 @@ public abstract class Move {
         public StandardMove(final Board board, final Piece movedPiece, final int destinationCoordinate) {
             super(board, movedPiece, destinationCoordinate);
         }
+
+        @Override
+        public boolean equals(final Object other) {
+            return this == other || other instanceof StandardMove && super.equals(other);
+        }
+
+        @Override
+        public String toString() {
+            return movedPiece.getPieceType().toString() + BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
+        }
     }
 
     public static class CaptureMove extends Move {
@@ -126,23 +138,6 @@ public abstract class Move {
         @Override
         public Piece getCapturedPiece() {
             return this.attackedPiece;
-        }
-    }
-
-    public static final class RatStandardMove extends Move {
-        public RatStandardMove(final Board board, final Piece movedPiece, final int destinationCoordinate) {
-            super(board, movedPiece, destinationCoordinate);
-        }
-    }
-
-    public static final class RatCaptureMove extends CaptureMove {
-        public RatCaptureMove(final Board board, final Piece movedPiece, final int destinationCoordinate, final Piece attackedPiece) {
-            super(board, movedPiece, destinationCoordinate, attackedPiece);
-        }
-
-        @Override
-        public Board execute() {
-            return null;
         }
     }
 

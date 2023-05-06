@@ -60,21 +60,20 @@ public class Rat extends Piece {
                     }
                 } else {
                     final Piece pieceAtDestination = potentialDestinationTerrain.getPiece();
-                    final PlayerColor pieceColor = pieceAtDestination.getPieceColor();
-                    if (this.pieceColor != pieceColor && this.attackPieceRank >= pieceAtDestination.getDefensePieceRank()) {
-                        if (pieceAtDestination.getDefensePieceRank() == Animal.ELEPHANT.ordinal() ||
-                                pieceAtDestination.getDefensePieceRank() == Animal.RAT.ordinal()) {
-                            if (BoardUtils.isLand(this.pieceCoordinate) && !BoardUtils.isRiver(potentialDestinationCoordinate) ||
-                                    BoardUtils.isRiver(this.pieceCoordinate) && BoardUtils.isRiver(potentialDestinationCoordinate)) {
-                                validMoves.add(new CaptureMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
-                                if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
-                                    this.defensePieceRank = 0;
-                                } else {
-                                    this.defensePieceRank = this.attackPieceRank;
-                                }
+                    final PlayerColor pieceAtDestinationColor = pieceAtDestination.getPieceColor();
+                    if (this.pieceColor != pieceAtDestinationColor && (pieceAtDestination.getDefensePieceRank() == Animal.ELEPHANT.ordinal() ||
+                            pieceAtDestination.getDefensePieceRank() == Animal.RAT.ordinal())) {
+                        if (BoardUtils.isLand(this.pieceCoordinate) && !BoardUtils.isRiver(potentialDestinationCoordinate) ||
+                                BoardUtils.isRiver(this.pieceCoordinate) && BoardUtils.isRiver(potentialDestinationCoordinate)) {
+                            validMoves.add(new CaptureMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
+                            if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
+                                this.defensePieceRank = 0;
+                            } else {
+                                this.defensePieceRank = this.attackPieceRank;
                             }
                         }
                     }
+
                 }
             }
         }

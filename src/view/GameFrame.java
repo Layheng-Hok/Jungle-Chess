@@ -177,6 +177,40 @@ public class GameFrame {
         }
     }
 
+    public static class MoveLog {
+        private final List<Move> moves;
+
+        public MoveLog(List<Move> moves) {
+            this.moves = new ArrayList<>();
+        }
+
+        public List<Move> getMoves() {
+            return this.moves;
+        }
+
+        public void addMove(final Move move) {
+            this.moves.add(move);
+        }
+
+        public int size() {
+            return this.moves.size();
+        }
+
+        public void clear() {
+            this.moves.clear();
+        }
+
+        private Move removeMove(int index) {
+            return this.moves.remove(index);
+        }
+
+        private boolean removeMove(final Move move) {
+            return this.moves.remove(move);
+        }
+    }
+
+
+
     private class TerrainPanel extends JPanel {
         private final int terrainCoordinate;
 
@@ -197,11 +231,9 @@ public class GameFrame {
                             sourceTerrain = chessBoard.getTerrain(terrainCoordinate);
                             humanMovedPiece = sourceTerrain.getPiece();
                             if (humanMovedPiece == null) {
-                                System.out.println("Clicked on an empty terrain");
                                 sourceTerrain = null;
                             }
                         } else {
-                            System.out.println("Clicked on a piece");
                             destinationTerrain = chessBoard.getTerrain(terrainCoordinate);
                             final Move move = Move.MoveFactory.createMove(chessBoard, sourceTerrain.getTerrainCoordinate(), destinationTerrain.getTerrainCoordinate());
                             final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
