@@ -62,7 +62,8 @@ public class Rat extends Piece {
                     final Piece pieceAtDestination = potentialDestinationTerrain.getPiece();
                     final PlayerColor pieceAtDestinationColor = pieceAtDestination.getPieceColor();
                     if (this.pieceColor != pieceAtDestinationColor && (pieceAtDestination.getDefensePieceRank() == Animal.ELEPHANT.ordinal() ||
-                            pieceAtDestination.getDefensePieceRank() == Animal.RAT.ordinal())) {
+                            pieceAtDestination.getDefensePieceRank() == Animal.RAT.ordinal()) ||
+                            pieceAtDestination.getDefensePieceRank() == Animal.TRAPPED_ANIMAL.ordinal()) {
                         if (BoardUtils.isLand(this.pieceCoordinate) && !BoardUtils.isRiver(potentialDestinationCoordinate) ||
                                 BoardUtils.isRiver(this.pieceCoordinate) && BoardUtils.isRiver(potentialDestinationCoordinate)) {
                             validMoves.add(new CaptureMove(board, this, potentialDestinationCoordinate, pieceAtDestination));

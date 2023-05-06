@@ -38,8 +38,8 @@ public class GameFrame {
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(525, 675);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(525, 675);
     private static final Dimension TILE_PANEL_DIMENSION = new Dimension(15, 15);
-    private final ImageIcon logo = new ImageIcon("resource/images/junglechesslogo.jpg");
-    private static final String defaultPieceImagesPath = "resource/images/";
+    private final ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
+    public static final String defaultImagesPath = "resource/images/";
 
     public GameFrame() {
         this.gameFrame = new JFrame("Jungle Chess (斗兽棋)");
@@ -149,7 +149,7 @@ public class GameFrame {
         BoardPanel() {
             super(new GridLayout(9, 7));
             this.boardTerrains = new ArrayList<>();
-            this.boardImage = new ImageIcon("resource/images/chessboard.png").getImage();
+            this.boardImage = new ImageIcon(defaultImagesPath + "chessboard.png").getImage();
             for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                 final TerrainPanel terrainPanel = new TerrainPanel(this, i);
                 this.boardTerrains.add(terrainPanel);
@@ -208,7 +208,6 @@ public class GameFrame {
             return this.moves.remove(move);
         }
     }
-
 
 
     private class TerrainPanel extends JPanel {
@@ -290,7 +289,7 @@ public class GameFrame {
                 for (final Move move : pieceValidMoves(board)) {
                     if (move.getDestinationCoordinate() == this.terrainCoordinate) {
                         try {
-                            add(new JLabel(new ImageIcon(ImageIO.read(new File("resource/images/yellowdot.png")))));
+                            add(new JLabel(new ImageIcon(ImageIO.read(new File(defaultImagesPath + "yellowdot.png")))));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -310,7 +309,7 @@ public class GameFrame {
             this.removeAll();
             if (board.getTerrain(this.terrainCoordinate).isTerrainOccupied()) {
                 try {
-                    final BufferedImage image = ImageIO.read(new File(defaultPieceImagesPath
+                    final BufferedImage image = ImageIO.read(new File(defaultImagesPath
                             + board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().toLowerCase()
                             + board.getTerrain(this.terrainCoordinate).getPiece().toString().toLowerCase() + ".png"));
                     ImageIcon icon = new ImageIcon(image);
