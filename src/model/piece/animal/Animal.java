@@ -1,15 +1,15 @@
 package model.piece.animal;
 
 public enum Animal {
-    TRAPPED_ANIMAL ("0", "A"),
-    RAT ("1", "R"),
-    CAT ("2", "C"),
-    DOG ("3",  "D"),
-    WOLF ("4", "W"),
-    LEOPARD ("5", "P"),
-    TIGER ("6", "T"),
-    LION("7", "L"),
-    ELEPHANT("8", "E");
+    TRAPPED_ANIMAL ("0", "Trapped Animal"),
+    RAT ("1", "Rat"),
+    CAT ("2", "Cat"),
+    DOG ("3",  "Dog"),
+    WOLF ("4", "Wolf"),
+    LEOPARD ("5", "Leopard"),
+    TIGER ("6", "Tiger"),
+    LION("7", "Lion"),
+    ELEPHANT("8", "Elephant");
 
     private final String pieceRank;
     private final String pieceName;

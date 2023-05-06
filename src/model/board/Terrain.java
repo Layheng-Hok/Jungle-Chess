@@ -65,7 +65,7 @@ public abstract class Terrain {
 
         @Override
         public String toString() {
-            return getPiece().getPieceColor().isRed() ? getPiece().toString().toLowerCase() : getPiece().toString();
+            return getPiece().getPieceColor().isRed() ? getPiece().toString().toLowerCase() : getPiece().toString().toUpperCase();
         }
 
         @Override

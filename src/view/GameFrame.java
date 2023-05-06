@@ -311,8 +311,8 @@ public class GameFrame {
             if (board.getTerrain(this.terrainCoordinate).isTerrainOccupied()) {
                 try {
                     final BufferedImage image = ImageIO.read(new File(defaultPieceImagesPath
-                            + board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().substring(0, 1)
-                            + board.getTerrain(this.terrainCoordinate).getPiece().toString() + ".png"));
+                            + board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().toLowerCase()
+                            + board.getTerrain(this.terrainCoordinate).getPiece().toString().toLowerCase() + ".png"));
                     ImageIcon icon = new ImageIcon(image);
                     int labelWidth = 65;
                     int labelHeight = 65;

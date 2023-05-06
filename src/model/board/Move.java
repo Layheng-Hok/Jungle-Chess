@@ -160,7 +160,7 @@ public abstract class Move {
 
         @Override
         public Board execute() {
-            throw new RuntimeException("cannot execute null move!");
+            throw new RuntimeException("You cannot execute a null move.");
         }
 
         @Override
@@ -172,7 +172,7 @@ public abstract class Move {
     public static class MoveFactory {
 
         private MoveFactory() {
-            throw new RuntimeException("Not instantiatable!");
+            throw new RuntimeException("You cannot instantiate an object of \"MoveFactory\".");
         }
 
         public static Move getNullMove() {
