@@ -3,7 +3,6 @@ package view;
 import model.board.Board;
 import model.board.BoardUtils;
 import model.board.Move;
-import model.board.Terrain;
 import model.piece.Piece;
 import model.player.MoveTransition;
 import model.player.PlayerColor;
@@ -281,7 +280,7 @@ public class GameFrame {
                                 sourceTerrain = null;
                             }
                         } else {
-                            final Move move = Move.MoveFactory.createMove(chessBoard, sourceTerrain.getPieceCoordinate(), terrainCoordinate);
+                            final Move move = Move.MoveCreator.createMove(chessBoard, sourceTerrain.getPieceCoordinate(), terrainCoordinate);
                             final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
                                 chessBoard = transition.getTransitionBoard();
