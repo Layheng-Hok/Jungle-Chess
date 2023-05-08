@@ -162,7 +162,7 @@ public class GameFrame {
         BoardPanel() {
             super(new GridLayout(9, 7));
             this.boardTerrains = new ArrayList<>();
-            this.boardImage = new ImageIcon(defaultImagesPath + "chessboard.png").getImage();
+            this.boardImage = new ImageIcon(defaultImagesPath + "chessboard1.png").getImage();
             for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                 final TerrainPanel terrainPanel = new TerrainPanel(this, i);
                 this.boardTerrains.add(terrainPanel);

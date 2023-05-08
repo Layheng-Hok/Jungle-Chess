@@ -91,7 +91,7 @@ public class CapturedPiecesPanel extends JPanel {
         }
         for (final Piece capturedPiece : redCapturedPieces) {
             try {
-                final BufferedImage image = ImageIO.read(new File(defaultImagesPath +
+                final BufferedImage image = ImageIO.read(new File(defaultImagesPath + "unreversed" +
                         capturedPiece.getPieceColor().toString().toLowerCase() +
                         capturedPiece.toString().toLowerCase() + ".png"));
                 ImageIcon icon = new ImageIcon(image);
