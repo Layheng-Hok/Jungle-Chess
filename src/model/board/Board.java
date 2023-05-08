@@ -23,10 +23,10 @@ public class Board {
         this.boardConfig = Collections.unmodifiableMap(builder.boardConfig);
         this.bluePieces = determineActivePieces(this.chessboard, PlayerColor.BLUE);
         this.redPieces = determineActivePieces(this.chessboard, PlayerColor.RED);
-        final Collection<Move> blueStandardValidMoves = determineValidMoves(this.bluePieces);
-        final Collection<Move> redStandardValidMoves = determineValidMoves(this.redPieces);
-        this.bluePlayer = new BluePlayer(this, blueStandardValidMoves, redStandardValidMoves);
-        this.redPlayer = new RedPlayer(this, blueStandardValidMoves, redStandardValidMoves);
+        final Collection<Move> blueValidMoves = determineValidMoves(this.bluePieces);
+        final Collection<Move> redValidMoves = determineValidMoves(this.redPieces);
+        this.bluePlayer = new BluePlayer(this, blueValidMoves, redValidMoves);
+        this.redPlayer = new RedPlayer(this, blueValidMoves, redValidMoves);
         this.currentPlayer = builder.nextMovePlayer.choosePlayer(this.bluePlayer, this.redPlayer);
     }
 
