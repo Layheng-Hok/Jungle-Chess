@@ -275,9 +275,11 @@ public class GameFrame {
                     } else if (isLeftMouseButton(e)) {
                         if (sourceTerrain == null) {
                             sourceTerrain = chessBoard.getPiece(terrainCoordinate);
-                            humanMovedPiece = sourceTerrain;
-                            if (humanMovedPiece == null) {
+                            if (sourceTerrain != null && sourceTerrain.getPieceColor() != chessBoard.currentPlayer().getAllyColor()) {
+
                                 sourceTerrain = null;
+                            } else {
+                                humanMovedPiece = sourceTerrain;
                             }
                         } else {
                             final Move move = Move.MoveCreator.createMove(chessBoard, sourceTerrain.getPieceCoordinate(), terrainCoordinate);
