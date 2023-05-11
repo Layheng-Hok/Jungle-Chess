@@ -47,6 +47,8 @@ public abstract class SpecialPiece extends Piece {
                             potentialDestinationCoordinate = tempPotentialDestinationCoordinate;
                             potentialDestinationTerrain = board.getTerrain(tempPotentialDestinationCoordinate);
                         }
+                    } else {
+                        continue;
                     }
                 }
                 if ((currentPotentialOffset == POTENTIAL_MOVE_COORDINATES[1] || currentPotentialOffset == POTENTIAL_MOVE_COORDINATES[2])
@@ -65,8 +67,11 @@ public abstract class SpecialPiece extends Piece {
                             potentialDestinationCoordinate = tempPotentialDestinationCoordinate;
                             potentialDestinationTerrain = board.getTerrain(tempPotentialDestinationCoordinate);
                         }
+                    } else {
+                        continue;
                     }
                 }
+
                 if (!potentialDestinationTerrain.isTerrainOccupied()) {
                     validMoves.add(new Move.StandardMove(board, this, potentialDestinationCoordinate));
                     if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
