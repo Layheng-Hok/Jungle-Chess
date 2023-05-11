@@ -71,7 +71,6 @@ public abstract class SpecialPiece extends Piece {
                         continue;
                     }
                 }
-
                 if (!potentialDestinationTerrain.isTerrainOccupied()) {
                     validMoves.add(new Move.StandardMove(board, this, potentialDestinationCoordinate));
                     if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
