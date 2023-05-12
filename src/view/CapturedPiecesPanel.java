@@ -42,7 +42,6 @@ public class CapturedPiecesPanel extends JPanel {
         g.drawImage(bottomPanelImage, 0, 0, getWidth(), getHeight(), this);
     }
 
-
     public void redo(final MoveLog moveLog) {
         this.eastPanel.removeAll();
         this.westPanel.removeAll();
@@ -106,6 +105,12 @@ public class CapturedPiecesPanel extends JPanel {
                 e.printStackTrace();
             }
         }
+        validate();
+    }
+
+    public void reset() {
+        this.eastPanel.removeAll();
+        this.westPanel.removeAll();
         validate();
     }
 }

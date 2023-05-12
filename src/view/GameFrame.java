@@ -37,7 +37,6 @@ public class GameFrame {
     private Piece sourceTerrain;
     private Piece humanMovedPiece;
     private BoardDirection boardDirection;
-    private boolean highlightValidMoves;
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(500, 650);
     private static final Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
@@ -66,29 +65,54 @@ public class GameFrame {
         this.gameFrame.add(this.capturedPiecesPanel, BorderLayout.SOUTH);
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
         this.gameFrame.setIconImage(logo.getImage());
-        this.highlightValidMoves = true;
         this.gameFrame.setVisible(true);
         this.gameFrame.setResizable(false);
     }
 
     private JMenuBar createGameFrameMenuBar() {
         final JMenuBar gameFrameMenuBar = new JMenuBar();
-        gameFrameMenuBar.add(createFileMenu());
-        gameFrameMenuBar.add(createPreferencesMenu());
+        gameFrameMenuBar.add(createSettingMenu());
         return gameFrameMenuBar;
     }
 
-    private JMenu createFileMenu() {
-        final JMenu fileMenu = new JMenu("File");
-        final JMenuItem openPGN = new JMenuItem("Load PGN File");
-        openPGN.addActionListener(new ActionListener() {
+    private JMenu createSettingMenu() {
+        final JMenu settingMenu = new JMenu("| | |");
+
+        final JMenuItem save = new JMenuItem("Save Game");
+        save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Open up that pgn file!");
+                System.out.println("Game Saved");
             }
         });
-        fileMenu.add(openPGN);
-        final JMenuItem exitMenuItem = new JMenuItem("Save & Exit");
+        settingMenu.add(save);
+
+        final JMenuItem restart = new JMenuItem("Restart");
+        restart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chessBoard = Board.constructStandardBoard();
+                boardPanel.drawBoard(chessBoard);
+                playerPanel.reset();
+                capturedPiecesPanel.reset();
+                moveLog.clear();
+                System.out.println("Game Restarted");
+            }
+        });
+        settingMenu.add(restart);
+
+        final JMenuItem switchSideMenuItem = new JMenuItem("Switch Side");
+        switchSideMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boardDirection = boardDirection.opposite();
+                boardPanel.drawBoard(chessBoard);
+                System.out.println("Side Switched");
+            }
+        });
+        settingMenu.add(switchSideMenuItem);
+
+        final JMenuItem exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -96,31 +120,9 @@ public class GameFrame {
                 System.exit(0);
             }
         });
-        fileMenu.add(exitMenuItem);
-        return fileMenu;
-    }
+        settingMenu.add(exitMenuItem);
 
-    private JMenu createPreferencesMenu() {
-        final JMenu preferencesMenu = new JMenu("Preferences");
-        final JMenuItem flipBoardMenuItem = new JMenuItem("Change Side");
-        flipBoardMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                boardDirection = boardDirection.opposite();
-                boardPanel.drawBoard(chessBoard);
-            }
-        });
-        preferencesMenu.add(flipBoardMenuItem);
-        preferencesMenu.addSeparator();
-        final JCheckBoxMenuItem validMoveHighlighterCheckbox = new JCheckBoxMenuItem("Highlight Valid Moves", true);
-        validMoveHighlighterCheckbox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                highlightValidMoves = validMoveHighlighterCheckbox.isSelected();
-            }
-        });
-        preferencesMenu.add(validMoveHighlighterCheckbox);
-        return preferencesMenu;
+        return settingMenu;
     }
 
     enum BoardDirection {
@@ -290,7 +292,7 @@ public class GameFrame {
                                 if (chessBoard.currentPlayer().getAllyColor() == PlayerColor.BLUE) {
                                     playerPanel.setRoundNumber(playerPanel.getRoundNumber() + 1);
                                 }
-                                playerPanel.updateUI();
+                                playerPanel.repaint();
                                 moveLog.addMove(move);
                             }
                             sourceTerrain = null;
@@ -339,14 +341,12 @@ public class GameFrame {
         }
 
         private void highlightValidMoves(final Board board) {
-            if (highlightValidMoves) {
-                for (final Move move : pieceValidMoves(board)) {
-                    if (move.getDestinationCoordinate() == this.terrainCoordinate) {
-                        try {
-                            add(new JLabel(new ImageIcon(ImageIO.read(new File(defaultImagesPath + "yellowdot.png")))));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+            for (final Move move : pieceValidMoves(board)) {
+                if (move.getDestinationCoordinate() == this.terrainCoordinate) {
+                    try {
+                        add(new JLabel(new ImageIcon(ImageIO.read(new File(defaultImagesPath + "yellowdot.png")))));
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }

@@ -17,10 +17,6 @@ public class PlayerPanel extends JPanel {
         setPreferredSize(PLAYER_PANEL_DIMENSION);
     }
 
-    public void updateUI() {
-        repaint();
-    }
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -62,6 +58,12 @@ public class PlayerPanel extends JPanel {
         g.drawImage(rightImage, rightImageX, imageY, imageWidth, imageHeight, this);
 
         validate();
+    }
+
+    public void reset() {
+        roundNumber = 1;
+        currentPlayer = "Blue";
+        repaint();
     }
 
     public int getRoundNumber() {
