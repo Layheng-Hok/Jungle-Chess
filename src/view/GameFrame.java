@@ -286,6 +286,11 @@ public class GameFrame {
                             final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
                                 chessBoard = transition.getTransitionBoard();
+                                playerPanel.setCurrentPlayer(chessBoard.currentPlayer().toString());
+                                if (chessBoard.currentPlayer().getAllyColor() == PlayerColor.BLUE) {
+                                    playerPanel.setRoundNumber(playerPanel.getRoundNumber() + 1);
+                                }
+                                playerPanel.updateUI();
                                 moveLog.addMove(move);
                             }
                             sourceTerrain = null;
