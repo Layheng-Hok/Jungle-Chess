@@ -37,6 +37,7 @@ public class GameFrame {
     private Piece sourceTerrain;
     private Piece humanMovedPiece;
     private BoardDirection boardDirection;
+    private boolean isBoard1 = true;
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(500, 650);
     private static final Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
@@ -101,16 +102,29 @@ public class GameFrame {
         });
         settingMenu.add(restart);
 
-        final JMenuItem switchSideMenuItem = new JMenuItem("Switch Side");
-        switchSideMenuItem.addActionListener(new ActionListener() {
+        final JMenuItem changeBoardMenuItem = new JMenuItem("Change Board");
+        changeBoardMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                isBoard1 = !isBoard1;
+                String boardImageFileName = isBoard1 ? "chessboard1.png" : "chessboard2.png";
+                boardPanel.setBoardImage(boardImageFileName);
+                boardPanel.drawBoard(chessBoard);
+                System.out.println("Board Changed");
+            }
+        });
+        settingMenu.add(changeBoardMenuItem);
+
+        final JMenuItem changeSideMenuItem = new JMenuItem("Change Side");
+        changeSideMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 boardDirection = boardDirection.opposite();
                 boardPanel.drawBoard(chessBoard);
-                System.out.println("Side Switched");
+                System.out.println("Side Changed");
             }
         });
-        settingMenu.add(switchSideMenuItem);
+        settingMenu.add(changeSideMenuItem);
 
         final JMenuItem exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.addActionListener(new ActionListener() {
@@ -159,12 +173,12 @@ public class GameFrame {
 
     private class BoardPanel extends JPanel {
         final List<TerrainPanel> boardTerrains;
-        private final Image boardImage;
+        private Image boardImage;
 
         BoardPanel() {
             super(new GridLayout(9, 7));
             this.boardTerrains = new ArrayList<>();
-            this.boardImage = new ImageIcon(defaultImagesPath + "chessboard1.png").getImage();
+            setBoardImage("chessboard1.png");
             for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                 final TerrainPanel terrainPanel = new TerrainPanel(this, i);
                 this.boardTerrains.add(terrainPanel);
@@ -183,6 +197,14 @@ public class GameFrame {
             }
             validate();
             repaint();
+        }
+
+        public void setBoardImage(String imageFileName) {
+            try {
+                this.boardImage = ImageIO.read(new File(defaultImagesPath + imageFileName));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -344,7 +366,8 @@ public class GameFrame {
             for (final Move move : pieceValidMoves(board)) {
                 if (move.getDestinationCoordinate() == this.terrainCoordinate) {
                     try {
-                        add(new JLabel(new ImageIcon(ImageIO.read(new File(defaultImagesPath + "yellowdot.png")))));
+                        String dotColor = isBoard1 ? "yellow" : "green";
+                        add(new JLabel(new ImageIcon(ImageIO.read(new File(defaultImagesPath + dotColor + "dot.png")))));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
