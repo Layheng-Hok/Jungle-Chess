@@ -1,10 +1,7 @@
 package view;
 
-import model.board.Board;
-
 import javax.swing.*;
 import java.awt.*;
-import java.util.Objects;
 
 import static view.GameFrame.defaultImagesPath;
 
