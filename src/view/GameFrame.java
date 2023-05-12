@@ -4,7 +4,7 @@ import model.board.Board;
 import model.board.BoardUtils;
 import model.board.Move;
 import model.piece.Piece;
-import model.player.MoveTransition;
+import model.board.MoveTransition;
 import model.player.PlayerColor;
 
 import javax.imageio.ImageIO;

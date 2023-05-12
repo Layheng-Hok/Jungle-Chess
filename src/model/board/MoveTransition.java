@@ -1,7 +1,4 @@
-package model.player;
-
-import model.board.Board;
-import model.board.Move;
+package model.board;
 
 public class MoveTransition {
     private final Board transitionBoard;
