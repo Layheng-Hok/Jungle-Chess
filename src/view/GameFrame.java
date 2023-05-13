@@ -315,6 +315,7 @@ public class GameFrame {
                                 }
                                 playerPanel.repaint();
                                 moveLog.addMove(move);
+                                System.out.println(chessBoard);
                             }
                             sourceTerrain = null;
                             humanMovedPiece = null;
