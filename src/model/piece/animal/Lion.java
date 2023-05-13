@@ -24,7 +24,7 @@ public class Lion extends SpecialPiece {
     }
 
     @Override
-    public String getPieceRank() {
-        return Animal.LION.getPieceRank();
+    public int getPiecePower() {
+        return Animal.LION.getPiecePower();
     }
 }

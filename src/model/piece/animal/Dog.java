@@ -24,7 +24,7 @@ public class Dog extends CommonPiece {
     }
 
     @Override
-    public String getPieceRank() {
-        return Animal.DOG.getPieceRank();
+    public int getPiecePower() {
+        return Animal.DOG.getPiecePower();
     }
 }

@@ -86,5 +86,5 @@ public abstract class Piece {
         this.pieceDefenseRank = pieceDefenseRank;
     }
 
-    public abstract String getPieceRank();
+    public abstract int getPiecePower();
 }

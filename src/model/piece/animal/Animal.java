@@ -1,21 +1,21 @@
 package model.piece.animal;
 
 public enum Animal {
-    TRAPPED_ANIMAL ("0", "Trapped Animal"),
-    RAT ("1", "Rat"),
-    CAT ("2", "Cat"),
-    DOG ("3",  "Dog"),
-    WOLF ("4", "Wolf"),
-    LEOPARD ("5", "Leopard"),
-    TIGER ("6", "Tiger"),
-    LION("7", "Lion"),
-    ELEPHANT("8", "Elephant");
+    TRAPPED_ANIMAL (0, "Trapped Animal"),
+    RAT (600, "Rat"),
+    CAT (100, "Cat"),
+    DOG (200,  "Dog"),
+    WOLF (300, "Wolf"),
+    LEOPARD (500, "Leopard"),
+    TIGER (700, "Tiger"),
+    LION(800, "Lion"),
+    ELEPHANT(800, "Elephant");
 
-    private final String pieceRank;
+    private final int piecePower;
     private final String pieceName;
 
-    Animal(final String pieceRank, final String pieceName) {
-        this.pieceRank = pieceRank;
+    Animal(final int piecePower, final String pieceName) {
+        this.piecePower = piecePower;
         this.pieceName = pieceName;
     }
 
@@ -24,7 +24,7 @@ public enum Animal {
         return this.pieceName;
     }
 
-    public String getPieceRank() {
-        return this.pieceRank;
+    public int getPiecePower() {
+        return this.piecePower;
     }
 }

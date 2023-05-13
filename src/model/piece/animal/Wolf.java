@@ -24,7 +24,7 @@ public class Wolf extends CommonPiece {
     }
 
     @Override
-    public String getPieceRank() {
-        return Animal.WOLF.getPieceRank();
+    public int getPiecePower() {
+        return Animal.WOLF.getPiecePower();
     }
 }

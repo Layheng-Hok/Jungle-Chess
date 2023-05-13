@@ -51,7 +51,7 @@ public class Board {
         return this.redPlayer;
     }
 
-    public Player currentPlayer() {
+    public Player getCurrentPlayer() {
         return this.currentPlayer;
     }
 

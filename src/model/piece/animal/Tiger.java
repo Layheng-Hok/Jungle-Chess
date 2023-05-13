@@ -24,7 +24,7 @@ public class Tiger extends SpecialPiece {
     }
 
     @Override
-    public String getPieceRank() {
-        return Animal.TIGER.getPieceRank();
+    public int getPiecePower() {
+        return Animal.TIGER.getPiecePower();
     }
 }

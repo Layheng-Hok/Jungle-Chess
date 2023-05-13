@@ -37,8 +37,8 @@ public class Rat extends Piece {
     }
 
     @Override
-    public String getPieceRank() {
-        return Animal.RAT.getPieceRank();
+    public int getPiecePower() {
+        return Animal.RAT.getPiecePower();
     }
 
     @Override

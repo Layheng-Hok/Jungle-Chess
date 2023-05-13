@@ -24,7 +24,7 @@ public class Cat extends CommonPiece {
     }
 
     @Override
-    public String getPieceRank() {
-        return Animal.CAT.getPieceRank();
+    public int getPiecePower() {
+        return Animal.CAT.getPiecePower();
     }
 }

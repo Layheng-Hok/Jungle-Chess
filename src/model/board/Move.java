@@ -70,21 +70,21 @@ public abstract class Move {
 
     public Board execute() {
         final Board.Builder builder = new Board.Builder();
-        for (final Piece piece : this.board.currentPlayer().getActivePieces()) {
+        for (final Piece piece : this.board.getCurrentPlayer().getActivePieces()) {
             if (!this.movedPiece.equals(piece)) {
                 builder.setPiece(piece);
             }
         }
-        for (final Piece piece : this.board.currentPlayer().getEnemyPlayer().getActivePieces()) {
+        for (final Piece piece : this.board.getCurrentPlayer().getEnemyPlayer().getActivePieces()) {
             builder.setPiece(piece);
         }
         builder.setPiece(this.movedPiece.movePiece(this));
-        builder.setNextMovePlayer(this.board.currentPlayer().getEnemyPlayer().getAllyColor());
+        builder.setNextMovePlayer(this.board.getCurrentPlayer().getEnemyPlayer().getAllyColor());
         return builder.build();
     }
 
     String disambiguationFile() {
-        for (final Move move : this.board.currentPlayer().getValidMoves()) {
+        for (final Move move : this.board.getCurrentPlayer().getValidMoves()) {
             if (move.getDestinationCoordinate() == this.destinationCoordinate && !this.equals(move) &&
                     this.movedPiece.getPieceType().equals(move.getMovedPiece().getPieceType())) {
                 return BoardUtils.getPositionAtCoordinate(this.movedPiece.getPieceCoordinate()).substring(0, 1);

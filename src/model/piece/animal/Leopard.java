@@ -25,7 +25,7 @@ public class Leopard extends CommonPiece {
     }
 
     @Override
-    public String getPieceRank() {
-        return Animal.LEOPARD.getPieceRank();
+    public int getPiecePower() {
+        return Animal.LEOPARD.getPiecePower();
     }
 }

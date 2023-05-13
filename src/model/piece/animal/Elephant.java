@@ -34,8 +34,8 @@ public class Elephant extends Piece {
     }
 
     @Override
-    public String getPieceRank() {
-        return Animal.ELEPHANT.getPieceRank();
+    public int getPiecePower() {
+        return Animal.ELEPHANT.getPiecePower();
     }
 
     @Override

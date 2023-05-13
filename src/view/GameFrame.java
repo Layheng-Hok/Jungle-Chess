@@ -299,18 +299,18 @@ public class GameFrame {
                     } else if (isLeftMouseButton(e)) {
                         if (sourceTerrain == null) {
                             sourceTerrain = chessBoard.getPiece(terrainCoordinate);
-                            if (sourceTerrain != null && sourceTerrain.getPieceColor() != chessBoard.currentPlayer().getAllyColor()) {
+                            if (sourceTerrain != null && sourceTerrain.getPieceColor() != chessBoard.getCurrentPlayer().getAllyColor()) {
                                 sourceTerrain = null;
                             } else {
                                 humanMovedPiece = sourceTerrain;
                             }
                         } else {
                             final Move move = Move.MoveCreator.createMove(chessBoard, sourceTerrain.getPieceCoordinate(), terrainCoordinate);
-                            final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
+                            final MoveTransition transition = chessBoard.getCurrentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
                                 chessBoard = transition.getTransitionBoard();
-                                playerPanel.setCurrentPlayer(chessBoard.currentPlayer().toString());
-                                if (chessBoard.currentPlayer().getAllyColor() == PlayerColor.BLUE) {
+                                playerPanel.setCurrentPlayer(chessBoard.getCurrentPlayer().toString());
+                                if (chessBoard.getCurrentPlayer().getAllyColor() == PlayerColor.BLUE) {
                                     playerPanel.setRoundNumber(playerPanel.getRoundNumber() + 1);
                                 }
                                 playerPanel.repaint();
@@ -372,7 +372,7 @@ public class GameFrame {
         }
 
         private Collection<Move> pieceValidMoves(final Board board) {
-            if (humanMovedPiece != null && humanMovedPiece.getPieceColor() == board.currentPlayer().getAllyColor()) {
+            if (humanMovedPiece != null && humanMovedPiece.getPieceColor() == board.getCurrentPlayer().getAllyColor()) {
                 return humanMovedPiece.determineValidMoves(board);
             }
             return Collections.emptyList();
