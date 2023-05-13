@@ -6,9 +6,11 @@ import model.board.MoveTransition;
 
 public class MinimaxAlgorithm implements Strategy {
     private final GameEvaluator evaluator;
+    private final int depth;
 
-    public MinimaxAlgorithm() {
+    public MinimaxAlgorithm(final int searchDepth) {
         this.evaluator = new StandardBoardEvaluator();
+        this.depth = searchDepth;
     }
 
     @Override
@@ -17,7 +19,7 @@ public class MinimaxAlgorithm implements Strategy {
     }
 
     @Override
-    public Move execute(Board board, int depth) {
+    public Move execute(Board board) {
         final long startTime = System.currentTimeMillis();
         Move optimalMove = null;
         int highestValue = Integer.MIN_VALUE;
@@ -29,8 +31,8 @@ public class MinimaxAlgorithm implements Strategy {
             final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
                 currentValue = board.getCurrentPlayer().getAllyColor().isBlue() ?
-                        min(moveTransition.getTransitionBoard(), depth - 1) :
-                        max(moveTransition.getTransitionBoard(), depth - 1);
+                        min(moveTransition.getTransitionBoard(), this.depth - 1) :
+                        max(moveTransition.getTransitionBoard(), this.depth - 1);
                 if (board.getCurrentPlayer().getAllyColor().isBlue() && currentValue >= highestValue) {
                     highestValue = currentValue;
                     optimalMove = move;
@@ -45,7 +47,7 @@ public class MinimaxAlgorithm implements Strategy {
     }
 
     public int min(final Board board, final int depth) {
-        if (depth == 0) {
+        if (depth == 0 || isGameOverScenario(board)) {
             return this.evaluator.evaluate(board, depth);
         }
         int lowestValue = Integer.MAX_VALUE;
@@ -62,7 +64,7 @@ public class MinimaxAlgorithm implements Strategy {
     }
 
     public int max(final Board board, final int depth) {
-        if (depth == 0) {
+        if (depth == 0 || isGameOverScenario(board)){
             return this.evaluator.evaluate(board, depth);
         }
         int highestValue = Integer.MIN_VALUE;
@@ -76,5 +78,9 @@ public class MinimaxAlgorithm implements Strategy {
             }
         }
         return highestValue;
+    }
+
+    private static boolean isGameOverScenario(final Board board) {
+        return board.getCurrentPlayer().penetrateEnemyDen();
     }
 }

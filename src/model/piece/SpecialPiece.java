@@ -1,7 +1,7 @@
 package model.piece;
 
 import model.board.Board;
-import model.board.BoardUtils;
+import model.board.Utilities;
 import model.board.Move;
 import model.board.Terrain;
 import model.piece.animal.Animal;
@@ -25,14 +25,14 @@ public abstract class SpecialPiece extends Piece {
         for (final int currentPotentialOffset : POTENTIAL_MOVE_COORDINATES) {
             int potentialDestinationCoordinate = this.pieceCoordinate + currentPotentialOffset;
             int tempPotentialDestinationCoordinate = potentialDestinationCoordinate;
-            if (BoardUtils.isInBoundary(potentialDestinationCoordinate) && !BoardUtils.isDen(potentialDestinationCoordinate, this.pieceColor)) {
+            if (Utilities.isInBoundary(potentialDestinationCoordinate) && !Utilities.isDen(potentialDestinationCoordinate, this.pieceColor)) {
                 if (isColumnZeroExclusion(this.pieceCoordinate, currentPotentialOffset) || isColumnSixExclusion(this.pieceCoordinate, currentPotentialOffset)) {
                     continue;
                 }
                 Terrain potentialDestinationTerrain = board.getTerrain(potentialDestinationCoordinate);
                 Terrain tempPotentialDestinationTerrain = board.getTerrain(tempPotentialDestinationCoordinate);
                 if ((currentPotentialOffset == POTENTIAL_MOVE_COORDINATES[0] || currentPotentialOffset == POTENTIAL_MOVE_COORDINATES[3])
-                        && BoardUtils.isRiver(potentialDestinationCoordinate)) {
+                        && Utilities.isRiver(potentialDestinationCoordinate)) {
                     boolean isRiverTerrainOccupied = false;
                     for (int i = 0; i < 3; i++) {
                         potentialDestinationTerrain = board.getTerrain(tempPotentialDestinationCoordinate);
@@ -43,7 +43,7 @@ public abstract class SpecialPiece extends Piece {
                         tempPotentialDestinationCoordinate += currentPotentialOffset;
                     }
                     if (!isRiverTerrainOccupied) {
-                        if (BoardUtils.isInBoundary(tempPotentialDestinationCoordinate)) {
+                        if (Utilities.isInBoundary(tempPotentialDestinationCoordinate)) {
                             potentialDestinationCoordinate = tempPotentialDestinationCoordinate;
                             potentialDestinationTerrain = board.getTerrain(tempPotentialDestinationCoordinate);
                         }
@@ -52,7 +52,7 @@ public abstract class SpecialPiece extends Piece {
                     }
                 }
                 if ((currentPotentialOffset == POTENTIAL_MOVE_COORDINATES[1] || currentPotentialOffset == POTENTIAL_MOVE_COORDINATES[2])
-                        && BoardUtils.isRiver(potentialDestinationCoordinate)) {
+                        && Utilities.isRiver(potentialDestinationCoordinate)) {
                     boolean isRiverTerrainOccupied = false;
                     for (int i = 0; i < 2; i++) {
                         potentialDestinationTerrain = board.getTerrain(tempPotentialDestinationCoordinate);
@@ -63,7 +63,7 @@ public abstract class SpecialPiece extends Piece {
                         tempPotentialDestinationCoordinate += currentPotentialOffset;
                     }
                     if (!isRiverTerrainOccupied) {
-                        if (BoardUtils.isInBoundary(tempPotentialDestinationCoordinate)) {
+                        if (Utilities.isInBoundary(tempPotentialDestinationCoordinate)) {
                             potentialDestinationCoordinate = tempPotentialDestinationCoordinate;
                             potentialDestinationTerrain = board.getTerrain(tempPotentialDestinationCoordinate);
                         }
@@ -86,10 +86,10 @@ public abstract class SpecialPiece extends Piece {
     }
 
     private static boolean isColumnZeroExclusion(final int currentCoordinate, final int potentialOffset) {
-        return (BoardUtils.COLUMN_ZERO[currentCoordinate] && (potentialOffset == -1));
+        return (Utilities.COLUMN_ZERO[currentCoordinate] && (potentialOffset == -1));
     }
 
     private static boolean isColumnSixExclusion(final int currentCoordinate, final int potentialOffset) {
-        return (BoardUtils.COLUMN_SIX[currentCoordinate] && (potentialOffset == 1));
+        return (Utilities.COLUMN_SIX[currentCoordinate] && (potentialOffset == 1));
     }
 }

@@ -1,7 +1,7 @@
 package view;
 
 import model.board.Board;
-import model.board.BoardUtils;
+import model.board.Utilities;
 import model.board.Move;
 import model.piece.Piece;
 import model.board.MoveTransition;
@@ -17,15 +17,13 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
 
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
 
-public class GameFrame {
+public class GameFrame extends Observable {
     private final JFrame gameFrame;
     private final LeftPanel leftPanel;
     private final RightPanel rightPanel;
@@ -179,7 +177,7 @@ public class GameFrame {
             super(new GridLayout(9, 7));
             this.boardTerrains = new ArrayList<>();
             setBoardImage("chessboard1.png");
-            for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
+            for (int i = 0; i < Utilities.NUM_TERRAINS; i++) {
                 final TerrainPanel terrainPanel = new TerrainPanel(this, i);
                 this.boardTerrains.add(terrainPanel);
                 add(terrainPanel);
@@ -399,17 +397,17 @@ public class GameFrame {
         }
 
         private void assignTerrainColor(final int coordinate) {
-            if (BoardUtils.isLand(coordinate)) {
+            if (Utilities.isLand(coordinate)) {
                 setBackground(new Color(0x28B463));
-            } else if (BoardUtils.isRiver(coordinate)) {
+            } else if (Utilities.isRiver(coordinate)) {
                 setBackground(new Color(0x63B8FF));
-            } else if (BoardUtils.isEnemyTrap(coordinate, PlayerColor.BLUE)) {
+            } else if (Utilities.isEnemyTrap(coordinate, PlayerColor.BLUE)) {
                 setBackground(new Color(0xE67E22));
-            } else if (BoardUtils.isEnemyTrap(coordinate, PlayerColor.RED)) {
+            } else if (Utilities.isEnemyTrap(coordinate, PlayerColor.RED)) {
                 setBackground(new Color(0xE67E22));
-            } else if (BoardUtils.isDen(coordinate, PlayerColor.BLUE)) {
+            } else if (Utilities.isDen(coordinate, PlayerColor.BLUE)) {
                 setBackground(new Color(0x3498DB));
-            } else if (BoardUtils.isDen(coordinate, PlayerColor.RED)) {
+            } else if (Utilities.isDen(coordinate, PlayerColor.RED)) {
                 setBackground(new Color(0xEC7063));
             }
             // setBorder(BorderFactory.createLineBorder(Color.BLACK));

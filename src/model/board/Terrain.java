@@ -12,7 +12,7 @@ public abstract class Terrain {
 
     private static Map<Integer, EmptyTerrain> constructAllPossibleEmptyTerrains() {
         final Map<Integer, EmptyTerrain> emptyTerrainsMap = new HashMap<>();
-        for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
+        for (int i = 0; i < Utilities.NUM_TERRAINS; i++) {
             emptyTerrainsMap.put(i, new EmptyTerrain(i));
         }
         return Collections.unmodifiableMap(emptyTerrainsMap);

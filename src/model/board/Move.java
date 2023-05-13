@@ -87,7 +87,7 @@ public abstract class Move {
         for (final Move move : this.board.getCurrentPlayer().getValidMoves()) {
             if (move.getDestinationCoordinate() == this.destinationCoordinate && !this.equals(move) &&
                     this.movedPiece.getPieceType().equals(move.getMovedPiece().getPieceType())) {
-                return BoardUtils.getPositionAtCoordinate(this.movedPiece.getPieceCoordinate()).substring(0, 1);
+                return Utilities.getPositionAtCoordinate(this.movedPiece.getPieceCoordinate()).substring(0, 1);
             }
         }
         return "";
@@ -105,7 +105,7 @@ public abstract class Move {
 
         @Override
         public String toString() {
-            return movedPiece.getPieceType().toString() + disambiguationFile() + BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
+            return movedPiece.getPieceType().toString() + disambiguationFile() + Utilities.getPositionAtCoordinate(this.destinationCoordinate);
         }
     }
 
@@ -148,7 +148,7 @@ public abstract class Move {
         @Override
         public String toString() {
             return movedPiece.getPieceType() + disambiguationFile() + "x" +
-                    BoardUtils.getPositionAtCoordinate(this.destinationCoordinate);
+                    Utilities.getPositionAtCoordinate(this.destinationCoordinate);
         }
     }
 
