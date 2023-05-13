@@ -24,9 +24,7 @@ public abstract class Player {
         return this.validMoves.contains(move);
     }
 
-    public boolean isDenPenetrated() {
-       return false;
-    }
+    public abstract boolean penetrateEnemyDen();
 
     public MoveTransition makeMove (final Move move) {
         if (!isMoveValid(move)) {

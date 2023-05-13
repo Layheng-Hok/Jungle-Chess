@@ -17,6 +17,18 @@ public class RedPlayer extends Player {
     }
 
     @Override
+    public boolean penetrateEnemyDen() {
+        boolean penetrate = false;
+        for (Piece piece : this.getActivePieces()) {
+            if (piece.getPieceCoordinate() == 59) {
+                penetrate = true;
+                break;
+            }
+        }
+        return penetrate;
+    }
+
+    @Override
     public Collection<Piece> getActivePieces() {
         return this.board.getRedPieces();
     }
