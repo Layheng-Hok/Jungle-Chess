@@ -11,8 +11,8 @@ public abstract class Piece {
     protected final Animal pieceType;
     protected final int pieceCoordinate;
     protected final PlayerColor pieceColor;
-    protected final int attackPieceRank;
-    protected int defensePieceRank;
+    protected final int pieceAttackRank;
+    protected int pieceDefenseRank;
     protected final boolean isFirstMove;
     private final int cachedHashCode;
 
@@ -20,8 +20,8 @@ public abstract class Piece {
         this.pieceType = pieceType;
         this.pieceCoordinate = pieceCoordinate;
         this.pieceColor = pieceColor;
-        this.attackPieceRank = attackPieceRank;
-        this.defensePieceRank = attackPieceRank;
+        this.pieceAttackRank = attackPieceRank;
+        this.pieceDefenseRank = attackPieceRank;
         this.isFirstMove = isFirstMove;
         this.cachedHashCode = computeHashCode();
     }
@@ -74,12 +74,16 @@ public abstract class Piece {
         return this.pieceColor;
     }
 
-    public int getAttackPieceRank() {
-        return this.attackPieceRank;
+    public int getPieceAttackRank() {
+        return this.pieceAttackRank;
     }
 
-    public int getDefensePieceRank() {
-        return this.defensePieceRank;
+    public int getPieceDefenseRank() {
+        return this.pieceDefenseRank;
+    }
+
+    public void setPieceDefenseRank(int pieceDefenseRank) {
+        this.pieceDefenseRank = pieceDefenseRank;
     }
 
     public abstract String getPieceRank();

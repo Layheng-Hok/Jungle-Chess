@@ -62,13 +62,13 @@ public class CapturedPiecesPanel extends JPanel {
         Collections.sort(blueCapturedPieces, new Comparator<Piece>() {
             @Override
             public int compare(Piece o1, Piece o2) {
-                return Integer.compare(o1.getAttackPieceRank(), o2.getAttackPieceRank());
+                return Integer.compare(o1.getPieceAttackRank(), o2.getPieceAttackRank());
             }
         });
         Collections.sort(redCapturedPieces, new Comparator<Piece>() {
             @Override
             public int compare(Piece o1, Piece o2) {
-                return Integer.compare(o1.getAttackPieceRank(), o2.getAttackPieceRank());
+                return Integer.compare(o1.getPieceAttackRank(), o2.getPieceAttackRank());
             }
         });
         for (final Piece capturedPiece : blueCapturedPieces) {

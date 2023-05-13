@@ -50,21 +50,11 @@ public class Elephant extends Piece {
                 final Terrain potentialDestinationTerrain = board.getTerrain(potentialDestinationCoordinate);
                 if (!potentialDestinationTerrain.isTerrainOccupied()) {
                     validMoves.add(new Move.StandardMove(board, this, potentialDestinationCoordinate));
-                    if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
-                        this.defensePieceRank = 0;
-                    } else {
-                        this.defensePieceRank = this.attackPieceRank;
-                    }
                 } else {
                     final Piece pieceAtDestination = potentialDestinationTerrain.getPiece();
                     final PlayerColor pieceAtDestinationColor = pieceAtDestination.getPieceColor();
-                    if (this.pieceColor != pieceAtDestinationColor && pieceAtDestination.getDefensePieceRank() != Animal.RAT.ordinal()) {
+                    if (this.pieceColor != pieceAtDestinationColor && pieceAtDestination.getPieceDefenseRank() != Animal.RAT.ordinal()) {
                         validMoves.add(new Move.CaptureMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
-                        if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
-                            this.defensePieceRank = 0;
-                        } else {
-                            this.defensePieceRank = this.attackPieceRank;
-                        }
                     }
                 }
             }

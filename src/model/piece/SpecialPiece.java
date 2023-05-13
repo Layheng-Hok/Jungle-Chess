@@ -73,21 +73,11 @@ public abstract class SpecialPiece extends Piece {
                 }
                 if (!potentialDestinationTerrain.isTerrainOccupied()) {
                     validMoves.add(new Move.StandardMove(board, this, potentialDestinationCoordinate));
-                    if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
-                        this.defensePieceRank = 0;
-                    } else {
-                        this.defensePieceRank = this.attackPieceRank;
-                    }
                 } else {
                     final Piece pieceAtDestination = potentialDestinationTerrain.getPiece();
                     final PlayerColor pieceAtDestinationColor = pieceAtDestination.getPieceColor();
-                    if (this.pieceColor != pieceAtDestinationColor && this.attackPieceRank >= pieceAtDestination.defensePieceRank) {
+                    if (this.pieceColor != pieceAtDestinationColor && this.pieceAttackRank >= pieceAtDestination.pieceDefenseRank) {
                         validMoves.add(new Move.CaptureMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
-                        if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
-                            this.defensePieceRank = 0;
-                        } else {
-                            this.defensePieceRank = this.attackPieceRank;
-                        }
                     }
                 }
             }

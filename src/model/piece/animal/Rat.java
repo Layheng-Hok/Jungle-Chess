@@ -53,25 +53,15 @@ public class Rat extends Piece {
                 final Terrain potentialDestinationTerrain = board.getTerrain(potentialDestinationCoordinate);
                 if (!potentialDestinationTerrain.isTerrainOccupied()) {
                     validMoves.add(new StandardMove(board, this, potentialDestinationCoordinate));
-                    if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
-                        this.defensePieceRank = 0;
-                    } else {
-                        this.defensePieceRank = this.attackPieceRank;
-                    }
                 } else {
                     final Piece pieceAtDestination = potentialDestinationTerrain.getPiece();
                     final PlayerColor pieceAtDestinationColor = pieceAtDestination.getPieceColor();
-                    if (this.pieceColor != pieceAtDestinationColor && (pieceAtDestination.getDefensePieceRank() == Animal.ELEPHANT.ordinal() ||
-                            pieceAtDestination.getDefensePieceRank() == Animal.RAT.ordinal()) ||
-                            pieceAtDestination.getDefensePieceRank() == Animal.TRAPPED_ANIMAL.ordinal()) {
+                    if (this.pieceColor != pieceAtDestinationColor && (pieceAtDestination.getPieceDefenseRank() == Animal.ELEPHANT.ordinal() ||
+                            pieceAtDestination.getPieceDefenseRank() == Animal.RAT.ordinal()) ||
+                            pieceAtDestination.getPieceDefenseRank() == Animal.TRAPPED_ANIMAL.ordinal()) {
                         if (BoardUtils.isLand(this.pieceCoordinate) && !BoardUtils.isRiver(potentialDestinationCoordinate) ||
                                 BoardUtils.isRiver(this.pieceCoordinate) && BoardUtils.isRiver(potentialDestinationCoordinate)) {
                             validMoves.add(new CaptureMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
-                            if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
-                                this.defensePieceRank = 0;
-                            } else {
-                                this.defensePieceRank = this.attackPieceRank;
-                            }
                         }
                     }
 

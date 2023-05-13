@@ -33,21 +33,11 @@ public abstract class CommonPiece extends Piece {
                 final Terrain potentialDestinationTerrain = board.getTerrain(potentialDestinationCoordinate);
                 if (!potentialDestinationTerrain.isTerrainOccupied()) {
                     validMoves.add(new StandardMove(board, this, potentialDestinationCoordinate));
-                    if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
-                        this.defensePieceRank = 0;
-                    } else {
-                        this.defensePieceRank = this.attackPieceRank;
-                    }
                 } else {
                     final Piece pieceAtDestination = potentialDestinationTerrain.getPiece();
                     final PlayerColor pieceAtDestinationColor = pieceAtDestination.getPieceColor();
-                    if (this.pieceColor != pieceAtDestinationColor && this.attackPieceRank >= pieceAtDestination.defensePieceRank) {
+                    if (this.pieceColor != pieceAtDestinationColor && this.pieceAttackRank >= pieceAtDestination.pieceDefenseRank) {
                         validMoves.add(new CaptureMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
-                        if (BoardUtils.isEnemyTrap(potentialDestinationCoordinate, this.pieceColor)) {
-                            this.defensePieceRank = 0;
-                        } else {
-                            this.defensePieceRank = this.attackPieceRank;
-                        }
                     }
                 }
             }

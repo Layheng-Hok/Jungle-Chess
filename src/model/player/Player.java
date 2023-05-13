@@ -1,9 +1,6 @@
 package model.player;
 
-import model.board.Board;
-import model.board.Move;
-import model.board.MoveStatus;
-import model.board.MoveTransition;
+import model.board.*;
 import model.piece.Piece;
 
 import java.util.Collection;

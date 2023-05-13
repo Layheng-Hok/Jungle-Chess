@@ -142,6 +142,12 @@ public class Board {
 
         public Builder setPiece(final Piece piece) {
             this.boardConfig.put(piece.getPieceCoordinate(), piece);
+            if (BoardUtils.isEnemyTrap(piece.getPieceCoordinate(), piece.getPieceColor())) {
+                piece.setPieceDefenseRank(0);
+                System.out.println(piece.getPieceColor().toString() + " " + piece + " is in enemy trap. Hence, its defense rank is demoted to 0.");
+            } else {
+                piece.setPieceDefenseRank(piece.getPieceAttackRank());
+            }
             return this;
         }
 

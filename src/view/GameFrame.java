@@ -300,7 +300,6 @@ public class GameFrame {
                         if (sourceTerrain == null) {
                             sourceTerrain = chessBoard.getPiece(terrainCoordinate);
                             if (sourceTerrain != null && sourceTerrain.getPieceColor() != chessBoard.currentPlayer().getAllyColor()) {
-
                                 sourceTerrain = null;
                             } else {
                                 humanMovedPiece = sourceTerrain;
