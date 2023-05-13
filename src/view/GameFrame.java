@@ -331,22 +331,18 @@ public class GameFrame {
 
                 @Override
                 public void mousePressed(final MouseEvent e) {
-
                 }
 
                 @Override
                 public void mouseReleased(final MouseEvent e) {
-
                 }
 
                 @Override
                 public void mouseEntered(final MouseEvent e) {
-
                 }
 
                 @Override
                 public void mouseExited(final MouseEvent e) {
-
                 }
             });
 
