@@ -1,5 +1,6 @@
 package view;
 
+import model.artificialintelligence.ConcreteBoardEvaluator;
 import model.artificialintelligence.MinimaxAlgorithm;
 import model.artificialintelligence.Strategy;
 import model.board.Board;
@@ -463,6 +464,7 @@ public class GameFrame extends Observable {
         @Override
         protected Move doInBackground() throws Exception {
             final Strategy minimax = new MinimaxAlgorithm(4);
+            System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
             final Move optimalMove = minimax.execute(GameFrame.get().getChessBoard());
             return optimalMove;
         }

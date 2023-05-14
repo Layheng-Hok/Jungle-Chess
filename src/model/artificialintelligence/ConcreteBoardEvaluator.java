@@ -13,11 +13,19 @@ public final class ConcreteBoardEvaluator implements GameEvaluator {
     private final static int NEAR_ENEMY_DEN_WITH_ENEMY_PENALTY = -100;
     private final static int PENETRATE_ENEMY_DEN_BONUS = 50000;
     private final static int CAPTURE_MOVE_MULTIPLIER = 2;
+    private static final ConcreteBoardEvaluator INSTANCE = new ConcreteBoardEvaluator();
+
+    private ConcreteBoardEvaluator() {
+    }
+
+    public static ConcreteBoardEvaluator get() {
+        return INSTANCE;
+    }
 
     @Override
     public int evaluate(final Board board, final int depth) {
-        return scorePlayer(board, board.getCurrentPlayer(), depth) -
-                scorePlayer(board, board.getCurrentPlayer().getEnemyPlayer(), depth);
+        return scorePlayer(board, board.bluePlayer(), depth) -
+                scorePlayer(board, board.redPlayer(), depth);
     }
 
     private int scorePlayer(final Board board, final Player player, final int depth) {
@@ -27,6 +35,26 @@ public final class ConcreteBoardEvaluator implements GameEvaluator {
                 + nearEnemyDenWithEnemy(player)
                 + isEnemyDenPenetrated(player, depth)
                 + captureMove(player);
+    }
+
+    public String evaluationDetails(final Board board, final int depth) {
+        return ("Blue Piece Evaluation" + " \n" +
+                "Piece Value: " + pieceValue(board.bluePlayer()) + "\n" +
+                "Versatility: " + versatility(board.bluePlayer()) + "\n" +
+                "Near Enemy Den Without Enemy: " + nearEnemyDenWithoutEnemy(board.bluePlayer(), depth) + "\n" +
+                "Near Enemy Den With Enemy: " + nearEnemyDenWithEnemy(board.bluePlayer()) + "\n" +
+                "Is Enemy Den Penetrated: " + isEnemyDenPenetrated(board.bluePlayer(), depth) + "\n" +
+                "Capture Move: " + captureMove(board.bluePlayer()) + "\n" +
+                "-------------------------------\n" +
+                "Red Piece Evaluation" + " \n" +
+                "Piece Value: " + pieceValue(board.redPlayer()) + "\n" +
+                "Versatility: " + versatility(board.redPlayer()) + "\n" +
+                "Near Enemy Den Without Enemy: " + nearEnemyDenWithoutEnemy(board.redPlayer(), depth) + "\n" +
+                "Near Enemy Den With Enemy: " + nearEnemyDenWithEnemy(board.redPlayer()) + "\n" +
+                "Is Enemy Den Penetrated: " + isEnemyDenPenetrated(board.redPlayer(), depth) + "\n" +
+                "Capture Move: " + captureMove(board.redPlayer()) + "\n" +
+                "-------------------------------\n" +
+                "Net Score: " + evaluate(board, depth) + "\n");
     }
 
     private static int pieceValue(final Player player) {

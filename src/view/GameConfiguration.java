@@ -117,7 +117,7 @@ class GameConfiguration extends JDialog {
     }
 
     int getSearchDepth() {
-        return (Integer) this.searchDepthSpinner.getValue();
+        return 4;
     }
 
     void setBluePlayerType(PlayerType bluePlayerType) {
