@@ -25,10 +25,12 @@ import static javax.swing.SwingUtilities.isRightMouseButton;
 
 public class GameFrame extends Observable {
     private final JFrame gameFrame;
+    private static final GameFrame INSTANCE = new GameFrame();
     private final LeftPanel leftPanel;
     private final RightPanel rightPanel;
     private final PlayerPanel playerPanel;
     private final CapturedPiecesPanel capturedPiecesPanel;
+    private final GameConfiguration gameConfiguration;
     private final MoveLog moveLog;
     private final BoardPanel boardPanel;
     private Board chessBoard;
@@ -36,7 +38,7 @@ public class GameFrame extends Observable {
     private Piece humanMovedPiece;
     private BoardDirection boardDirection;
     private boolean isBoard1 = true;
-    private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
+    static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(500, 650);
     private static final Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
     private final ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
@@ -57,6 +59,7 @@ public class GameFrame extends Observable {
         this.capturedPiecesPanel = new CapturedPiecesPanel();
         this.boardPanel = new BoardPanel();
         this.moveLog = new MoveLog();
+        this.gameConfiguration = new GameConfiguration(this.gameFrame, true);
         this.boardDirection = BoardDirection.NORMAL;
         this.gameFrame.add(this.leftPanel, BorderLayout.WEST);
         this.gameFrame.add(this.rightPanel, BorderLayout.EAST);
@@ -66,6 +69,10 @@ public class GameFrame extends Observable {
         this.gameFrame.setIconImage(logo.getImage());
         this.gameFrame.setVisible(true);
         this.gameFrame.setResizable(false);
+    }
+
+    public static GameFrame get() {
+        return INSTANCE;
     }
 
     private JMenuBar createGameFrameMenuBar() {
@@ -136,6 +143,54 @@ public class GameFrame extends Observable {
 
         return settingMenu;
     }
+
+    private JMenu createGameModeMenu() {
+        final JMenu gameModeMenu = new JMenu("Game Mode");
+        final JMenuItem setUpGameMenuItem = new JMenuItem("Set Up Game");
+        setUpGameMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GameFrame.get().getGameConfiguration().promptUser();
+                GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
+                System.out.println("Set Up Game");
+            }
+        });
+        gameModeMenu.add(setUpGameMenuItem);
+        return gameModeMenu;
+    }
+
+    public void setVisible(boolean b) {
+        this.gameFrame.setVisible(b);
+    }
+
+    public GameConfiguration getGameConfiguration() {
+        return this.gameConfiguration;
+    }
+
+    public void setupUpdate(final GameConfiguration gameConfiguration) {
+        setChanged();
+        notifyObservers(gameConfiguration);
+    }
+
+//    public static class GameFrameAIWatcher implements Observer {
+//            @Override
+//            public void update(final Observable o, final Object arg) {
+//                if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getGameBoard().currentPlayer()) &&
+//                        !GameFrame.get().getGameBoard().currentPlayer().isInCheckMate() &&
+//                        !GameFrame.get().getGameBoard().currentPlayer().isInStaleMate()) {
+//                    // create an AI thread
+//                    // execute AI work
+//                    final AIThinkTank thinkTank = new AIThinkTank();
+//                    thinkTank.execute();
+//                }
+//                if (GameFrame.get().getGameBoard().currentPlayer().isInCheckMate()) {
+//                    System.out.println("game over, " + GameFrame.get().getGameBoard().currentPlayer() + " is in checkmate!");
+//                }
+//                if (GameFrame.get().getGameBoard().currentPlayer().isInStaleMate()) {
+//                    System.out.println("game over, " + GameFrame.get().getGameBoard().currentPlayer() + " is in stalemate!");
+//                }
+//            }
+//    }
 
     enum BoardDirection {
         NORMAL {

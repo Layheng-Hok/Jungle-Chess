@@ -17,7 +17,7 @@ import java.util.List;
 import static view.GameFrame.MoveLog;
 import static view.GameFrame.defaultImagesPath;
 
-public class CapturedPiecesPanel extends JPanel {
+ class CapturedPiecesPanel extends JPanel {
     private final JPanel westPanel;
     private final JPanel eastPanel;
     private static final Dimension CAPTURED_PIECES_PANEL_DIMENSION = new Dimension(530, 100);

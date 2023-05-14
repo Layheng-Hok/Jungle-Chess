@@ -5,7 +5,7 @@ import java.awt.*;
 
 import static view.GameFrame.defaultImagesPath;
 
-public class PlayerPanel extends JPanel {
+ class PlayerPanel extends JPanel {
     private static final Dimension PLAYER_PANEL_DIMENSION = new Dimension(530, 100);
     private final Image topPanelImage;
     public int roundNumber = 1;

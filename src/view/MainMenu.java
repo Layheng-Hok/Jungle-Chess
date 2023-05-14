@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-public class MainMenu extends JFrame   {
+ public class MainMenu extends JFrame   {
     private JLabel background;
     private JLabel logo;
     private JButton onePlayer;
