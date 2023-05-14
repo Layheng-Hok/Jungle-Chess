@@ -46,7 +46,7 @@ class GameConfiguration extends JDialog {
         gameConfigPanel.add(redHumanButton);
         gameConfigPanel.add(redComputerButton);
 
-        final JButton okButton = new JButton("Ok");
+        final JButton okButton = new JButton("Get Started");
 
         ActionListener blueButtonListener = new ActionListener() {
             @Override
@@ -84,14 +84,14 @@ class GameConfiguration extends JDialog {
         });
 
         gameConfigPanel.add(okButton);
-        setSize(200, 250);
+        setSize(190, 200);
         setLocationRelativeTo(null);
         setVisible(false);
 
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                okButton.doClick(); // Simulate Ok button click
+                okButton.doClick();
             }
         });
     }

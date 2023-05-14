@@ -9,7 +9,7 @@ public class MinimaxAlgorithm implements Strategy {
     private final int depth;
 
     public MinimaxAlgorithm(final int searchDepth) {
-        this.evaluator = new StandardBoardEvaluator();
+        this.evaluator = new ConcreteBoardEvaluator();
         this.depth = searchDepth;
     }
 
