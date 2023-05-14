@@ -110,13 +110,21 @@ public final class StandardBoardEvaluator implements GameEvaluator {
     }
 
     private static int isEnemyDenPenetrated(Player player, int depth) {
-        return player.getEnemyPlayer().isDenPenetrated() ? PENETRATE_ENEMY_DEN_BONUS * depthBonus(depth) : 0;
+        int penetrateEnemyDenScore = 0;
+        for (final Move move : player.getValidMoves()) {
+            if (player.getAllyColor().isBlue() && move.getDestinationCoordinate() == 3) {
+                penetrateEnemyDenScore += PENETRATE_ENEMY_DEN_BONUS * depthBonus(depth);
+            } else if (player.getAllyColor().isRed() && move.getDestinationCoordinate() == 59) {
+                penetrateEnemyDenScore += PENETRATE_ENEMY_DEN_BONUS * depthBonus(depth);
+            }
+        }
+        return penetrateEnemyDenScore;
     }
 
     private static int captureMove(final Player player) {
         int captureScore = 0;
-        for(final Move move : player.getValidMoves()) {
-            if(move.isCaptureMove()) {
+        for (final Move move : player.getValidMoves()) {
+            if (move.isCaptureMove()) {
                 captureScore += move.getCapturedPiece().getPiecePower();
             }
         }
