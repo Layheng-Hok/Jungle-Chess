@@ -1,11 +1,14 @@
 package view;
 
+import model.artificialintelligence.MinimaxAlgorithm;
+import model.artificialintelligence.Strategy;
 import model.board.Board;
 import model.board.Utilities;
 import model.board.Move;
 import model.piece.Piece;
 import model.board.MoveTransition;
 import model.player.PlayerColor;
+import model.player.PlayerType;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -25,24 +28,25 @@ import static javax.swing.SwingUtilities.isRightMouseButton;
 
 public class GameFrame extends Observable {
     private final JFrame gameFrame;
-    private static final GameFrame INSTANCE = new GameFrame();
     private final LeftPanel leftPanel;
     private final RightPanel rightPanel;
     private final PlayerPanel playerPanel;
     private final CapturedPiecesPanel capturedPiecesPanel;
+    private final BoardPanel boardPanel;
     private final GameConfiguration gameConfiguration;
     private final MoveLog moveLog;
-    private final BoardPanel boardPanel;
     private Board chessBoard;
+    private Move computerMove;
     private Piece sourceTerrain;
     private Piece humanMovedPiece;
     private BoardDirection boardDirection;
     private boolean isBoard1 = true;
-    static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
+    private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(500, 650);
     private static final Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
     private final ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
     public static final String defaultImagesPath = "resource/images/";
+    private static final GameFrame INSTANCE = new GameFrame();
 
     public GameFrame() {
         this.gameFrame = new JFrame("Jungle Chess (斗兽棋)");
@@ -59,6 +63,7 @@ public class GameFrame extends Observable {
         this.capturedPiecesPanel = new CapturedPiecesPanel();
         this.boardPanel = new BoardPanel();
         this.moveLog = new MoveLog();
+        this.addObserver(new GameAIObserver());
         this.gameConfiguration = new GameConfiguration(this.gameFrame, true);
         this.boardDirection = BoardDirection.NORMAL;
         this.gameFrame.add(this.leftPanel, BorderLayout.WEST);
@@ -69,10 +74,6 @@ public class GameFrame extends Observable {
         this.gameFrame.setIconImage(logo.getImage());
         this.gameFrame.setVisible(true);
         this.gameFrame.setResizable(false);
-    }
-
-    public static GameFrame get() {
-        return INSTANCE;
     }
 
     private JMenuBar createGameFrameMenuBar() {
@@ -142,86 +143,6 @@ public class GameFrame extends Observable {
         settingMenu.add(exitMenuItem);
 
         return settingMenu;
-    }
-
-    private JMenu createGameModeMenu() {
-        final JMenu gameModeMenu = new JMenu("Game Mode");
-        final JMenuItem setUpGameMenuItem = new JMenuItem("Set Up Game");
-        setUpGameMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                GameFrame.get().getGameConfiguration().promptUser();
-                GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
-                System.out.println("Set Up Game");
-            }
-        });
-        gameModeMenu.add(setUpGameMenuItem);
-        return gameModeMenu;
-    }
-
-    public void setVisible(boolean b) {
-        this.gameFrame.setVisible(b);
-    }
-
-    public GameConfiguration getGameConfiguration() {
-        return this.gameConfiguration;
-    }
-
-    public void setupUpdate(final GameConfiguration gameConfiguration) {
-        setChanged();
-        notifyObservers(gameConfiguration);
-    }
-
-//    public static class GameFrameAIWatcher implements Observer {
-//            @Override
-//            public void update(final Observable o, final Object arg) {
-//                if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getGameBoard().currentPlayer()) &&
-//                        !GameFrame.get().getGameBoard().currentPlayer().isInCheckMate() &&
-//                        !GameFrame.get().getGameBoard().currentPlayer().isInStaleMate()) {
-//                    // create an AI thread
-//                    // execute AI work
-//                    final AIThinkTank thinkTank = new AIThinkTank();
-//                    thinkTank.execute();
-//                }
-//                if (GameFrame.get().getGameBoard().currentPlayer().isInCheckMate()) {
-//                    System.out.println("game over, " + GameFrame.get().getGameBoard().currentPlayer() + " is in checkmate!");
-//                }
-//                if (GameFrame.get().getGameBoard().currentPlayer().isInStaleMate()) {
-//                    System.out.println("game over, " + GameFrame.get().getGameBoard().currentPlayer() + " is in stalemate!");
-//                }
-//            }
-//    }
-
-    enum BoardDirection {
-        NORMAL {
-            @Override
-            List<TerrainPanel> traverse(final List<TerrainPanel> boardTiles) {
-                return boardTiles;
-            }
-
-            @Override
-            BoardDirection opposite() {
-                return FLIPPED;
-            }
-        },
-        FLIPPED {
-            @Override
-            List<TerrainPanel> traverse(final List<TerrainPanel> boardTiles) {
-                List<TerrainPanel> reversedTiles = new ArrayList<>(boardTiles);
-                Collections.reverse(reversedTiles);
-                return reversedTiles;
-            }
-
-            @Override
-            BoardDirection opposite() {
-                return NORMAL;
-            }
-        };
-
-        abstract List<TerrainPanel> traverse(final List<TerrainPanel> boardTiles);
-
-        abstract BoardDirection opposite();
-
     }
 
     private class BoardPanel extends JPanel {
@@ -300,40 +221,6 @@ public class GameFrame extends Observable {
         }
     }
 
-    public static class MoveLog {
-
-        private final List<Move> moves;
-
-        MoveLog() {
-            this.moves = new ArrayList<>();
-        }
-
-        public List<Move> getMoves() {
-            return this.moves;
-        }
-
-        void addMove(final Move move) {
-            this.moves.add(move);
-        }
-
-        public int size() {
-            return this.moves.size();
-        }
-
-        void clear() {
-            this.moves.clear();
-        }
-
-        Move removeMove(final int index) {
-            return this.moves.remove(index);
-        }
-
-        boolean removeMove(final Move move) {
-            return this.moves.remove(move);
-        }
-
-    }
-
     private class TerrainPanel extends JPanel {
         private final int terrainCoordinate;
 
@@ -368,7 +255,6 @@ public class GameFrame extends Observable {
                                 }
                                 playerPanel.repaint();
                                 moveLog.addMove(move);
-                                System.out.println(chessBoard);
                             }
                             sourceTerrain = null;
                             humanMovedPiece = null;
@@ -377,6 +263,9 @@ public class GameFrame extends Observable {
                             @Override
                             public void run() {
                                 capturedPiecesPanel.redo(moveLog);
+                                if (gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                                    GameFrame.get().moveMadeUpdate(PlayerType.HUMAN);
+                                }
                                 boardPanel.drawBoard(chessBoard);
                             }
                         });
@@ -468,5 +357,173 @@ public class GameFrame extends Observable {
             // setBorder(BorderFactory.createLineBorder(Color.BLACK));
             setOpaque(false);
         }
+    }
+
+    enum BoardDirection {
+        NORMAL {
+            @Override
+            List<TerrainPanel> traverse(final List<TerrainPanel> boardTiles) {
+                return boardTiles;
+            }
+
+            @Override
+            BoardDirection opposite() {
+                return FLIPPED;
+            }
+        },
+        FLIPPED {
+            @Override
+            List<TerrainPanel> traverse(final List<TerrainPanel> boardTiles) {
+                List<TerrainPanel> reversedTiles = new ArrayList<>(boardTiles);
+                Collections.reverse(reversedTiles);
+                return reversedTiles;
+            }
+
+            @Override
+            BoardDirection opposite() {
+                return NORMAL;
+            }
+        };
+
+        abstract List<TerrainPanel> traverse(final List<TerrainPanel> boardTiles);
+
+        abstract BoardDirection opposite();
+
+    }
+
+    public static class MoveLog {
+        private final List<Move> moves;
+
+        MoveLog() {
+            this.moves = new ArrayList<>();
+        }
+
+        public List<Move> getMoves() {
+            return this.moves;
+        }
+
+        void addMove(final Move move) {
+            this.moves.add(move);
+        }
+
+        public int size() {
+            return this.moves.size();
+        }
+
+        void clear() {
+            this.moves.clear();
+        }
+
+        Move removeMove(final int index) {
+            return this.moves.remove(index);
+        }
+
+        boolean removeMove(final Move move) {
+            return this.moves.remove(move);
+        }
+    }
+
+    public void setupUpdate(final GameConfiguration gameConfiguration) {
+        setChanged();
+        notifyObservers(gameConfiguration);
+    }
+
+    private void moveMadeUpdate(final PlayerType playerType) {
+        setChanged();
+        notifyObservers(playerType);
+    }
+
+    private void updateGameBoard(final Board board) {
+        this.chessBoard = board;
+    }
+
+    private void updateComputerMove(final Move move) {
+        this.computerMove = move;
+    }
+
+    public static class GameAIObserver implements Observer {
+        @Override
+        public void update(final Observable o, final Object arg) {
+            if (GameFrame.get().gameConfiguration.isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer()) &&
+                    !GameFrame.get().getChessBoard().getCurrentPlayer().isDenPenetrated()) {
+                final IntelligenceHub intelligenceHub = new IntelligenceHub();
+                intelligenceHub.execute();
+            }
+            if (GameFrame.get().getChessBoard().getCurrentPlayer().isDenPenetrated()) {
+                System.out.println("Game Over, " + GameFrame.get().getChessBoard().getCurrentPlayer() + "'s den is penetrated by the enemy!");
+            }
+        }
+    }
+
+    public static class IntelligenceHub extends SwingWorker<Move, String> {
+        private int searchDepth;
+        private IntelligenceHub() {
+        }
+
+        @Override
+        protected Move doInBackground() throws Exception {
+            final Strategy minimax = new MinimaxAlgorithm(4);
+            final Move optimalMove = minimax.execute(GameFrame.get().getChessBoard());
+            return optimalMove;
+        }
+
+        @Override
+        public void done() {
+            try {
+                final Move optimalMove = get();
+                GameFrame.get().updateComputerMove(optimalMove);
+                GameFrame.get().updateGameBoard(GameFrame.get().getChessBoard().getCurrentPlayer().makeMove(optimalMove).getTransitionBoard());
+                GameFrame.get().getMoveLog().addMove(optimalMove);
+                GameFrame.get().getPlayerPanel().setCurrentPlayer(GameFrame.get().getChessBoard().getCurrentPlayer().toString());
+                if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor() == PlayerColor.BLUE) {
+                    GameFrame.get().getPlayerPanel().setRoundNumber(GameFrame.get().getPlayerPanel().getRoundNumber() + 1);
+                }
+                GameFrame.get().getPlayerPanel().repaint();
+                GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
+                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+                GameFrame.get().moveMadeUpdate(PlayerType.COMPUTER);
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static GameFrame get() {
+        return INSTANCE;
+    }
+
+    public void show() {
+        GameFrame.get().getMoveLog().clear();
+        GameFrame.get().getPlayerPanel().reset();
+        GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
+        GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+    }
+
+    public GameConfiguration getGameConfiguration() {
+        return this.gameConfiguration;
+    }
+
+    public BoardPanel getBoardPanel() {
+        return this.boardPanel;
+    }
+
+    public PlayerPanel getPlayerPanel() {
+        return this.playerPanel;
+    }
+
+    public CapturedPiecesPanel getCapturedPiecesPanel() {
+        return this.capturedPiecesPanel;
+    }
+
+    public Board getChessBoard() {
+        return this.chessBoard;
+    }
+
+    public MoveLog getMoveLog() {
+        return moveLog;
+    }
+
+    public void setVisible(boolean b) {
+        this.gameFrame.setVisible(b);
     }
 }

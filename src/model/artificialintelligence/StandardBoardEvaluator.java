@@ -1,15 +1,18 @@
 package model.artificialintelligence;
 
 import model.board.Board;
+import model.board.Move;
 import model.piece.Piece;
 import model.player.Player;
 import model.player.PlayerColor;
 
 public final class StandardBoardEvaluator implements GameEvaluator {
     private final static int DEPTH_BONUS = 100;
+    private final static int VERSATILITY_MULTIPLIER = 5;
     private final static int NEAR_ENEMY_DEN_WITHOUT_ENEMY_BONUS = 5000;
     private final static int NEAR_ENEMY_DEN_WITH_ENEMY_PENALTY = -100;
     private final static int PENETRATE_ENEMY_DEN_BONUS = 50000;
+    private final static int CAPTURE_MOVE_MULTIPLIER = 2;
 
     @Override
     public int evaluate(final Board board, final int depth) {
@@ -18,10 +21,12 @@ public final class StandardBoardEvaluator implements GameEvaluator {
     }
 
     private int scorePlayer(final Board board, final Player player, final int depth) {
-        return pieceValue(player) + versatility(player)
+        return pieceValue(player)
+                + versatility(player)
                 + nearEnemyDenWithoutEnemy(player, depth)
                 + nearEnemyDenWithEnemy(player)
-                + penetrateEnemyDen(player, depth);
+                + isEnemyDenPenetrated(player, depth)
+                + captureMove(player);
     }
 
     private static int pieceValue(final Player player) {
@@ -33,7 +38,11 @@ public final class StandardBoardEvaluator implements GameEvaluator {
     }
 
     private static int versatility(Player player) {
-        return player.getValidMoves().size();
+        return VERSATILITY_MULTIPLIER * versatilityRatio(player);
+    }
+
+    private static int versatilityRatio(Player player) {
+        return (int) ((player.getValidMoves().size() * 10.0f) / player.getEnemyPlayer().getValidMoves().size());
     }
 
     private static int depthBonus(int depth) {
@@ -100,7 +109,17 @@ public final class StandardBoardEvaluator implements GameEvaluator {
         return nearEnemyDenScore;
     }
 
-    private static int penetrateEnemyDen(Player player, int depth) {
-        return player.penetrateEnemyDen() ? PENETRATE_ENEMY_DEN_BONUS * depthBonus(depth) : 0;
+    private static int isEnemyDenPenetrated(Player player, int depth) {
+        return player.getEnemyPlayer().isDenPenetrated() ? PENETRATE_ENEMY_DEN_BONUS * depthBonus(depth) : 0;
+    }
+
+    private static int captureMove(final Player player) {
+        int captureScore = 0;
+        for(final Move move : player.getValidMoves()) {
+            if(move.isCaptureMove()) {
+                captureScore += move.getCapturedPiece().getPiecePower();
+            }
+        }
+        return captureScore * CAPTURE_MOVE_MULTIPLIER;
     }
 }

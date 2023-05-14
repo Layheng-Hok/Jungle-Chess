@@ -48,7 +48,7 @@ import static view.GameFrame.defaultImagesPath;
         final List<Piece> blueCapturedPieces = new ArrayList<>();
         final List<Piece> redCapturedPieces = new ArrayList<>();
         for (final Move move : moveLog.getMoves()) {
-            if (move.isCapture()) {
+            if (move.isCaptureMove()) {
                 final Piece capturedPiece = move.getCapturedPiece();
                 if (capturedPiece.getPieceColor().isBlue()) {
                     blueCapturedPieces.add(capturedPiece);

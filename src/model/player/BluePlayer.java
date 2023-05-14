@@ -16,15 +16,15 @@ public class BluePlayer extends Player {
     }
 
     @Override
-    public boolean penetrateEnemyDen() {
-        boolean penetrate = false;
-        for (Piece piece : this.getActivePieces()) {
-            if (piece.getPieceCoordinate() == 3) {
-                penetrate = true;
+    public boolean isDenPenetrated() {
+        boolean isDenPenetrated = false;
+        for (Piece piece : this.getEnemyPlayer().getActivePieces()) {
+            if (piece.getPieceCoordinate() == 59) {
+                isDenPenetrated = true;
                 break;
             }
         }
-        return penetrate;
+        return isDenPenetrated;
     }
 
     @Override

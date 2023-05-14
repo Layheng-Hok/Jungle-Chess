@@ -25,7 +25,7 @@ public class MinimaxAlgorithm implements Strategy {
         int highestValue = Integer.MIN_VALUE;
         int lowestValue = Integer.MAX_VALUE;
         int currentValue;
-        System.out.println(board.getCurrentPlayer() + " is THINKING with depth = " + depth);
+        System.out.println(board.getCurrentPlayer() + " is THINKING with depth of " + depth);
         int numMoves = board.getCurrentPlayer().getValidMoves().size();
         for (final Move move : board.getCurrentPlayer().getValidMoves()) {
             final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
@@ -81,6 +81,6 @@ public class MinimaxAlgorithm implements Strategy {
     }
 
     private static boolean isGameOverScenario(final Board board) {
-        return board.getCurrentPlayer().penetrateEnemyDen();
+        return board.getCurrentPlayer().isDenPenetrated();
     }
 }

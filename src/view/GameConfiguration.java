@@ -8,9 +8,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 class GameConfiguration extends JDialog {
-
     private PlayerType bluePlayerType;
     private PlayerType redPlayerType;
     private JSpinner searchDepthSpinner;
@@ -18,10 +19,10 @@ class GameConfiguration extends JDialog {
     private static final String HUMAN_TEXT = "Human";
     private static final String COMPUTER_TEXT = "Computer";
 
-    GameConfiguration(final JFrame frame,
-                      final boolean modal) {
+    GameConfiguration(final JFrame frame, final boolean modal) {
         super(frame, modal);
-        final JPanel myPanel = new JPanel(new GridLayout(0, 1));
+        setTitle("Game Configuration");
+        final JPanel gameConfigPanel = new JPanel(new GridLayout(0, 1));
         final JRadioButton blueHumanButton = new JRadioButton(HUMAN_TEXT);
         final JRadioButton blueComputerButton = new JRadioButton(COMPUTER_TEXT);
         final JRadioButton redHumanButton = new JRadioButton(HUMAN_TEXT);
@@ -35,43 +36,64 @@ class GameConfiguration extends JDialog {
         final ButtonGroup redGroup = new ButtonGroup();
         redGroup.add(redHumanButton);
         redGroup.add(redComputerButton);
-        redHumanButton.setSelected(true);
+        redComputerButton.setSelected(true);
 
-        getContentPane().add(myPanel);
-        myPanel.add(new JLabel("Blue"));
-        myPanel.add(blueHumanButton);
-        myPanel.add(blueComputerButton);
-        myPanel.add(new JLabel("Red"));
-        myPanel.add(redHumanButton);
-        myPanel.add(redComputerButton);
+        getContentPane().add(gameConfigPanel);
+        gameConfigPanel.add(new JLabel("Blue"));
+        gameConfigPanel.add(blueHumanButton);
+        gameConfigPanel.add(blueComputerButton);
+        gameConfigPanel.add(new JLabel("Red"));
+        gameConfigPanel.add(redHumanButton);
+        gameConfigPanel.add(redComputerButton);
 
-        myPanel.add(new JLabel("Search"));
-        this.searchDepthSpinner = addLabeledSpinner(myPanel, "Search Depth", new SpinnerNumberModel(6, 0, Integer.MAX_VALUE, 1));
-
-        final JButton cancelButton = new JButton("Cancel");
         final JButton okButton = new JButton("Ok");
+
+        ActionListener blueButtonListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (blueComputerButton.isSelected()) {
+                    redHumanButton.setSelected(true);
+                } else if (blueHumanButton.isSelected()){
+                    redComputerButton.setSelected(true);
+                }
+            }
+        };
+        blueHumanButton.addActionListener(blueButtonListener);
+        blueComputerButton.addActionListener(blueButtonListener);
+
+        ActionListener redButtonListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (redComputerButton.isSelected()) {
+                    blueHumanButton.setSelected(true);
+                } else if (redHumanButton.isSelected()){
+                    blueComputerButton.setSelected(true);
+                }
+            }
+        };
+        redHumanButton.addActionListener(redButtonListener);
+        redComputerButton.addActionListener(redButtonListener);
 
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 bluePlayerType = blueComputerButton.isSelected() ? PlayerType.COMPUTER : PlayerType.HUMAN;
                 redPlayerType = redComputerButton.isSelected() ? PlayerType.COMPUTER : PlayerType.HUMAN;
+                System.out.println("Set Up Game");
                 GameConfiguration.this.setVisible(false);
             }
         });
 
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Cancel");
-                GameConfiguration.this.setVisible(false);
-            }
-        });
-
-        myPanel.add(cancelButton);
-        myPanel.add(okButton);
-
-        setLocationRelativeTo(frame);
-        pack();
+        gameConfigPanel.add(okButton);
+        setSize(200, 250);
+        setLocationRelativeTo(null);
         setVisible(false);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                okButton.doClick(); // Simulate Ok button click
+            }
+        });
     }
 
     void promptUser() {
@@ -94,18 +116,15 @@ class GameConfiguration extends JDialog {
         return this.redPlayerType;
     }
 
-    private static JSpinner addLabeledSpinner(final Container c,
-                                              final String label,
-                                              final SpinnerModel model) {
-        final JLabel l = new JLabel(label);
-        c.add(l);
-        final JSpinner spinner = new JSpinner(model);
-        l.setLabelFor(spinner);
-        c.add(spinner);
-        return spinner;
-    }
-
     int getSearchDepth() {
         return (Integer) this.searchDepthSpinner.getValue();
+    }
+
+    void setBluePlayerType(PlayerType bluePlayerType) {
+        this.bluePlayerType = bluePlayerType;
+    }
+
+    void setRedPlayerType(PlayerType redPlayerType) {
+        this.redPlayerType = redPlayerType;
     }
 }

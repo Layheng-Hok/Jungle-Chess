@@ -60,7 +60,7 @@ public abstract class Move {
         return this.movedPiece;
     }
 
-    public boolean isCapture() {
+    public boolean isCaptureMove() {
         return false;
     }
 
@@ -136,7 +136,7 @@ public abstract class Move {
         }
 
         @Override
-        public boolean isCapture() {
+        public boolean isCaptureMove() {
             return true;
         }
 
