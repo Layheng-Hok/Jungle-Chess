@@ -454,12 +454,13 @@ public class GameFrame extends Observable {
             if (GameFrame.get().getChessBoard().getCurrentPlayer().isDenPenetrated()) {
                 System.out.println("Game Over, " + GameFrame.get().getChessBoard().getCurrentPlayer() + "'s den is penetrated by the enemy!");
             }
+            if (GameFrame.get().getChessBoard().getCurrentPlayer().getActivePieces() == null) {
+                System.out.println("Game Over, " + GameFrame.get().getChessBoard().getCurrentPlayer() + " has no more pieces!");
+            }
         }
     }
 
     public static class IntelligenceHub extends SwingWorker<Move, String> {
-        private int searchDepth;
-
         private IntelligenceHub() {
         }
 
@@ -468,20 +469,17 @@ public class GameFrame extends Observable {
             if (DifficultyFrame.getDifficulty().equals("easy")) {
                 final Strategy minimax = new MinimaxAlgorithm(4, PoorBoardEvaluator.get());
                 System.out.println(PoorBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().AIGameConfiguration.getSearchDepth()));
-                final Move optimalMove = minimax.execute(GameFrame.get().getChessBoard());
-                return optimalMove;
+                return minimax.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty().equals("medium")) {
                 final Strategy minimax = new MinimaxAlgorithm(4, ConcreteBoardEvaluator.get());
                 System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().AIGameConfiguration.getSearchDepth()));
-                final Move optimalMove = minimax.execute(GameFrame.get().getChessBoard());
-                return optimalMove;
+                return minimax.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty().equals("hard")) {
                 final Strategy minimax = new MinimaxAlgorithm(5, ConcreteBoardEvaluator.get());
                 System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().AIGameConfiguration.getSearchDepth()));
-                final Move optimalMove = minimax.execute(GameFrame.get().getChessBoard());
-                return optimalMove;
+                return minimax.execute(GameFrame.get().getChessBoard());
             }
             return null;
         }
