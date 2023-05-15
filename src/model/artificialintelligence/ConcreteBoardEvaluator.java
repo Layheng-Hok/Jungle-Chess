@@ -24,11 +24,11 @@ public final class ConcreteBoardEvaluator implements GameEvaluator {
 
     @Override
     public int evaluate(final Board board, final int depth) {
-        return scorePlayer(board, board.bluePlayer(), depth) -
-                scorePlayer(board, board.redPlayer(), depth);
+        return scorePlayer(board.bluePlayer(), depth) -
+                scorePlayer(board.redPlayer(), depth);
     }
 
-    private int scorePlayer(final Board board, final Player player, final int depth) {
+    private int scorePlayer(final Player player, final int depth) {
         return pieceValue(player)
                 + versatility(player)
                 + nearEnemyDenWithoutEnemy(player, depth)

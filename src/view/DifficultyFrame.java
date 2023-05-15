@@ -22,7 +22,7 @@ class DifficultyFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new FlowLayout());
-        setContentPane(new JLabel(new ImageIcon("background_image.jpg"))); // Replace "background_image.jpg" with your image file path
+        setContentPane(new JLabel(new ImageIcon("background_image.jpg")));
     }
 
     private void createButtons() {
