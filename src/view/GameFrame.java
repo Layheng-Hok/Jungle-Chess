@@ -92,7 +92,13 @@ public class GameFrame extends Observable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Game Saved");
+                String path = JOptionPane.showInputDialog("File Name");
+                while (path.equals("")){
+                    JOptionPane.showMessageDialog(null, "Name cannot be empty");
+                    path = JOptionPane.showInputDialog("File Name");
+                }
             }
+
         });
         settingMenu.add(save);
 
