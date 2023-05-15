@@ -8,8 +8,8 @@ public class MinimaxAlgorithm implements Strategy {
     private final GameEvaluator evaluator;
     private final int depth;
 
-    public MinimaxAlgorithm(final int searchDepth) {
-        this.evaluator = ConcreteBoardEvaluator.get();
+    public MinimaxAlgorithm(final int searchDepth, final GameEvaluator evaluator) {
+        this.evaluator = evaluator;
         this.depth = searchDepth;
     }
 
@@ -25,7 +25,7 @@ public class MinimaxAlgorithm implements Strategy {
         int highestValue = Integer.MIN_VALUE;
         int lowestValue = Integer.MAX_VALUE;
         int currentValue;
-        System.out.println(board.getCurrentPlayer() + " is THINKING with depth of " + depth);
+        System.out.println(board.getCurrentPlayer() + " is THINKING with a depth of " + depth);
         int numMoves = board.getCurrentPlayer().getValidMoves().size();
         for (final Move move : board.getCurrentPlayer().getValidMoves()) {
             final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);

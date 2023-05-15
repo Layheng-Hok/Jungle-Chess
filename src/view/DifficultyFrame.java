@@ -8,6 +8,7 @@ class DifficultyFrame extends JFrame {
     private JButton easyButton;
     private JButton mediumButton;
     private JButton hardButton;
+    private static String difficulty = null;
 
     DifficultyFrame() {
         initializeFrame();
@@ -31,6 +32,9 @@ class DifficultyFrame extends JFrame {
         easyButton.setLocation(100, 300);
         easyButton.addActionListener((e) -> {
             this.setVisible(false);
+            setDifficulty("easy");
+            GameFrame.get().getGameConfiguration().promptUser();
+            GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
         });
 
         // easyButton.setIcon(new ImageIcon("easy_icon.png")); // Replace "easy_icon.png" with the icon image for the Easy button
@@ -40,6 +44,7 @@ class DifficultyFrame extends JFrame {
         mediumButton.setLocation(100, 410);
         mediumButton.addActionListener((e) -> {
             this.setVisible(false);
+            setDifficulty("medium");
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
         });
@@ -49,6 +54,7 @@ class DifficultyFrame extends JFrame {
         hardButton.setLocation(100, 520);
         hardButton.addActionListener((e) -> {
             this.setVisible(false);
+            setDifficulty("hard");
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
         });
@@ -59,6 +65,14 @@ class DifficultyFrame extends JFrame {
         this.add(easyButton);
         this.add(mediumButton);
         this.add(hardButton);
+    }
+
+    private static void setDifficulty(String difficulty) {
+        DifficultyFrame.difficulty = difficulty;
+    }
+
+    static String getDifficulty() {
+        return difficulty;
     }
 
     public static void main(String[] args) {
