@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-class GameConfiguration extends JDialog {
+class AIGameConfiguration extends JDialog {
     private PlayerType bluePlayerType;
     private PlayerType redPlayerType;
     private JSpinner searchDepthSpinner;
@@ -19,9 +19,9 @@ class GameConfiguration extends JDialog {
     private static final String HUMAN_TEXT = "Human";
     private static final String COMPUTER_TEXT = "Computer";
 
-    GameConfiguration(final JFrame frame, final boolean modal) {
+    AIGameConfiguration(final JFrame frame, final boolean modal) {
         super(frame, modal);
-        setTitle("Game Configuration");
+        setTitle("PICK A SIDE");
         final JPanel gameConfigPanel = new JPanel(new GridLayout(0, 1));
         final JRadioButton blueHumanButton = new JRadioButton(HUMAN_TEXT);
         final JRadioButton blueComputerButton = new JRadioButton(COMPUTER_TEXT);
@@ -79,7 +79,7 @@ class GameConfiguration extends JDialog {
                 bluePlayerType = blueComputerButton.isSelected() ? PlayerType.COMPUTER : PlayerType.HUMAN;
                 redPlayerType = redComputerButton.isSelected() ? PlayerType.COMPUTER : PlayerType.HUMAN;
                 System.out.println("Set Up Game");
-                GameConfiguration.this.setVisible(false);
+                AIGameConfiguration.this.setVisible(false);
             }
         });
 

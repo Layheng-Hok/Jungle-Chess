@@ -35,7 +35,7 @@ public class GameFrame extends Observable {
     private final PlayerPanel playerPanel;
     private final CapturedPiecesPanel capturedPiecesPanel;
     private final BoardPanel boardPanel;
-    private final GameConfiguration gameConfiguration;
+    private final AIGameConfiguration AIGameConfiguration;
     private final MoveLog moveLog;
     private Board chessBoard;
     private Move computerMove;
@@ -66,7 +66,7 @@ public class GameFrame extends Observable {
         this.boardPanel = new BoardPanel();
         this.moveLog = new MoveLog();
         this.addObserver(new GameAIObserver());
-        this.gameConfiguration = new GameConfiguration(this.gameFrame, true);
+        this.AIGameConfiguration = new AIGameConfiguration(this.gameFrame, true);
         this.boardDirection = BoardDirection.NORMAL;
         this.gameFrame.add(this.leftPanel, BorderLayout.WEST);
         this.gameFrame.add(this.rightPanel, BorderLayout.EAST);
@@ -265,7 +265,7 @@ public class GameFrame extends Observable {
                             @Override
                             public void run() {
                                 capturedPiecesPanel.redo(moveLog);
-                                if (gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                                if (AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
                                     GameFrame.get().moveMadeUpdate(PlayerType.HUMAN);
                                 }
                                 boardPanel.drawBoard(chessBoard);
@@ -425,9 +425,9 @@ public class GameFrame extends Observable {
         }
     }
 
-    public void setupUpdate(final GameConfiguration gameConfiguration) {
+    public void setupUpdate(final AIGameConfiguration AIGameConfiguration) {
         setChanged();
-        notifyObservers(gameConfiguration);
+        notifyObservers(AIGameConfiguration);
     }
 
     private void moveMadeUpdate(final PlayerType playerType) {
@@ -446,7 +446,7 @@ public class GameFrame extends Observable {
     public static class GameAIObserver implements Observer {
         @Override
         public void update(final Observable o, final Object arg) {
-            if (GameFrame.get().gameConfiguration.isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer()) &&
+            if (GameFrame.get().AIGameConfiguration.isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer()) &&
                     !GameFrame.get().getChessBoard().getCurrentPlayer().isDenPenetrated()) {
                 final IntelligenceHub intelligenceHub = new IntelligenceHub();
                 intelligenceHub.execute();
@@ -467,19 +467,19 @@ public class GameFrame extends Observable {
         protected Move doInBackground() throws Exception {
             if (DifficultyFrame.getDifficulty().equals("easy")) {
                 final Strategy minimax = new MinimaxAlgorithm(4, PoorBoardEvaluator.get());
-                System.out.println(PoorBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
+                System.out.println(PoorBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().AIGameConfiguration.getSearchDepth()));
                 final Move optimalMove = minimax.execute(GameFrame.get().getChessBoard());
                 return optimalMove;
             }
             if (DifficultyFrame.getDifficulty().equals("medium")) {
                 final Strategy minimax = new MinimaxAlgorithm(4, ConcreteBoardEvaluator.get());
-                System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
+                System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().AIGameConfiguration.getSearchDepth()));
                 final Move optimalMove = minimax.execute(GameFrame.get().getChessBoard());
                 return optimalMove;
             }
             if (DifficultyFrame.getDifficulty().equals("hard")) {
                 final Strategy minimax = new MinimaxAlgorithm(5, ConcreteBoardEvaluator.get());
-                System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
+                System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().AIGameConfiguration.getSearchDepth()));
                 final Move optimalMove = minimax.execute(GameFrame.get().getChessBoard());
                 return optimalMove;
             }
@@ -518,8 +518,8 @@ public class GameFrame extends Observable {
         GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
     }
 
-    public GameConfiguration getGameConfiguration() {
-        return this.gameConfiguration;
+    public AIGameConfiguration getGameConfiguration() {
+        return this.AIGameConfiguration;
     }
 
     public BoardPanel getBoardPanel() {
