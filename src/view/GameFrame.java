@@ -45,7 +45,7 @@ public class GameFrame extends Observable {
     private boolean isBoard1 = true;
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(500, 650);
-    private static final Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10);
+    private static final Dimension TERRAIN_PANEL_DIMENSION = new Dimension(10, 10);
     private final ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
     public static final String defaultImagesPath = "resource/images/";
     private static final GameFrame INSTANCE = new GameFrame();
@@ -235,7 +235,7 @@ public class GameFrame extends Observable {
         TerrainPanel(final BoardPanel boardPanel, final int terrainCoordinate) {
             super(new GridBagLayout());
             this.terrainCoordinate = terrainCoordinate;
-            setPreferredSize(TILE_PANEL_DIMENSION);
+            setPreferredSize(TERRAIN_PANEL_DIMENSION);
             assignTerrainColor(terrainCoordinate);
             assignTerrainPieceIcon(chessBoard);
             addMouseListener(new MouseListener() {
