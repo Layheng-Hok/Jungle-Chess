@@ -22,14 +22,14 @@ class DifficultyFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new FlowLayout());
-        setContentPane(new JLabel(new ImageIcon("background_image.jpg")));
+        setContentPane(new JLabel(new ImageIcon("background.png")));
     }
 
     private void createButtons() {
         easyButton = new JButton();
         easyButton.setText("Easy");
         easyButton.setSize(300, 55);
-        easyButton.setLocation(100, 300);
+        easyButton.setLocation(120, 300);
         easyButton.addActionListener((e) -> {
             this.setVisible(false);
             setDifficulty("easy");
@@ -41,7 +41,7 @@ class DifficultyFrame extends JFrame {
         mediumButton = new JButton();
         mediumButton.setText("Medium");
         mediumButton.setSize(300, 60);
-        mediumButton.setLocation(100, 410);
+        mediumButton.setLocation(120, 410);
         mediumButton.addActionListener((e) -> {
             this.setVisible(false);
             setDifficulty("medium");
@@ -51,7 +51,7 @@ class DifficultyFrame extends JFrame {
         // mediumButton.setIcon(new ImageIcon("medium_icon.png")); // Replace "medium_icon.png" with the icon image for the Medium button
         hardButton = new JButton("Hard");
         hardButton.setSize(300, 60);
-        hardButton.setLocation(100, 520);
+        hardButton.setLocation(120, 520);
         hardButton.addActionListener((e) -> {
             this.setVisible(false);
             setDifficulty("hard");

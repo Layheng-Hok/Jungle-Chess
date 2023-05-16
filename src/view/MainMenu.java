@@ -1,59 +1,61 @@
 package view;
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
- public class MainMenu extends JFrame   {
+public class MainMenu extends JFrame   {
     private JLabel background;
     private JLabel logo;
     private JButton onePlayer;
     private JButton twoPlayer;
-    private JButton rule;
+    private JButton LoadGame;
 
-    private String iconsFolder="icons"+ File.separator;
+    private String iconsFolder="resource/images"+ File.separator;
     private String jChessIcon=iconsFolder+"logo.png";
     private String backgroundIcon=iconsFolder+"background.png";
     private String onePlayerIcon=iconsFolder+"oneplayer.png";
     private String twoPlayerIcon=iconsFolder+"twoplayer.png";
-    private String ruleIcon=iconsFolder+"rule.png";
+    private String LoadGameIcon=iconsFolder+"LoadGame.png";
     public MainMenu(){
+        setTitle("Main Menu");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(null);
-        this.setBounds(630, 180, 525, 675);
+        this.setBounds(630, 180, 530, 850);
         this.getContentPane().setBackground(Color.GRAY);
         ImageIcon onePlayerI = new ImageIcon(new ImageIcon(onePlayerIcon).getImage().getScaledInstance
-                (240, 90, Image.SCALE_DEFAULT));
+                (178, 74, Image.SCALE_DEFAULT));
         onePlayer = new JButton(onePlayerI);
-        onePlayer.setBounds(173, 326, 240, 80);
+        onePlayer.setBounds(170, 350, 180, 80);
         this.add(onePlayer);
         //onePlayer.addActionListener(actions);
 
         ImageIcon twoPlayerI = new ImageIcon(new ImageIcon(twoPlayerIcon).getImage().getScaledInstance
-                (250, 65, Image.SCALE_DEFAULT));
+                (178, 74, Image.SCALE_DEFAULT));
         twoPlayer = new JButton(twoPlayerI);
-        twoPlayer.setBounds(173, 424, 240, 60);
+        twoPlayer.setBounds(170, 450, 180, 80);
         this.add(twoPlayer);
         //twoPlayer.addActionListener(actions);
-        ImageIcon ruleI = new ImageIcon(new ImageIcon(ruleIcon).getImage().getScaledInstance
-                (129, 47, Image.SCALE_DEFAULT));
-        rule = new JButton(ruleI);
-        rule.setBounds(240, 512, 100, 44);
-        this.add(rule);
+        ImageIcon LoadGameI = new ImageIcon(new ImageIcon(LoadGameIcon).getImage().getScaledInstance
+                (178, 74, Image.SCALE_DEFAULT));
+        LoadGame = new JButton(LoadGameI);
+        LoadGame.setBounds(170, 550, 180, 80);
+        this.add(LoadGame);
         //rule.addActionListener(actions);
 
         ImageIcon jChessI = new ImageIcon(new ImageIcon(jChessIcon).getImage().getScaledInstance
-                (340, 230, Image.SCALE_DEFAULT));
+                (450, 300, Image.SCALE_DEFAULT));
         logo = new JLabel(jChessI);
-        logo.setBounds(100, 0, 400, 300);
+        logo.setBounds(70, 0, 400, 300);
         this.add(logo);
 
         ImageIcon backgroundI = new ImageIcon(new ImageIcon(backgroundIcon).getImage().getScaledInstance
-                (600, 661, Image.SCALE_DEFAULT));
+                (530, 850, Image.SCALE_DEFAULT));
         background = new JLabel(backgroundI);
-        background.setBounds(0, 0, 600, 661);
+        background.setBounds(0, 0, 530, 850);
         this.add(background);
 
         setResizable(false);
@@ -80,6 +82,10 @@ import java.io.File;
              }
          }
      };*/
+    public static void main(String[] args) {
+        //SwingUtilities.invokeLater(() -> new DifficultyFrame().setVisible(true));
+        new MainMenu().setVisible(true);
+    }
 
 }
 
