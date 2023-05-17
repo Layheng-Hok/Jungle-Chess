@@ -155,7 +155,6 @@ public class GameFrame extends Observable {
                     protected void process(List<Void> chunks) {
                         boardPanel.drawBoard(chessBoard);
                         playerPanel.redo(chessBoard);
-                        capturedPiecesPanel.replay(moveLog);
                     }
 
                     @Override

@@ -113,7 +113,4 @@ import static view.GameFrame.defaultImagesPath;
         this.westPanel.removeAll();
         validate();
     }
-
-     public void replay(MoveLog moveLog) {
-     }
  }
