@@ -125,12 +125,49 @@ public class GameFrame extends Observable {
                     chessBoard = lastMove.undo();
                     boardPanel.drawBoard(chessBoard);
                     playerPanel.undo();
-                    capturedPiecesPanel.undo();
+                    capturedPiecesPanel.redo(moveLog);
                     System.out.println("Undo");
                 }
             }
         });
         settingMenu.add(undo);
+
+        final JMenuItem replayMoveLog = new JMenuItem("Replay Previous Moves");
+        replayMoveLog.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Replay Previous Moves");
+                SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                    @Override
+                    protected Void doInBackground() throws Exception {
+                        for (int i = 0; i < moveLog.size(); i++) {
+                            Move move = moveLog.getMove(i);
+                            chessBoard = move.execute();
+                            publish();
+                            Thread.sleep(1000);
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    protected void process(List<Void> chunks) {
+                        boardPanel.drawBoard(chessBoard);
+                        playerPanel.update(chessBoard);
+                    }
+
+                    @Override
+                    protected void done() {
+                        if (AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                            GameFrame.get().moveMadeUpdate(PlayerType.HUMAN);
+                        }
+                        boardPanel.drawBoard(chessBoard);
+                    }
+                };
+
+                worker.execute();
+            }
+        });
+        settingMenu.add(replayMoveLog);
 
         final JMenuItem changeBoardMenuItem = new JMenuItem("Change Board");
         changeBoardMenuItem.addActionListener(new ActionListener() {
@@ -454,6 +491,10 @@ public class GameFrame extends Observable {
 
         boolean removeMove(final Move move) {
             return this.moves.remove(move);
+        }
+
+        public Move getMove(int i) {
+            return this.moves.get(i);
         }
     }
 

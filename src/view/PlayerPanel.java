@@ -1,5 +1,7 @@
 package view;
 
+import model.board.Board;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -85,6 +87,16 @@ import static view.GameFrame.defaultImagesPath;
             } else {
                 currentPlayer = "Blue";
             }
+            repaint();
+     }
+
+     public void update(Board chessBoard) {
+            if (chessBoard.getCurrentPlayer().getAllyColor().isBlue()) {
+                currentPlayer = "Blue";
+            } else {
+                currentPlayer = "Red";
+            }
+            roundNumber = getRoundNumber();
             repaint();
      }
  }
