@@ -12,14 +12,14 @@ public class MainMenu extends JFrame {
     private JLabel logo;
     private JButton onePlayer;
     private JButton twoPlayer;
-    private JButton LoadGame;
+    private JButton loadGame;
 
     private String iconsFolder = GameFrame.defaultImagesPath + File.separator;
     private String jChessIcon = iconsFolder + "logo.png";
     private String backgroundIcon = iconsFolder + "background.png";
     private String onePlayerIcon = iconsFolder + "oneplayer.png";
     private String twoPlayerIcon = iconsFolder + "twoplayer.png";
-    private String LoadGameIcon = iconsFolder + "LoadGame.png";
+    private String loadGameIcon = iconsFolder + "loadgame.png";
 
     public MainMenu() {
         setTitle("Main Menu");
@@ -55,15 +55,15 @@ public class MainMenu extends JFrame {
                 System.out.println("Load a Two-Player Game");
             }
         });
-        ImageIcon LoadGameI = new ImageIcon(new ImageIcon(LoadGameIcon).getImage().getScaledInstance
+        ImageIcon loadGameI = new ImageIcon(new ImageIcon(loadGameIcon).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
-        LoadGame = new JButton(LoadGameI);
-        LoadGame.setBounds(170, 550, 180, 80);
-        this.add(LoadGame);
+        loadGame = new JButton(loadGameI);
+        loadGame.setBounds(170, 550, 180, 80);
+        this.add(loadGame);
         //rule.addActionListener(actions);
 
         ImageIcon jChessI = new ImageIcon(new ImageIcon(jChessIcon).getImage().getScaledInstance
-                (450, 300, Image.SCALE_DEFAULT));
+                (390, 390, Image.SCALE_DEFAULT));
         logo = new JLabel(jChessI);
         logo.setBounds(70, 0, 400, 300);
         this.add(logo);

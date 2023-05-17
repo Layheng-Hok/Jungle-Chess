@@ -10,7 +10,7 @@ import static view.GameFrame.defaultImagesPath;
  class PlayerPanel extends JPanel {
     private static final Dimension PLAYER_PANEL_DIMENSION = new Dimension(530, 100);
     private final Image topPanelImage;
-    public int roundNumber = 1;
+    private int roundNumber = 1;
     private String currentPlayer = "Blue";
 
     public PlayerPanel() {

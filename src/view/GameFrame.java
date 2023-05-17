@@ -366,7 +366,9 @@ public class GameFrame extends Observable {
         public void drawTerrain(final Board board) {
             assignTerrainColor(terrainCoordinate);
             assignTerrainPieceIcon(board);
-            highlightValidMoves(board);
+            if (!AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                highlightValidMoves(board);
+            }
             validate();
             repaint();
         }
