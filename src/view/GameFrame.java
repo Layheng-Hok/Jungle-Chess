@@ -93,7 +93,7 @@ public class GameFrame extends Observable {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Game Saved");
                 String path = JOptionPane.showInputDialog("File Name");
-                while (path.equals("")){
+                while (path.equals("")) {
                     JOptionPane.showMessageDialog(null, "Name cannot be empty");
                     path = JOptionPane.showInputDialog("File Name");
                 }
@@ -115,6 +115,22 @@ public class GameFrame extends Observable {
             }
         });
         settingMenu.add(restart);
+
+        final JMenuItem undo = new JMenuItem("Undo");
+        undo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (moveLog.size() > 0) {
+                    Move lastMove = moveLog.removeMove(moveLog.size() - 1);
+                    chessBoard = lastMove.undo();
+                    boardPanel.drawBoard(chessBoard);
+                    playerPanel.undo();
+                    capturedPiecesPanel.undo();
+                    System.out.println("Undo");
+                }
+            }
+        });
+        settingMenu.add(undo);
 
         final JMenuItem changeBoardMenuItem = new JMenuItem("Change Board");
         changeBoardMenuItem.addActionListener(new ActionListener() {
@@ -140,6 +156,17 @@ public class GameFrame extends Observable {
         });
         settingMenu.add(changeSideMenuItem);
 
+        final JMenuItem backMenuItem = new JMenuItem("Back To Main Menu");
+        backMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameFrame.dispose();
+                new MainMenu().setVisible(true);
+                System.out.println("Back To Main Menu");
+            }
+        });
+        settingMenu.add(backMenuItem);
+
         final JMenuItem exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.addActionListener(new ActionListener() {
             @Override
@@ -149,7 +176,6 @@ public class GameFrame extends Observable {
             }
         });
         settingMenu.add(exitMenuItem);
-
         return settingMenu;
     }
 

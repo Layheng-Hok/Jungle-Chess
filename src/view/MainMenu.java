@@ -7,20 +7,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-public class MainMenu extends JFrame   {
+public class MainMenu extends JFrame {
     private JLabel background;
     private JLabel logo;
     private JButton onePlayer;
     private JButton twoPlayer;
     private JButton LoadGame;
 
-    private String iconsFolder="resource/images"+ File.separator;
-    private String jChessIcon=iconsFolder+"logo.png";
-    private String backgroundIcon=iconsFolder+"background.png";
-    private String onePlayerIcon=iconsFolder+"oneplayer.png";
-    private String twoPlayerIcon=iconsFolder+"twoplayer.png";
-    private String LoadGameIcon=iconsFolder+"LoadGame.png";
-    public MainMenu(){
+    private String iconsFolder = GameFrame.defaultImagesPath + File.separator;
+    private String jChessIcon = iconsFolder + "logo.png";
+    private String backgroundIcon = iconsFolder + "background.png";
+    private String onePlayerIcon = iconsFolder + "oneplayer.png";
+    private String twoPlayerIcon = iconsFolder + "twoplayer.png";
+    private String LoadGameIcon = iconsFolder + "LoadGame.png";
+
+    public MainMenu() {
         setTitle("Main Menu");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(null);
@@ -31,14 +32,29 @@ public class MainMenu extends JFrame   {
         onePlayer = new JButton(onePlayerI);
         onePlayer.setBounds(170, 350, 180, 80);
         this.add(onePlayer);
-        //onePlayer.addActionListener(actions);
+        onePlayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                new DifficultyFrame().setVisible(true);
+                System.out.println("Load Difficulty Frame");
+            }
+        });
 
         ImageIcon twoPlayerI = new ImageIcon(new ImageIcon(twoPlayerIcon).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
         twoPlayer = new JButton(twoPlayerI);
         twoPlayer.setBounds(170, 450, 180, 80);
         this.add(twoPlayer);
-        //twoPlayer.addActionListener(actions);
+        twoPlayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                GameFrame.get().show();
+                GameFrame.get().setVisible(true);
+                System.out.println("Load a Two-Player Game");
+            }
+        });
         ImageIcon LoadGameI = new ImageIcon(new ImageIcon(LoadGameIcon).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
         LoadGame = new JButton(LoadGameI);
@@ -58,8 +74,10 @@ public class MainMenu extends JFrame   {
         background.setBounds(0, 0, 530, 850);
         this.add(background);
 
-        setResizable(false);
+        this.setLocationRelativeTo(null);
+        this.setResizable(false);
     }
+
     /* private ActionListener actions = new ActionListener()
      {
          @Override
@@ -82,10 +100,5 @@ public class MainMenu extends JFrame   {
              }
          }
      };*/
-    public static void main(String[] args) {
-        //SwingUtilities.invokeLater(() -> new DifficultyFrame().setVisible(true));
-        new MainMenu().setVisible(true);
-    }
-
 }
 

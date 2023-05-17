@@ -113,4 +113,10 @@ import static view.GameFrame.defaultImagesPath;
         this.westPanel.removeAll();
         validate();
     }
-}
+
+     public void undo() {
+            this.eastPanel.removeAll();
+            this.westPanel.removeAll();
+            validate();
+     }
+ }

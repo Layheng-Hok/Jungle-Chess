@@ -87,4 +87,8 @@ public abstract class Piece {
     }
 
     public abstract int getPiecePower();
+
+    public Piece undoMove(Move move) {
+        return move.getMovedPiece();
+    }
 }

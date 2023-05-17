@@ -93,6 +93,19 @@ public abstract class Move {
         return "";
     }
 
+    public Board undo() {
+        final Board.Builder builder = new Board.Builder();
+        for (final Piece piece : this.board.getCurrentPlayer().getActivePieces()) {
+            builder.setPiece(piece);
+        }
+        for (final Piece piece : this.board.getCurrentPlayer().getEnemyPlayer().getActivePieces()) {
+            builder.setPiece(piece);
+        }
+        builder.setPiece(this.movedPiece.undoMove(this));
+        builder.setNextMovePlayer(this.board.getCurrentPlayer().getAllyColor());
+        return builder.build();
+    }
+
     public static final class StandardMove extends Move {
         public StandardMove(final Board board, final Piece movedPiece, final int destinationCoordinate) {
             super(board, movedPiece, destinationCoordinate);

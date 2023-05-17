@@ -77,4 +77,14 @@ import static view.GameFrame.defaultImagesPath;
     public void setCurrentPlayer(String currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
-}
+
+     public void undo() {
+            if (currentPlayer.equals("Blue")) {
+                currentPlayer = "Red";
+                setRoundNumber(getRoundNumber() - 1);
+            } else {
+                currentPlayer = "Blue";
+            }
+            repaint();
+     }
+ }

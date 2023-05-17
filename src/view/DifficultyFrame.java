@@ -74,9 +74,4 @@ class DifficultyFrame extends JFrame {
     static String getDifficulty() {
         return difficulty;
     }
-
-    public static void main(String[] args) {
-        //SwingUtilities.invokeLater(() -> new DifficultyFrame().setVisible(true));
-        new DifficultyFrame().setVisible(true);
-    }
 }
