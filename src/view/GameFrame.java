@@ -136,6 +136,8 @@ public class GameFrame extends Observable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 playerPanel.setRoundNumber(1);
+                capturedPiecesPanel.reset();
+                MoveLog seperateMoveLog = new MoveLog();
                 SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
                     @Override
                     protected Void doInBackground() throws Exception {
@@ -145,6 +147,7 @@ public class GameFrame extends Observable {
                         for (int i = 0; i < moveLog.size(); i++) {
                             Move move = moveLog.getMove(i);
                             chessBoard = move.execute();
+                            seperateMoveLog.addMove(move);
                             publish();
                             Thread.sleep(1000);
                         }
@@ -155,6 +158,7 @@ public class GameFrame extends Observable {
                     protected void process(List<Void> chunks) {
                         boardPanel.drawBoard(chessBoard);
                         playerPanel.redo(chessBoard);
+                        capturedPiecesPanel.redo(seperateMoveLog);
                     }
 
                     @Override
