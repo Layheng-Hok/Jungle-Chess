@@ -114,9 +114,6 @@ import static view.GameFrame.defaultImagesPath;
         validate();
     }
 
-     public void undo() {
-            this.eastPanel.removeAll();
-            this.westPanel.removeAll();
-            validate();
+     public void replay(MoveLog moveLog) {
      }
  }

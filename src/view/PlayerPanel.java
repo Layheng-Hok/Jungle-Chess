@@ -90,13 +90,13 @@ import static view.GameFrame.defaultImagesPath;
             repaint();
      }
 
-     public void update(Board chessBoard) {
+     public void redo(Board chessBoard) {
             if (chessBoard.getCurrentPlayer().getAllyColor().isBlue()) {
                 currentPlayer = "Blue";
+                setRoundNumber(getRoundNumber() + 1);
             } else {
                 currentPlayer = "Red";
             }
-            roundNumber = getRoundNumber();
             repaint();
      }
  }

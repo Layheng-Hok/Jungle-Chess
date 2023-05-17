@@ -33,6 +33,7 @@ class DifficultyFrame extends JFrame {
         easyButton.addActionListener((e) -> {
             this.setVisible(false);
             setDifficulty("easy");
+            GameFrame.get().setVisible(true);
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
         });
@@ -45,6 +46,7 @@ class DifficultyFrame extends JFrame {
         mediumButton.addActionListener((e) -> {
             this.setVisible(false);
             setDifficulty("medium");
+            GameFrame.get().setVisible(true);
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
         });
@@ -55,6 +57,7 @@ class DifficultyFrame extends JFrame {
         hardButton.addActionListener((e) -> {
             this.setVisible(false);
             setDifficulty("hard");
+            GameFrame.get().setVisible(true);
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
         });

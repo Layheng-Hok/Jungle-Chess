@@ -1,7 +1,11 @@
 import view.MainMenu;
 
+import javax.swing.*;
+
 public class Main {
     public static void main(String[] args) {
-        new MainMenu().setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            new MainMenu().setVisible(true);
+        });
     }
 }

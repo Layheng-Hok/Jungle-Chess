@@ -91,14 +91,13 @@ public class GameFrame extends Observable {
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Game Saved");
                 String path = JOptionPane.showInputDialog("File Name");
                 while (path.equals("")) {
-                    JOptionPane.showMessageDialog(null, "Name cannot be empty");
+                    JOptionPane.showMessageDialog(null, "Name cannot be empty. Please enter again.");
                     path = JOptionPane.showInputDialog("File Name");
                 }
+                System.out.println("Game Saved");
             }
-
         });
         settingMenu.add(save);
 
@@ -136,10 +135,13 @@ public class GameFrame extends Observable {
         replayMoveLog.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Replay Previous Moves");
+                playerPanel.setRoundNumber(1);
                 SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
                     @Override
                     protected Void doInBackground() throws Exception {
+                        chessBoard = Board.constructStandardBoard();
+                        boardPanel.drawBoard(chessBoard);
+                        Thread.sleep(1000);
                         for (int i = 0; i < moveLog.size(); i++) {
                             Move move = moveLog.getMove(i);
                             chessBoard = move.execute();
@@ -152,7 +154,8 @@ public class GameFrame extends Observable {
                     @Override
                     protected void process(List<Void> chunks) {
                         boardPanel.drawBoard(chessBoard);
-                        playerPanel.update(chessBoard);
+                        playerPanel.redo(chessBoard);
+                        capturedPiecesPanel.replay(moveLog);
                     }
 
                     @Override
@@ -163,8 +166,8 @@ public class GameFrame extends Observable {
                         boardPanel.drawBoard(chessBoard);
                     }
                 };
-
                 worker.execute();
+                System.out.println("Replay Previous Moves");
             }
         });
         settingMenu.add(replayMoveLog);

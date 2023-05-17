@@ -17,7 +17,6 @@ public class Board {
     private final BluePlayer bluePlayer;
     private final RedPlayer redPlayer;
     private final Player currentPlayer;
-    private int roundNumber = 1;
 
     private Board(Builder builder) {
         this.chessboard = constructChessboard(builder);
@@ -131,14 +130,6 @@ public class Board {
 
     public Piece getPiece(final int coordinate) {
         return this.boardConfig.get(coordinate);
-    }
-
-    public int getRoundNumber() {
-        return roundNumber;
-    }
-
-    public void setRoundNumber(int roundNumber) {
-        this.roundNumber = roundNumber;
     }
 
     public static class Builder {
