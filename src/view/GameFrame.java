@@ -36,7 +36,7 @@ public class GameFrame extends Observable {
     private final CapturedPiecesPanel capturedPiecesPanel;
     private final BoardPanel boardPanel;
     private final AIGameConfiguration AIGameConfiguration;
-    private final MoveLog moveLog;
+    private MoveLog moveLog;
     private Board chessBoard;
     private Move computerMove;
     private Piece sourceTerrain;
@@ -203,7 +203,8 @@ public class GameFrame extends Observable {
         backMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                gameFrame.dispose();
+                restart.doClick();
+                GameFrame.get().dispose();
                 new MainMenu().setVisible(true);
                 System.out.println("Back To Main Menu");
             }
@@ -243,6 +244,7 @@ public class GameFrame extends Observable {
         public void drawBoard(final Board board) {
             removeAll();
             for (final TerrainPanel terrainPanel : boardDirection.traverse(boardTerrains)) {
+                terrainPanel.drawEmptyTerrainBorder();
                 terrainPanel.drawTerrain(board);
                 add(terrainPanel);
             }
@@ -314,6 +316,9 @@ public class GameFrame extends Observable {
                         sourceTerrain = null;
                         humanMovedPiece = null;
                     } else if (isLeftMouseButton(e)) {
+                        if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
+                            return;
+                        }
                         if (sourceTerrain == null) {
                             sourceTerrain = chessBoard.getPiece(terrainCoordinate);
                             if (sourceTerrain != null && sourceTerrain.getPieceColor() != chessBoard.getCurrentPlayer().getAllyColor()) {
@@ -372,11 +377,25 @@ public class GameFrame extends Observable {
         public void drawTerrain(final Board board) {
             assignTerrainColor(terrainCoordinate);
             assignTerrainPieceIcon(board);
-            if (!AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
-                highlightValidMoves(board);
-            }
+            drawTerrainBorder();
+            highlightValidMoves(board);
+            highlightAIMoves();
             validate();
             repaint();
+        }
+
+        private void drawTerrainBorder() {
+            if (humanMovedPiece != null
+                    && humanMovedPiece.getPieceColor() == chessBoard.getCurrentPlayer().getAllyColor()
+                    && humanMovedPiece.getPieceCoordinate() == this.terrainCoordinate) {
+                setBorder(BorderFactory.createLineBorder(Color.GREEN, 2));
+            } else {
+                setBorder(BorderFactory.createEmptyBorder());
+            }
+        }
+
+        public void drawEmptyTerrainBorder() {
+            setBorder(BorderFactory.createEmptyBorder());
         }
 
         private void highlightValidMoves(final Board board) {
@@ -388,6 +407,16 @@ public class GameFrame extends Observable {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                }
+            }
+        }
+
+        private void highlightAIMoves() {
+            if (computerMove != null) {
+                if (this.terrainCoordinate == computerMove.getCurrentCoordinate()) {
+                    setBorder(BorderFactory.createLineBorder(Color.PINK, 2));
+                } else if (this.terrainCoordinate == computerMove.getDestinationCoordinate()) {
+                    setBorder(BorderFactory.createLineBorder(Color.RED, 2));
                 }
             }
         }
@@ -433,7 +462,6 @@ public class GameFrame extends Observable {
             } else if (Utilities.isDen(coordinate, PlayerColor.RED)) {
                 setBackground(new Color(0xEC7063));
             }
-            // setBorder(BorderFactory.createLineBorder(Color.BLACK));
             setOpaque(false);
         }
     }
@@ -623,5 +651,9 @@ public class GameFrame extends Observable {
 
     public void setVisible(boolean b) {
         this.gameFrame.setVisible(b);
+    }
+
+    public void dispose() {
+        gameFrame.dispose();
     }
 }
