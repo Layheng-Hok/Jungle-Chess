@@ -13,6 +13,7 @@ public class MainMenu extends JFrame {
     private JButton onePlayer;
     private JButton twoPlayer;
     private JButton loadGame;
+    private JButton exit;
 
     private String iconsFolder = GameFrame.defaultImagesPath + File.separator;
     private String jChessIcon = iconsFolder + "logo.png";
@@ -20,6 +21,7 @@ public class MainMenu extends JFrame {
     private String onePlayerIcon = iconsFolder + "oneplayer.png";
     private String twoPlayerIcon = iconsFolder + "twoplayer.png";
     private String loadGameIcon = iconsFolder + "loadgame.png";
+    private String exitIcon= iconsFolder + "exit.png";
 
     public MainMenu() {
         setTitle("Main Menu");
@@ -60,6 +62,13 @@ public class MainMenu extends JFrame {
         loadGame = new JButton(loadGameI);
         loadGame.setBounds(170, 550, 180, 80);
         this.add(loadGame);
+        //rule.addActionListener(actions);
+
+        ImageIcon exitI = new ImageIcon(new ImageIcon(exitIcon).getImage().getScaledInstance
+                (178, 74, Image.SCALE_DEFAULT));
+        exit = new JButton(exitI);
+        exit.setBounds(170, 650, 180, 80);
+        this.add(exit);
         //rule.addActionListener(actions);
 
         ImageIcon jChessI = new ImageIcon(new ImageIcon(jChessIcon).getImage().getScaledInstance
