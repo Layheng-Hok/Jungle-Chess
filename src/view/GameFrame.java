@@ -85,8 +85,8 @@ public class GameFrame extends Observable {
         final JMenu settingMenu = new JMenu("Alt + S to open Setting Menu");
         settingMenu.setMnemonic(KeyEvent.VK_S);
 
-        final JMenuItem save = new JMenuItem("Save Game");
-        save.addActionListener(new ActionListener() {
+        final JMenuItem saveMenuItem = new JMenuItem("Save Game");
+        saveMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String path = JOptionPane.showInputDialog("File Name");
@@ -97,11 +97,11 @@ public class GameFrame extends Observable {
                 System.out.println("Game Saved");
             }
         });
-        save.setMnemonic(KeyEvent.VK_S);
-        settingMenu.add(save);
+        saveMenuItem.setMnemonic(KeyEvent.VK_S);
+        settingMenu.add(saveMenuItem);
 
-        final JMenuItem restart = new JMenuItem("Restart");
-        restart.addActionListener(new ActionListener() {
+        final JMenuItem restartMenuItem = new JMenuItem("Restart");
+        restartMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
@@ -118,11 +118,11 @@ public class GameFrame extends Observable {
                 System.out.println("Game Restarted");
             }
         });
-        restart.setMnemonic(KeyEvent.VK_R);
-        settingMenu.add(restart);
+        restartMenuItem.setMnemonic(KeyEvent.VK_R);
+        settingMenu.add(restartMenuItem);
 
-        final JMenuItem undo = new JMenuItem("Undo");
-        undo.addActionListener(new ActionListener() {
+        final JMenuItem undoMenuItem = new JMenuItem("Undo");
+        undoMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
@@ -151,11 +151,11 @@ public class GameFrame extends Observable {
                 }
             }
         });
-        undo.setMnemonic(KeyEvent.VK_U);
-        settingMenu.add(undo);
+        undoMenuItem.setMnemonic(KeyEvent.VK_U);
+        settingMenu.add(undoMenuItem);
 
-        final JMenuItem replayMoveLog = new JMenuItem("Replay Previous Moves");
-        replayMoveLog.addActionListener(new ActionListener() {
+        final JMenuItem replayAllMovesMenuItem = new JMenuItem("Replay Previous Moves");
+        replayAllMovesMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
@@ -202,8 +202,8 @@ public class GameFrame extends Observable {
                 System.out.println("Replay Previous Moves");
             }
         });
-        replayMoveLog.setMnemonic(KeyEvent.VK_R);
-        settingMenu.add(replayMoveLog);
+        replayAllMovesMenuItem.setMnemonic(KeyEvent.VK_R);
+        settingMenu.add(replayAllMovesMenuItem);
 
         final JMenuItem changeBoardMenuItem = new JMenuItem("Change Board");
         changeBoardMenuItem.addActionListener(new ActionListener() {
@@ -239,7 +239,7 @@ public class GameFrame extends Observable {
                     JOptionPane.showMessageDialog(null, "Computer is still thinking. Please wait.");
                     return;
                 }
-                restart.doClick();
+                restartMenuItem.doClick();
                 GameFrame.get().AIGameConfiguration.setBluePlayerType(PlayerType.HUMAN);
                 GameFrame.get().AIGameConfiguration.setRedPlayerType(PlayerType.HUMAN);
                 GameFrame.get().dispose();
