@@ -5,10 +5,10 @@ import model.artificialintelligence.MinimaxAlgorithm;
 import model.artificialintelligence.PoorBoardEvaluator;
 import model.artificialintelligence.Strategy;
 import model.board.Board;
-import model.board.Utilities;
 import model.board.Move;
-import model.piece.Piece;
 import model.board.MoveTransition;
+import model.board.Utilities;
+import model.piece.Piece;
 import model.player.PlayerColor;
 import model.player.PlayerType;
 
@@ -22,8 +22,8 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
@@ -107,6 +107,8 @@ public class GameFrame extends Observable {
             public void actionPerformed(ActionEvent e) {
                 chessBoard = Board.constructStandardBoard();
                 boardPanel.drawBoard(chessBoard);
+                boardPanel.removeAllBorders();
+                computerMove = null;
                 playerPanel.reset();
                 capturedPiecesPanel.reset();
                 moveLog.clear();
@@ -143,11 +145,13 @@ public class GameFrame extends Observable {
                     protected Void doInBackground() throws Exception {
                         chessBoard = Board.constructStandardBoard();
                         boardPanel.drawBoard(chessBoard);
+                        boardPanel.removeAllBorders();
                         Thread.sleep(1000);
                         for (int i = 0; i < moveLog.size(); i++) {
                             Move move = moveLog.getMove(i);
                             chessBoard = move.execute();
                             seperateMoveLog.addMove(move);
+                            computerMove = move;
                             publish();
                             Thread.sleep(1000);
                         }
@@ -204,6 +208,8 @@ public class GameFrame extends Observable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 restart.doClick();
+                GameFrame.get().AIGameConfiguration.setBluePlayerType(PlayerType.HUMAN);
+                GameFrame.get().AIGameConfiguration.setRedPlayerType(PlayerType.HUMAN);
                 GameFrame.get().dispose();
                 new MainMenu().setVisible(true);
                 System.out.println("Back To Main Menu");
@@ -244,7 +250,6 @@ public class GameFrame extends Observable {
         public void drawBoard(final Board board) {
             removeAll();
             for (final TerrainPanel terrainPanel : boardDirection.traverse(boardTerrains)) {
-                terrainPanel.drawEmptyTerrainBorder();
                 terrainPanel.drawTerrain(board);
                 add(terrainPanel);
             }
@@ -257,6 +262,12 @@ public class GameFrame extends Observable {
                 this.boardImage = ImageIO.read(new File(defaultImagesPath + imageFileName));
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        }
+
+        public void removeAllBorders() {
+            for (final TerrainPanel terrainPanel : boardTerrains) {
+                terrainPanel.setBorder(BorderFactory.createEmptyBorder());
             }
         }
 
@@ -327,6 +338,7 @@ public class GameFrame extends Observable {
                                 humanMovedPiece = sourceTerrain;
                             }
                         } else {
+                            computerMove = null;
                             final Move move = Move.MoveCreator.createMove(chessBoard, sourceTerrain.getPieceCoordinate(), terrainCoordinate);
                             final MoveTransition transition = chessBoard.getCurrentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
@@ -392,10 +404,6 @@ public class GameFrame extends Observable {
             } else {
                 setBorder(BorderFactory.createEmptyBorder());
             }
-        }
-
-        public void drawEmptyTerrainBorder() {
-            setBorder(BorderFactory.createEmptyBorder());
         }
 
         private void highlightValidMoves(final Board board) {
