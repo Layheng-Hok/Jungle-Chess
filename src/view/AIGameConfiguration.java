@@ -14,20 +14,20 @@ import java.awt.event.WindowEvent;
 class AIGameConfiguration extends JDialog {
     private PlayerType bluePlayerType;
     private PlayerType redPlayerType;
-    private JSpinner searchDepthSpinner;
 
-    private static final String HUMAN_TEXT = "Human";
-    private static final String COMPUTER_TEXT = "Computer";
+    private static final String HUMAN = "Human";
+    private static final String COMPUTER = "Computer";
+    private static final String defaultImagesPath = "resource/images/";
 
     AIGameConfiguration(final JFrame frame, final boolean modal) {
         super(frame, modal);
         setTitle("PICK A SIDE");
         final JPanel gameConfigPanel = new JPanel(new GridLayout(0, 1));
-        final JRadioButton blueHumanButton = new JRadioButton(HUMAN_TEXT);
-        final JRadioButton blueComputerButton = new JRadioButton(COMPUTER_TEXT);
-        final JRadioButton redHumanButton = new JRadioButton(HUMAN_TEXT);
-        final JRadioButton redComputerButton = new JRadioButton(COMPUTER_TEXT);
-        blueHumanButton.setActionCommand(HUMAN_TEXT);
+        final JRadioButton blueHumanButton = new JRadioButton(HUMAN);
+        final JRadioButton blueComputerButton = new JRadioButton(COMPUTER);
+        final JRadioButton redHumanButton = new JRadioButton(HUMAN);
+        final JRadioButton redComputerButton = new JRadioButton(COMPUTER);
+        blueHumanButton.setActionCommand(HUMAN);
         final ButtonGroup blueGroup = new ButtonGroup();
         blueGroup.add(blueHumanButton);
         blueGroup.add(blueComputerButton);
@@ -84,7 +84,10 @@ class AIGameConfiguration extends JDialog {
         });
 
         gameConfigPanel.add(okButton);
+        ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
+        setIconImage(logo.getImage());
         setSize(190, 200);
+        setResizable(false);
         setLocationRelativeTo(null);
         setVisible(false);
 

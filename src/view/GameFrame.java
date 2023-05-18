@@ -15,10 +15,7 @@ import model.player.PlayerType;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +44,7 @@ public class GameFrame extends Observable {
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(500, 650);
     private static final Dimension TERRAIN_PANEL_DIMENSION = new Dimension(10, 10);
     private final ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
-    public static final String defaultImagesPath = "resource/images/";
+    static final String defaultImagesPath = "resource/images/";
     private static final GameFrame INSTANCE = new GameFrame();
 
     public GameFrame() {
@@ -85,7 +82,8 @@ public class GameFrame extends Observable {
     }
 
     private JMenu createSettingMenu() {
-        final JMenu settingMenu = new JMenu("| | |");
+        final JMenu settingMenu = new JMenu("Alt + S to open Setting Menu");
+        settingMenu.setMnemonic(KeyEvent.VK_S);
 
         final JMenuItem save = new JMenuItem("Save Game");
         save.addActionListener(new ActionListener() {
@@ -99,12 +97,17 @@ public class GameFrame extends Observable {
                 System.out.println("Game Saved");
             }
         });
+        save.setMnemonic(KeyEvent.VK_S);
         settingMenu.add(save);
 
         final JMenuItem restart = new JMenuItem("Restart");
         restart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                    JOptionPane.showMessageDialog(null, "Computer is still thinking. Please wait.");
+                    return;
+                }
                 chessBoard = Board.constructStandardBoard();
                 boardPanel.drawBoard(chessBoard);
                 boardPanel.removeAllBorders();
@@ -115,15 +118,32 @@ public class GameFrame extends Observable {
                 System.out.println("Game Restarted");
             }
         });
+        restart.setMnemonic(KeyEvent.VK_R);
         settingMenu.add(restart);
 
         final JMenuItem undo = new JMenuItem("Undo");
         undo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                    JOptionPane.showMessageDialog(null, "Computer is still thinking. Please wait.");
+                    return;
+                }
                 if (moveLog.size() > 0) {
                     Move lastMove = moveLog.removeMove(moveLog.size() - 1);
                     chessBoard = lastMove.undo();
+                    if (lastMove == computerMove) {
+                        Move secondLastMove = moveLog.removeMove(moveLog.size() - 1);
+                        chessBoard = secondLastMove.undo();
+                        if (moveLog.size() > 0) {
+                            computerMove = moveLog.getMove(moveLog.size() - 1);
+                        } else {
+                            computerMove = null;
+                        }
+                        playerPanel.undo();
+                        setChanged();
+                        notifyObservers();
+                    }
                     boardPanel.drawBoard(chessBoard);
                     playerPanel.undo();
                     capturedPiecesPanel.redo(moveLog);
@@ -131,12 +151,17 @@ public class GameFrame extends Observable {
                 }
             }
         });
+        undo.setMnemonic(KeyEvent.VK_U);
         settingMenu.add(undo);
 
         final JMenuItem replayMoveLog = new JMenuItem("Replay Previous Moves");
         replayMoveLog.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                    JOptionPane.showMessageDialog(null, "Computer is still thinking. Please wait.");
+                    return;
+                }
                 playerPanel.setRoundNumber(1);
                 capturedPiecesPanel.reset();
                 MoveLog seperateMoveLog = new MoveLog();
@@ -177,6 +202,7 @@ public class GameFrame extends Observable {
                 System.out.println("Replay Previous Moves");
             }
         });
+        replayMoveLog.setMnemonic(KeyEvent.VK_R);
         settingMenu.add(replayMoveLog);
 
         final JMenuItem changeBoardMenuItem = new JMenuItem("Change Board");
@@ -190,6 +216,7 @@ public class GameFrame extends Observable {
                 System.out.println("Board Changed");
             }
         });
+        changeBoardMenuItem.setMnemonic(KeyEvent.VK_C);
         settingMenu.add(changeBoardMenuItem);
 
         final JMenuItem changeSideMenuItem = new JMenuItem("Change Side");
@@ -201,12 +228,17 @@ public class GameFrame extends Observable {
                 System.out.println("Side Changed");
             }
         });
+        changeSideMenuItem.setMnemonic(KeyEvent.VK_C);
         settingMenu.add(changeSideMenuItem);
 
         final JMenuItem backMenuItem = new JMenuItem("Back To Main Menu");
         backMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                    JOptionPane.showMessageDialog(null, "Computer is still thinking. Please wait.");
+                    return;
+                }
                 restart.doClick();
                 GameFrame.get().AIGameConfiguration.setBluePlayerType(PlayerType.HUMAN);
                 GameFrame.get().AIGameConfiguration.setRedPlayerType(PlayerType.HUMAN);
@@ -215,6 +247,7 @@ public class GameFrame extends Observable {
                 System.out.println("Back To Main Menu");
             }
         });
+        backMenuItem.setMnemonic(KeyEvent.VK_B);
         settingMenu.add(backMenuItem);
 
         final JMenuItem exitMenuItem = new JMenuItem("Exit");
@@ -225,6 +258,8 @@ public class GameFrame extends Observable {
                 System.exit(0);
             }
         });
+        exitMenuItem.setMnemonic(KeyEvent.VK_E);
+        settingMenu.addSeparator();
         settingMenu.add(exitMenuItem);
         return settingMenu;
     }
@@ -537,8 +572,8 @@ public class GameFrame extends Observable {
             return this.moves.remove(move);
         }
 
-        public Move getMove(int i) {
-            return this.moves.get(i);
+        public Move getMove(int index) {
+            return this.moves.get(index);
         }
     }
 
@@ -578,22 +613,26 @@ public class GameFrame extends Observable {
     }
 
     public static class IntelligenceHub extends SwingWorker<Move, String> {
+        boolean isMinimaxRunning = false;
         private IntelligenceHub() {
         }
 
         @Override
         protected Move doInBackground() throws Exception {
             if (DifficultyFrame.getDifficulty().equals("easy")) {
+                isMinimaxRunning = true;
                 final Strategy minimax = new MinimaxAlgorithm(4, PoorBoardEvaluator.get());
                 System.out.println(PoorBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().AIGameConfiguration.getSearchDepth()));
                 return minimax.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty().equals("medium")) {
+                isMinimaxRunning = true;
                 final Strategy minimax = new MinimaxAlgorithm(4, ConcreteBoardEvaluator.get());
                 System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().AIGameConfiguration.getSearchDepth()));
                 return minimax.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty().equals("hard")) {
+                isMinimaxRunning = true;
                 final Strategy minimax = new MinimaxAlgorithm(5, ConcreteBoardEvaluator.get());
                 System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().AIGameConfiguration.getSearchDepth()));
                 return minimax.execute(GameFrame.get().getChessBoard());
@@ -619,6 +658,7 @@ public class GameFrame extends Observable {
             } catch (final Exception e) {
                 e.printStackTrace();
             }
+            isMinimaxRunning= false;
         }
     }
 
