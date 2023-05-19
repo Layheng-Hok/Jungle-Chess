@@ -76,8 +76,8 @@ class AIGameConfiguration extends JDialog {
 
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                bluePlayerType = blueComputerButton.isSelected() ? PlayerType.COMPUTER : PlayerType.HUMAN;
-                redPlayerType = redComputerButton.isSelected() ? PlayerType.COMPUTER : PlayerType.HUMAN;
+                bluePlayerType = blueComputerButton.isSelected() ? PlayerType.AI : PlayerType.HUMAN;
+                redPlayerType = redComputerButton.isSelected() ? PlayerType.AI : PlayerType.HUMAN;
                 System.out.println("Set Up Game");
                 AIGameConfiguration.this.setVisible(false);
             }
@@ -106,9 +106,9 @@ class AIGameConfiguration extends JDialog {
 
     boolean isAIPlayer(final Player player) {
         if (player.getAllyColor() == PlayerColor.BLUE) {
-            return getBluePlayerType() == PlayerType.COMPUTER;
+            return getBluePlayerType() == PlayerType.AI;
         }
-        return getRedPlayerType() == PlayerType.COMPUTER;
+        return getRedPlayerType() == PlayerType.AI;
     }
 
     PlayerType getBluePlayerType() {

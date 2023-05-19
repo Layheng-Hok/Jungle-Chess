@@ -645,7 +645,7 @@ public class GameFrame extends Observable {
                 GameFrame.get().getPlayerPanel().repaint();
                 GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-                GameFrame.get().moveMadeUpdate(PlayerType.COMPUTER);
+                GameFrame.get().moveMadeUpdate(PlayerType.AI);
             } catch (final Exception e) {
                 e.printStackTrace();
             }
