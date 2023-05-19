@@ -8,7 +8,7 @@ class DifficultyFrame extends JFrame {
     private JButton easyButton;
     private JButton mediumButton;
     private JButton hardButton;
-    private static String difficulty = null;
+    private static Difficulty difficulty = null;
 
     DifficultyFrame() {
         initializeFrame();
@@ -32,7 +32,7 @@ class DifficultyFrame extends JFrame {
         easyButton.setLocation(120, 300);
         easyButton.addActionListener((e) -> {
             this.setVisible(false);
-            setDifficulty("easy");
+            setDifficulty(Difficulty.EASY);
             GameFrame.get().setVisible(true);
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
@@ -45,7 +45,7 @@ class DifficultyFrame extends JFrame {
         mediumButton.setLocation(120, 410);
         mediumButton.addActionListener((e) -> {
             this.setVisible(false);
-            setDifficulty("medium");
+            setDifficulty(Difficulty.MEDIUM);
             GameFrame.get().setVisible(true);
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
@@ -56,7 +56,7 @@ class DifficultyFrame extends JFrame {
         hardButton.setLocation(120, 520);
         hardButton.addActionListener((e) -> {
             this.setVisible(false);
-            setDifficulty("hard");
+            setDifficulty(Difficulty.HARD);
             GameFrame.get().setVisible(true);
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
@@ -70,11 +70,17 @@ class DifficultyFrame extends JFrame {
         this.add(hardButton);
     }
 
-    private static void setDifficulty(String difficulty) {
+    enum Difficulty {
+        EASY,
+        MEDIUM,
+        HARD
+    }
+
+    private static void setDifficulty(Difficulty difficulty) {
         DifficultyFrame.difficulty = difficulty;
     }
 
-    static String getDifficulty() {
+    static Difficulty getDifficulty() {
         return difficulty;
     }
 }

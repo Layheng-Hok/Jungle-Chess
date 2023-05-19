@@ -10,7 +10,7 @@ public final class ConcreteBoardEvaluator implements GameEvaluator {
     private final static int DEPTH_BONUS = 100;
     private final static int VERSATILITY_MULTIPLIER = 5;
     private final static int NEAR_ENEMY_DEN_WITHOUT_ENEMY_BONUS = 5000;
-    private final static int NEAR_ENEMY_DEN_WITH_ENEMY_PENALTY = -100;
+    private final static int NEAR_ENEMY_DEN_WITH_ENEMY_PENALTY = -1000;
     private final static int PENETRATE_ENEMY_DEN_BONUS = 50000;
     private final static int CAPTURE_MOVE_MULTIPLIER = 2;
     private static final ConcreteBoardEvaluator INSTANCE = new ConcreteBoardEvaluator();
@@ -52,6 +52,7 @@ public final class ConcreteBoardEvaluator implements GameEvaluator {
                 "Near Enemy Den Without Enemy: " + nearEnemyDenWithoutEnemy(board.redPlayer(), depth) + "\n" +
                 "Near Enemy Den With Enemy: " + nearEnemyDenWithEnemy(board.redPlayer()) + "\n" +
                 "Is Enemy Den Penetrated: " + isEnemyDenPenetrated(board.redPlayer(), depth) + "\n" +
+                "Capture Move: " + captureMove(board.redPlayer()) + "\n" +
                 "Capture Move: " + captureMove(board.redPlayer()) + "\n" +
                 "-------------------------------\n" +
                 "Net Score: " + evaluate(board, depth) + "\n");
