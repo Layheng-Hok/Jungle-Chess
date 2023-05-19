@@ -108,13 +108,7 @@ public class GameFrame extends Observable {
                     JOptionPane.showMessageDialog(null, "Computer is still thinking. Please wait.");
                     return;
                 }
-                chessBoard = Board.constructStandardBoard();
-                boardPanel.drawBoard(chessBoard);
-                boardPanel.removeAllBorders();
-                computerMove = null;
-                playerPanel.reset();
-                capturedPiecesPanel.reset();
-                moveLog.clear();
+                restartGame();
                 System.out.println("Game Restarted");
             }
         });
@@ -396,6 +390,7 @@ public class GameFrame extends Observable {
                                     GameFrame.get().moveMadeUpdate(PlayerType.HUMAN);
                                 }
                                 boardPanel.drawBoard(chessBoard);
+                                checkWin();
                             }
                         });
                     }
@@ -603,18 +598,13 @@ public class GameFrame extends Observable {
                 final IntelligenceHub intelligenceHub = new IntelligenceHub();
                 intelligenceHub.execute();
             }
-            if (GameFrame.get().getChessBoard().getCurrentPlayer().isDenPenetrated()) {
-                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-                System.out.println("Game Over, " + GameFrame.get().getChessBoard().getCurrentPlayer() + "'s den is penetrated by the enemy!");
-            }
-            if (GameFrame.get().getChessBoard().getCurrentPlayer().getActivePieces() == null) {
-                System.out.println("Game Over, " + GameFrame.get().getChessBoard().getCurrentPlayer() + " has no more pieces!");
-            }
+            GameFrame.get().checkWin();
         }
     }
 
     public static class IntelligenceHub extends SwingWorker<Move, String> {
         boolean isMinimaxRunning = false;
+
         private IntelligenceHub() {
         }
 
@@ -659,7 +649,7 @@ public class GameFrame extends Observable {
             } catch (final Exception e) {
                 e.printStackTrace();
             }
-            isMinimaxRunning= false;
+            isMinimaxRunning = false;
         }
     }
 
@@ -672,6 +662,38 @@ public class GameFrame extends Observable {
         GameFrame.get().getPlayerPanel().reset();
         GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
         GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+    }
+
+    private void restartGame() {
+        chessBoard = Board.constructStandardBoard();
+        boardPanel.drawBoard(chessBoard);
+        boardPanel.removeAllBorders();
+        computerMove = null;
+        playerPanel.reset();
+        capturedPiecesPanel.reset();
+        moveLog.clear();
+        System.out.println("Game Restarted");
+    }
+
+    public void checkWin() {
+        if (GameFrame.get().getChessBoard().getCurrentPlayer().isDenPenetrated()) {
+            GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "Game Over: Player " + GameFrame.get().getChessBoard().getCurrentPlayer() + "'s den is penetrated by the enemy!", "Game Over",
+                    JOptionPane.INFORMATION_MESSAGE);
+            System.out.println("Game Over: Player " + GameFrame.get().getChessBoard().getCurrentPlayer() + "'s den is penetrated by the enemy!");
+            GameFrame.get().restartGame();
+            System.out.println("Game Restarted");
+        }
+        if (GameFrame.get().getChessBoard().getCurrentPlayer().getActivePieces().isEmpty()) {
+            GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player has no more pieces!", "Game Over",
+                    JOptionPane.INFORMATION_MESSAGE);
+            System.out.println("Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player has no more pieces!");
+            GameFrame.get().restartGame();
+            System.out.println("Game Restarted");
+        }
     }
 
     public AIGameConfiguration getGameConfiguration() {
