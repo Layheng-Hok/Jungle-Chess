@@ -12,7 +12,7 @@ public final class ConcreteBoardEvaluator implements GameEvaluator {
     private final static int NEAR_ENEMY_DEN_WITHOUT_ENEMY_BONUS = 5000;
     private final static int NEAR_ENEMY_DEN_WITH_ENEMY_PENALTY = -1000;
     private final static int PENETRATE_ENEMY_DEN_BONUS = 50000;
-    private final static int CAPTURE_MOVE_MULTIPLIER = 5;
+    private final static int CAPTURE_MOVE_MULTIPLIER = 2;
     private static final ConcreteBoardEvaluator INSTANCE = new ConcreteBoardEvaluator();
 
     private ConcreteBoardEvaluator() {
