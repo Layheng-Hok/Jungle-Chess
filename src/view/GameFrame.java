@@ -105,7 +105,7 @@ public class GameFrame extends Observable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
-                    JOptionPane.showMessageDialog(null, "Computer is still thinking. Please wait.");
+                    JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
                     return;
                 }
                 restartGame();
@@ -120,7 +120,7 @@ public class GameFrame extends Observable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
-                    JOptionPane.showMessageDialog(null, "Computer is still thinking. Please wait.");
+                    JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
                     return;
                 }
                 if (moveLog.size() > 0) {
@@ -153,7 +153,7 @@ public class GameFrame extends Observable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
-                    JOptionPane.showMessageDialog(null, "Computer is still thinking. Please wait.");
+                    JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
                     return;
                 }
                 playerPanel.setRoundNumber(1);
@@ -230,7 +230,7 @@ public class GameFrame extends Observable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
-                    JOptionPane.showMessageDialog(null, "Computer is still thinking. Please wait.");
+                    JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
                     return;
                 }
                 restartMenuItem.doClick();
