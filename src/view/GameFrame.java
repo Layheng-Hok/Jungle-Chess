@@ -9,6 +9,7 @@ import model.board.Move;
 import model.board.MoveTransition;
 import model.board.Utilities;
 import model.piece.Piece;
+import model.player.Player;
 import model.player.PlayerColor;
 import model.player.PlayerType;
 
@@ -140,25 +141,46 @@ public class GameFrame extends Observable {
                     JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
                     return;
                 }
-                if (moveLog.size() > 0) {
-                    Move lastMove = moveLog.removeMove(moveLog.size() - 1);
-                    chessBoard = lastMove.undo();
-                    if (lastMove == computerMove) {
-                        Move secondLastMove = moveLog.removeMove(moveLog.size() - 1);
-                        chessBoard = secondLastMove.undo();
-                        if (moveLog.size() > 0) {
+                if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.AI &&
+                        GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
+                    if (moveLog.size() > 0) {
+                        Move lastMove = moveLog.removeMove(moveLog.size() - 1);
+                        chessBoard = lastMove.undo();
+                        if (lastMove == computerMove && moveLog.size() > 0) {
+                            Move secondLastMove = moveLog.removeMove(moveLog.size() - 1);
+                            chessBoard = secondLastMove.undo();
                             computerMove = moveLog.getMove(moveLog.size() - 1);
                         } else {
-                            computerMove = null;
+                            restartGame();
+                            return;
                         }
                         playerPanel.undo();
-                        setChanged();
-                        notifyObservers();
+                        boardPanel.drawBoard(chessBoard);
+                        capturedPiecesPanel.redo(moveLog);
+                        System.out.println("Undo");
                     }
-                    boardPanel.drawBoard(chessBoard);
-                    playerPanel.undo();
-                    capturedPiecesPanel.redo(moveLog);
-                    System.out.println("Undo");
+                } else if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.AI
+                        || GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
+                    if (moveLog.size() > 0) {
+                        Move lastMove = moveLog.removeMove(moveLog.size() - 1);
+                        chessBoard = lastMove.undo();
+                        if (lastMove == computerMove) {
+                            Move secondLastMove = moveLog.removeMove(moveLog.size() - 1);
+                            chessBoard = secondLastMove.undo();
+                            if (moveLog.size() > 0) {
+                                computerMove = moveLog.getMove(moveLog.size() - 1);
+                            } else {
+                                computerMove = null;
+                            }
+                            playerPanel.undo();
+                            setChanged();
+                            notifyObservers();
+                        }
+                        boardPanel.drawBoard(chessBoard);
+                        playerPanel.undo();
+                        capturedPiecesPanel.redo(moveLog);
+                        System.out.println("Undo");
+                    }
                 }
             }
         });
@@ -691,16 +713,19 @@ public class GameFrame extends Observable {
 
     private void writeGame(String fileName) {
         String location = "database\\" + fileName + ".txt";
+        if (!fileName.matches("[^\\\\/:*?\"<>|]+")) {
+            JOptionPane.showMessageDialog(null, "A file name cannot contain any illegal characters.", "Invalid File Name", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         File file = new File(location);
         try {
-            if(file.exists()){
+            if (file.exists()) {
                 int response = JOptionPane.showConfirmDialog(null, "The file already exists, do you want to overwrite it?",
-                        "Considering Changing File Name", JOptionPane.YES_NO_OPTION);
+                        "Overlapped File Name", JOptionPane.YES_NO_OPTION);
                 if (response == JOptionPane.NO_OPTION) {
                     return;
                 }
             }
-
             FileWriter fileWriter = new FileWriter(file);
             String difficulty = "nu";
             if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN &&
@@ -733,6 +758,8 @@ public class GameFrame extends Observable {
         playerPanel.reset();
         capturedPiecesPanel.reset();
         moveLog.clear();
+        setChanged();
+        notifyObservers();
         System.out.println("Game Restarted");
     }
 
