@@ -1,17 +1,17 @@
 hu hu nu
 12
-bl wo 44 45
-re le 16 17
-bl wo 45 38
-re le 17 24
-bl el 42 35
-re ra 14 21
-bl wo 38 45
-re le 24 31
-bl wo 45 44
-re le 31 38
-bl le 46 45
-re le 38 45
+bl 44 45
+re 16 17
+bl 45 38
+re 17 24
+bl 42 35
+re 14 21
+bl 38 45
+re 24 31
+bl 45 44
+re 31 38
+bl 46 45
+re 38 45
 bl
 li  **  **  **  **  **  ti
 **  do  **  **  **  ca  **

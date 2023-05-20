@@ -1,35 +1,35 @@
 hu hu nu
 30
-bl ra 48 41
-re el 20 27
-bl el 42 35
-re ra 14 21
-bl ra 41 34
-re ra 21 28
-bl ra 34 27
-re ra 28 35
-bl ra 27 20
-re ra 35 42
-bl ra 20 19
-re wo 18 19
-bl ca 50 43
-re li 0 7
-bl ca 43 42
-re li 7 14
-bl li 62 55
-re li 14 15
-bl li 55 48
-re le 16 17
-bl li 48 47
-re le 17 18
-bl li 47 19
-re ti 6 13
-bl li 19 18
-re ca 12 19
-bl li 18 19
-re li 15 43
-bl wo 44 51
-re li 43 42
+bl 48 41
+re 20 27
+bl 42 35
+re 14 21
+bl 41 34
+re 21 28
+bl 34 27
+re 28 35
+bl 27 20
+re 35 42
+bl 20 19
+re 18 19
+bl 50 43
+re 0 7
+bl 43 42
+re 7 14
+bl 62 55
+re 14 15
+bl 55 48
+re 16 17
+bl 48 47
+re 17 18
+bl 47 19
+re 6 13
+bl 19 18
+re 12 19
+bl 18 19
+re 15 43
+bl 44 51
+re 43 42
 bl
 **  **  **  **  **  **  **
 **  do  **  **  **  **  ti

@@ -119,7 +119,6 @@ public abstract class Move {
         @Override
         public String toString() {
             return movedPiece.getPieceColor().toString().toLowerCase().substring(0, 2) + " "
-                    + movedPiece.getPieceType().toString().toLowerCase().substring(0, 2) + " "
                     + movedPiece.getPieceCoordinate() + " "
                     + destinationCoordinate;
         }
@@ -164,7 +163,6 @@ public abstract class Move {
         @Override
         public String toString() {
             return movedPiece.getPieceColor().toString().toLowerCase().substring(0, 2) + " "
-                    + movedPiece.getPieceType().toString().toLowerCase().substring(0, 2) + " "
                     + movedPiece.getPieceCoordinate() + " "
                     + destinationCoordinate;
         }

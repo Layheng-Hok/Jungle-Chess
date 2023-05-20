@@ -1,35 +1,35 @@
 hu ai me
 30
-bl ra 48 41
-re el 20 19
-bl ra 41 34
-re wo 18 17
-bl ra 34 27
-re el 19 18
-bl li 62 55
-re el 18 11
-bl li 55 48
-re ca 12 13
-bl li 48 41
-re le 16 9
-bl li 41 34
-re ca 13 20
-bl ra 27 26
-re ca 20 19
-bl li 34 31
-re ra 14 21
-bl li 31 24
-re el 11 18
-bl li 24 21
-re ti 6 13
-bl li 21 14
-re wo 17 10
-bl li 14 15
-re le 9 16
-bl li 15 16
-re do 8 9
-bl li 16 9
-re el 18 17
+bl 48 41
+re 20 19
+bl 41 34
+re 18 17
+bl 34 27
+re 19 18
+bl 62 55
+re 18 11
+bl 55 48
+re 12 13
+bl 48 41
+re 16 9
+bl 41 34
+re 13 20
+bl 27 26
+re 20 19
+bl 34 31
+re 14 21
+bl 31 24
+re 11 18
+bl 24 21
+re 6 13
+bl 21 14
+re 17 10
+bl 14 15
+re 9 16
+bl 15 16
+re 8 9
+bl 16 9
+re 18 17
 bl
 li  **  **  **  **  **  **
 **  **  LI  wo  **  **  ti

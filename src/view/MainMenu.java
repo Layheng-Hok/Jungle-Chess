@@ -115,11 +115,18 @@ public class MainMenu extends JFrame {
                     String moveLine = readList.remove(0);
                     String[] moveTokens = moveLine.split(" ");
                     playerList.add(moveTokens[0]);
-                    currentCoordinateList.add(Integer.parseInt(moveTokens[2]));
-                    destinationCoordinateList.add(Integer.parseInt(moveTokens[3]));
+                    try {
+                        currentCoordinateList.add(Integer.parseInt(moveTokens[1]));
+                        destinationCoordinateList.add(Integer.parseInt(moveTokens[2]));
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                                "File Load Error", JOptionPane.ERROR_MESSAGE);
+                        System.out.println("Coordinates are missing.");
+                        return;
+                    }
                 }
 
-                if (numMoves == currentCoordinateList.size()) {
+                if (numMoves == currentCoordinateList.size() && numMoves == destinationCoordinateList.size()) {
                     for (int i = 0; i < currentCoordinateList.size(); i++) {
                         Move move = Move.MoveCreator.createMove(loadedBoard, currentCoordinateList.get(i), destinationCoordinateList.get(i));
                         MoveTransition transition = loadedBoard.getCurrentPlayer().makeMove(move);
@@ -128,6 +135,11 @@ public class MainMenu extends JFrame {
                             moveLog.addMove(move);
                         }
                     }
+                } else {
+                    JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                            "File Load Error", JOptionPane.ERROR_MESSAGE);
+                    System.out.println("Moves are missing.");
+                    return;
                 }
 
                 String lastTurn = readList.get(0);
@@ -153,8 +165,7 @@ public class MainMenu extends JFrame {
                         case "me" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.MEDIUM);
                         case "ha" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.HARD);
                     }
-                }
-                else if (playerTypeList.get(0).equals("hu") && playerTypeList.get(1).equals("hu")) {
+                } else if (playerTypeList.get(0).equals("hu") && playerTypeList.get(1).equals("hu")) {
                     GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
                     GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
                 }
@@ -197,7 +208,10 @@ public class MainMenu extends JFrame {
         exit = new JButton(exitI);
         exit.setBounds(170, 650, 180, 80);
         this.add(exit);
-        //rule.addActionListener(actions);
+        exit.addActionListener(e -> {
+            System.out.println("Exit");
+            System.exit(0);
+        });
 
         ImageIcon jChessI = new ImageIcon(new ImageIcon(jChessIcon).getImage().getScaledInstance
                 (390, 390, Image.SCALE_DEFAULT));
