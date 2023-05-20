@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
+import static view.GameFrame.defaultImagesPath;
+
 class DifficultyFrame extends JFrame {
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
     private JButton easy;
@@ -13,6 +15,8 @@ class DifficultyFrame extends JFrame {
     private JLabel background;
 
     private String iconsFolder = "resource/images" + File.separator;
+    private final ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
+
     private String backgroundIcon = iconsFolder + "background.png";
     private String easyIcon = iconsFolder + "easy.png";
     private String mediumIcon = iconsFolder + "medium.png";
@@ -21,10 +25,11 @@ class DifficultyFrame extends JFrame {
     private static Difficulty difficulty = null;
 
     DifficultyFrame() {
-        setTitle("Difficulty Selection");
+        setTitle("Jungle Chess (斗兽棋) - Difficulty Selection");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(null);
         this.setBounds(630, 180, 530, 850);
+        this.setIconImage(logo.getImage());
 
         ImageIcon easyI = new ImageIcon(new ImageIcon(easyIcon).getImage().getScaledInstance
                 (310, 90, Image.SCALE_DEFAULT));

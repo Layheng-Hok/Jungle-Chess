@@ -50,7 +50,7 @@ public class GameFrame extends Observable {
     private static final GameFrame INSTANCE = new GameFrame();
 
     public GameFrame() {
-        this.gameFrame = new JFrame("Jungle Chess (斗兽棋)");
+        this.gameFrame = new JFrame("Jungle Chess (斗兽棋) - Game");
         this.gameFrame.setLayout(new BorderLayout());
         this.gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         final JMenuBar gameFrameMenuBar = createGameFrameMenuBar();

@@ -16,7 +16,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
+
+import static view.GameFrame.defaultImagesPath;
 
 public class MainMenu extends JFrame {
     private JLabel background;
@@ -26,7 +27,8 @@ public class MainMenu extends JFrame {
     private JButton loadGame;
     private JButton exit;
 
-    private String iconsFolder = GameFrame.defaultImagesPath + File.separator;
+    private String iconsFolder = defaultImagesPath + File.separator;
+    private final ImageIcon logoImage = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
     private String jChessIcon = iconsFolder + "logo.png";
     private String backgroundIcon = iconsFolder + "background.png";
     private String onePlayerIcon = iconsFolder + "oneplayer.png";
@@ -35,10 +37,11 @@ public class MainMenu extends JFrame {
     private String exitIcon = iconsFolder + "exit.png";
 
     public MainMenu() {
-        setTitle("Main Menu");
+        setTitle("Jungle Chess (斗兽棋) - Main Menu");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(null);
         this.setBounds(630, 180, 530, 850);
+        this.setIconImage(logoImage.getImage());
         this.getContentPane().setBackground(Color.GRAY);
         ImageIcon onePlayerI = new ImageIcon(new ImageIcon(onePlayerIcon).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
