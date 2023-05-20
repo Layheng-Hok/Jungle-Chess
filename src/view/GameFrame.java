@@ -279,9 +279,9 @@ public class GameFrame extends Observable {
                     JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
                     return;
                 }
-                restartMenuItem.doClick();
                 GameFrame.get().AIGameConfiguration.setBluePlayerType(PlayerType.HUMAN);
                 GameFrame.get().AIGameConfiguration.setRedPlayerType(PlayerType.HUMAN);
+                restartGame();
                 GameFrame.get().dispose();
                 new MainMenu().setVisible(true);
                 System.out.println("Back To Main Menu");
