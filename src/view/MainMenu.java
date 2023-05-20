@@ -16,6 +16,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class MainMenu extends JFrame {
     private JLabel background;
@@ -114,19 +115,23 @@ public class MainMenu extends JFrame {
                 for (int i = 0; i < numMoves; i++) {
                     String moveLine = readList.remove(0);
                     String[] moveTokens = moveLine.split(" ");
-                    playerList.add(moveTokens[0]);
                     try {
+                        if (moveTokens.length < 3) {
+                            JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                                    "File Load Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        playerList.add(moveTokens[0]);
                         currentCoordinateList.add(Integer.parseInt(moveTokens[1]));
                         destinationCoordinateList.add(Integer.parseInt(moveTokens[2]));
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(null, "The file is corrupted.",
                                 "File Load Error", JOptionPane.ERROR_MESSAGE);
-                        System.out.println("Coordinates are missing.");
                         return;
                     }
                 }
 
-                if (numMoves == currentCoordinateList.size() && numMoves == destinationCoordinateList.size()) {
+                if (numMoves == currentCoordinateList.size() && numMoves == destinationCoordinateList.size() && numMoves == playerList.size()) {
                     for (int i = 0; i < currentCoordinateList.size(); i++) {
                         Move move = Move.MoveCreator.createMove(loadedBoard, currentCoordinateList.get(i), destinationCoordinateList.get(i));
                         MoveTransition transition = loadedBoard.getCurrentPlayer().makeMove(move);
@@ -138,13 +143,29 @@ public class MainMenu extends JFrame {
                 } else {
                     JOptionPane.showMessageDialog(null, "The file is corrupted.",
                             "File Load Error", JOptionPane.ERROR_MESSAGE);
-                    System.out.println("Moves are missing.");
                     return;
                 }
 
                 String lastTurn = readList.get(0);
                 readList.remove(0);
                 playerList.add(lastTurn);
+                for (int i = 0; i < playerList.size(); i++) {
+                    if (i % 2 == 0) {
+                        if (!playerList.get(i).equals("bl")) {
+                            JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                                    "File Load Error", JOptionPane.ERROR_MESSAGE);
+                            System.out.println("Wrong player turns.");
+                            return;
+                        }
+                    } else {
+                        if (!playerList.get(i).equals("re")) {
+                            JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                                    "File Load Error", JOptionPane.ERROR_MESSAGE);
+                            System.out.println("Wrong player turns.");
+                            return;
+                        }
+                    }
+                }
                 int roundNumber = playerList.size() % 2 == 0 ? playerList.size() / 2 : playerList.size() / 2 + 1;
                 GameFrame.get().setLoadBoard(loadedBoard, moveLog, roundNumber);
                 GameFrame.get().setMoveLog(moveLog);
