@@ -73,7 +73,7 @@ class DifficultyFrame extends JFrame {
             new MainMenu().setVisible(true);
             System.out.println("Back To Main Menu");
         });
-        //background label
+
         ImageIcon backgroundI = new ImageIcon(new ImageIcon(backgroundIcon).getImage().getScaledInstance
                 (530, 850, Image.SCALE_DEFAULT));
         background = new JLabel(backgroundI);

@@ -83,7 +83,7 @@ public class MainMenu extends JFrame {
                 File file = fileChooser.getSelectedFile();
 
                 if (!file.getName().endsWith(".txt")) {
-                    JOptionPane.showMessageDialog(null, "The file extension is not supported.",
+                    JOptionPane.showMessageDialog(null, "The file extension is either missing or not supported.",
                             "File Load Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -109,14 +109,20 @@ public class MainMenu extends JFrame {
                 ArrayList<Integer> currentCoordinateList = new ArrayList<>();
                 ArrayList<Integer> destinationCoordinateList = new ArrayList<>();
                 String playerTypeLine = readList.remove(0);
-                playerTypeList = new ArrayList<>(Arrays.asList(playerTypeLine.split(" ")));
+                try {
+                playerTypeList = new ArrayList<>(Arrays.asList(playerTypeLine.split(" "))); }
+                catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                            "File Load Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 numMoves = Integer.parseInt(readList.remove(0));
 
                 for (int i = 0; i < numMoves; i++) {
                     String moveLine = readList.remove(0);
                     String[] moveTokens = moveLine.split(" ");
                     try {
-                        if (moveTokens.length < 3) {
+                        if (moveTokens.length != 3) {
                             JOptionPane.showMessageDialog(null, "The file is corrupted.",
                                     "File Load Error", JOptionPane.ERROR_MESSAGE);
                             return;
@@ -189,6 +195,10 @@ public class MainMenu extends JFrame {
                 } else if (playerTypeList.get(0).equals("hu") && playerTypeList.get(1).equals("hu")) {
                     GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
                     GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
+                } else {
+                    JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                            "File Load Error", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
 
                 ArrayList<String> animalList = new ArrayList<>();
