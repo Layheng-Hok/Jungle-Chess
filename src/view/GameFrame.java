@@ -9,7 +9,6 @@ import model.board.Move;
 import model.board.MoveTransition;
 import model.board.Utilities;
 import model.piece.Piece;
-import model.player.Player;
 import model.player.PlayerColor;
 import model.player.PlayerType;
 

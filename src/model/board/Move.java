@@ -125,16 +125,16 @@ public abstract class Move {
     }
 
     public static class CaptureMove extends Move {
-        final Piece attackedPiece;
+        final Piece capturedPiece;
 
-        public CaptureMove(final Board board, final Piece movedPiece, final int destinationCoordinate, final Piece attackedPiece) {
+        public CaptureMove(final Board board, final Piece movedPiece, final int destinationCoordinate, final Piece capturedPiece) {
             super(board, movedPiece, destinationCoordinate);
-            this.attackedPiece = attackedPiece;
+            this.capturedPiece = capturedPiece;
         }
 
         @Override
         public int hashCode() {
-            return this.attackedPiece.hashCode() + super.hashCode();
+            return this.capturedPiece.hashCode() + super.hashCode();
         }
 
         @Override
@@ -157,7 +157,7 @@ public abstract class Move {
 
         @Override
         public Piece getCapturedPiece() {
-            return this.attackedPiece;
+            return this.capturedPiece;
         }
 
         @Override

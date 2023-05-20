@@ -6,7 +6,7 @@ bl 44 45
 re 17 24
 re 45 38
 bl 24 31
-bl
+re
 li  **  **  **  **  **  ti
 **  do  **  **  **  ca  **
 ra  **  **  **  wo  **  el
