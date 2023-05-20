@@ -78,7 +78,7 @@ class DifficultyFrame extends JFrame {
     private JLabel background;
 
     private String iconsFolder = "resource/images" + File.separator;
-    private String backgroundIcon = iconsFolder +"background.png";
+    private String backgroundIcon = iconsFolder + "background.png";
     private String easyIcon = iconsFolder + "easy.png";
     private String mediumIcon = iconsFolder + "medium.png";
     private String hardIcon = iconsFolder + "hard.png";
@@ -99,7 +99,7 @@ class DifficultyFrame extends JFrame {
         easy.addActionListener((e) -> {
             this.setVisible(false);
             setDifficulty(Difficulty.EASY);
-            GameFrame.get().setVisible(true);
+            GameFrame.get().show();
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
         });
@@ -111,7 +111,7 @@ class DifficultyFrame extends JFrame {
         medium.addActionListener((e) -> {
             this.setVisible(false);
             setDifficulty(Difficulty.MEDIUM);
-            GameFrame.get().setVisible(true);
+            GameFrame.get().show();
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
         });
@@ -123,7 +123,7 @@ class DifficultyFrame extends JFrame {
         hard.addActionListener((e) -> {
             this.setVisible(false);
             setDifficulty(Difficulty.HARD);
-            GameFrame.get().setVisible(true);
+            GameFrame.get().show();
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
         });
@@ -134,10 +134,9 @@ class DifficultyFrame extends JFrame {
         back.setBounds(50, 650, 170, 70);
         this.add(back);
         back.addActionListener((e) -> {
-
-            //this.setVisible(false);
-            // GameFrame.get().getGameConfiguration().promptUser();
-            // GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
+            this.setVisible(false);
+            new MainMenu().setVisible(true);
+            System.out.println("Back To Main Menu");
         });
         //background label
         ImageIcon backgroundI = new ImageIcon(new ImageIcon(backgroundIcon).getImage().getScaledInstance
@@ -154,7 +153,7 @@ class DifficultyFrame extends JFrame {
         HARD
     }
 
-    private static void setDifficulty(Difficulty difficulty) {
+    static void setDifficulty(Difficulty difficulty) {
         DifficultyFrame.difficulty = difficulty;
     }
 

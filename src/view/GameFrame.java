@@ -18,6 +18,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.*;
@@ -32,7 +33,7 @@ public class GameFrame extends Observable {
     private final PlayerPanel playerPanel;
     private final CapturedPiecesPanel capturedPiecesPanel;
     private final BoardPanel boardPanel;
-    private final AIGameConfiguration AIGameConfiguration;
+    private final GameConfiguration AIGameConfiguration;
     private MoveLog moveLog;
     private Board chessBoard;
     private Move computerMove;
@@ -40,6 +41,7 @@ public class GameFrame extends Observable {
     private Piece humanMovedPiece;
     private BoardDirection boardDirection;
     private boolean isBoard1 = true;
+    private boolean replayMovesInProgress = false;
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(500, 650);
     private static final Dimension TERRAIN_PANEL_DIMENSION = new Dimension(10, 10);
@@ -63,7 +65,7 @@ public class GameFrame extends Observable {
         this.boardPanel = new BoardPanel();
         this.moveLog = new MoveLog();
         this.addObserver(new AIGameObserver());
-        this.AIGameConfiguration = new AIGameConfiguration(this.gameFrame, true);
+        this.AIGameConfiguration = new GameConfiguration(this.gameFrame, true);
         this.boardDirection = BoardDirection.NORMAL;
         this.gameFrame.add(this.leftPanel, BorderLayout.WEST);
         this.gameFrame.add(this.rightPanel, BorderLayout.EAST);
@@ -71,7 +73,6 @@ public class GameFrame extends Observable {
         this.gameFrame.add(this.capturedPiecesPanel, BorderLayout.SOUTH);
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
         this.gameFrame.setIconImage(logo.getImage());
-        this.gameFrame.setVisible(true);
         this.gameFrame.setResizable(false);
     }
 
@@ -89,12 +90,20 @@ public class GameFrame extends Observable {
         saveMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String path = JOptionPane.showInputDialog("File Name");
-                while (path.equals("")) {
-                    JOptionPane.showMessageDialog(null, "Name cannot be empty. Please enter again.");
-                    path = JOptionPane.showInputDialog("File Name");
+                if (replayMovesInProgress) {
+                    JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
+                    return;
                 }
-                System.out.println("Game Saved");
+                if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                    JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
+                    return;
+                }
+                String fileName = JOptionPane.showInputDialog("File Name");
+                while (fileName.equals("")) {
+                    JOptionPane.showMessageDialog(null, "Name cannot be empty. Please enter again.");
+                    fileName = JOptionPane.showInputDialog("File Name");
+                }
+                writeGame(fileName);
             }
         });
         saveMenuItem.setMnemonic(KeyEvent.VK_S);
@@ -104,6 +113,10 @@ public class GameFrame extends Observable {
         restartMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (replayMovesInProgress) {
+                    JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
+                    return;
+                }
                 if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
                     JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
                     return;
@@ -119,6 +132,10 @@ public class GameFrame extends Observable {
         undoMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (replayMovesInProgress) {
+                    JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
+                    return;
+                }
                 if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
                     JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
                     return;
@@ -152,10 +169,15 @@ public class GameFrame extends Observable {
         replayAllMovesMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (replayMovesInProgress) {
+                    JOptionPane.showMessageDialog(null, "Replay is already in progress. Please wait for the next replay.");
+                    return;
+                }
                 if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
                     JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
                     return;
                 }
+                replayMovesInProgress = true;
                 playerPanel.setRoundNumber(1);
                 capturedPiecesPanel.reset();
                 MoveLog seperateMoveLog = new MoveLog();
@@ -169,6 +191,7 @@ public class GameFrame extends Observable {
                         for (int i = 0; i < moveLog.size(); i++) {
                             Move move = moveLog.getMove(i);
                             chessBoard = move.execute();
+                            System.out.println(move);
                             seperateMoveLog.addMove(move);
                             computerMove = move;
                             publish();
@@ -190,6 +213,7 @@ public class GameFrame extends Observable {
                             GameFrame.get().moveMadeUpdate(PlayerType.HUMAN);
                         }
                         boardPanel.drawBoard(chessBoard);
+                        replayMovesInProgress = false;
                     }
                 };
                 worker.execute();
@@ -452,9 +476,9 @@ public class GameFrame extends Observable {
         private void highlightAIMoves() {
             if (computerMove != null) {
                 if (this.terrainCoordinate == computerMove.getCurrentCoordinate()) {
-                    setBorder(BorderFactory.createLineBorder(Color.PINK, 2));
+                    setBorder(BorderFactory.createLineBorder(new Color(14, 74, 17), 2));
                 } else if (this.terrainCoordinate == computerMove.getDestinationCoordinate()) {
-                    setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+                    setBorder(BorderFactory.createLineBorder(Color.GREEN, 2));
                 }
             }
         }
@@ -572,7 +596,7 @@ public class GameFrame extends Observable {
         }
     }
 
-    public void setupUpdate(final AIGameConfiguration AIGameConfiguration) {
+    public void setupUpdate(final GameConfiguration AIGameConfiguration) {
         setChanged();
         notifyObservers(AIGameConfiguration);
     }
@@ -645,7 +669,6 @@ public class GameFrame extends Observable {
                 GameFrame.get().getPlayerPanel().repaint();
                 GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-                GameFrame.get().moveMadeUpdate(PlayerType.AI);
             } catch (final Exception e) {
                 e.printStackTrace();
             }
@@ -662,9 +685,47 @@ public class GameFrame extends Observable {
         GameFrame.get().getPlayerPanel().reset();
         GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
         GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+        GameFrame.get().getBoardPanel().removeAllBorders();
+        GameFrame.get().setVisible(true);
     }
 
-    private void restartGame() {
+    private void writeGame(String fileName) {
+        String location = "database\\" + fileName + ".txt";
+        File file = new File(location);
+        try {
+            if(file.exists()){
+                int response = JOptionPane.showConfirmDialog(null, "The file already exists, do you want to overwrite it?",
+                        "Considering Changing File Name", JOptionPane.YES_NO_OPTION);
+                if (response == JOptionPane.NO_OPTION) {
+                    return;
+                }
+            }
+
+            FileWriter fileWriter = new FileWriter(file);
+            String difficulty = "nu";
+            if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN &&
+                    GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.AI
+                    || GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.AI &&
+                    GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
+                difficulty = DifficultyFrame.getDifficulty().toString().toLowerCase().substring(0, 2);
+            }
+            fileWriter.write(GameFrame.get().getGameConfiguration().getBluePlayerType().toString().toLowerCase().substring(0, 2) + " "
+                    + GameFrame.get().getGameConfiguration().getRedPlayerType().toString().toLowerCase().substring(0, 2) + " "
+                    + difficulty + "\n");
+            fileWriter.write(String.valueOf(GameFrame.get().getMoveLog().size()) + "\n");
+            for (int i = 0; i < GameFrame.get().getMoveLog().size(); i++) {
+                fileWriter.write(GameFrame.get().getMoveLog().getMove(i).toString() + "\n");
+            }
+            fileWriter.write(GameFrame.get().getChessBoard().getCurrentPlayer().toString().toLowerCase().substring(0, 2) + "\n");
+            fileWriter.write(GameFrame.get().getChessBoard().toString());
+            fileWriter.close();
+            System.out.println("Game Saved");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void restartGame() {
         chessBoard = Board.constructStandardBoard();
         boardPanel.drawBoard(chessBoard);
         boardPanel.removeAllBorders();
@@ -673,6 +734,18 @@ public class GameFrame extends Observable {
         capturedPiecesPanel.reset();
         moveLog.clear();
         System.out.println("Game Restarted");
+    }
+
+    public void setLoadBoard(Board loadBoard, MoveLog loadMoveLog, int roundNumber) {
+        this.chessBoard = loadBoard;
+        this.moveLog = loadMoveLog;
+        boardPanel.drawBoard(chessBoard);
+        boardPanel.removeAllBorders();
+        capturedPiecesPanel.redo(moveLog);
+        playerPanel.setRoundNumber(roundNumber);
+        playerPanel.setCurrentPlayer(chessBoard.getCurrentPlayer().toString());
+        playerPanel.repaint();
+        System.out.println("Game Loaded");
     }
 
     public void checkWin() {
@@ -696,7 +769,7 @@ public class GameFrame extends Observable {
         }
     }
 
-    public AIGameConfiguration getGameConfiguration() {
+    public GameConfiguration getGameConfiguration() {
         return this.AIGameConfiguration;
     }
 
@@ -718,6 +791,10 @@ public class GameFrame extends Observable {
 
     public MoveLog getMoveLog() {
         return moveLog;
+    }
+
+    public void setMoveLog(MoveLog moveLog) {
+        this.moveLog = moveLog;
     }
 
     public void setVisible(boolean b) {

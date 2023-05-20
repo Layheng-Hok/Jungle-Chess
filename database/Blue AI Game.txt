@@ -1,0 +1,63 @@
+ai hu ea
+51
+bl li 62 61
+re ra 14 21
+bl li 61 62
+re ra 21 28
+bl ti 56 49
+re ra 28 35
+bl el 42 43
+re ra 35 36
+bl li 62 61
+re li 0 7
+bl li 61 62
+re li 7 14
+bl li 62 61
+re li 14 15
+bl li 61 62
+re le 16 17
+bl li 62 61
+re le 17 24
+bl li 61 62
+re le 24 31
+bl li 62 61
+re le 31 38
+bl wo 44 51
+re li 15 16
+bl li 61 62
+re li 16 17
+bl li 62 61
+re li 17 24
+bl li 61 62
+re li 24 27
+bl li 62 61
+re li 27 34
+bl ra 48 55
+re li 34 41
+bl li 61 62
+re le 38 45
+bl le 46 45
+re li 41 48
+bl li 62 61
+re li 48 55
+bl do 54 53
+re li 55 48
+bl li 61 54
+re li 48 41
+bl le 45 46
+re li 41 38
+bl el 43 44
+re li 38 31
+bl li 54 61
+re ra 36 43
+bl ca 50 43
+re
+**  **  **  **  **  **  ti
+**  do  **  **  **  ca  **
+**  **  **  **  wo  **  el
+**  **  **  **  **  **  **
+**  **  **  li  **  **  **
+**  **  **  **  **  **  **
+**  CA  EL  **  LE  **  **
+TI  **  WO  **  DO  **  **
+**  **  **  **  **  LI  **

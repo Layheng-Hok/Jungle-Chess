@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-class AIGameConfiguration extends JDialog {
+class GameConfiguration extends JDialog {
     private PlayerType bluePlayerType;
     private PlayerType redPlayerType;
 
@@ -19,7 +19,7 @@ class AIGameConfiguration extends JDialog {
     private static final String COMPUTER = "Computer";
     private static final String defaultImagesPath = "resource/images/";
 
-    AIGameConfiguration(final JFrame frame, final boolean modal) {
+    GameConfiguration(final JFrame frame, final boolean modal) {
         super(frame, modal);
         setTitle("PICK A SIDE");
         final JPanel gameConfigPanel = new JPanel(new GridLayout(0, 1));
@@ -79,7 +79,7 @@ class AIGameConfiguration extends JDialog {
                 bluePlayerType = blueComputerButton.isSelected() ? PlayerType.AI : PlayerType.HUMAN;
                 redPlayerType = redComputerButton.isSelected() ? PlayerType.AI : PlayerType.HUMAN;
                 System.out.println("Set Up Game");
-                AIGameConfiguration.this.setVisible(false);
+                GameConfiguration.this.setVisible(false);
             }
         });
 
@@ -115,19 +115,20 @@ class AIGameConfiguration extends JDialog {
         return this.bluePlayerType;
     }
 
+    void setBluePlayerType(PlayerType bluePlayerType) {
+        this.bluePlayerType = bluePlayerType;
+    }
+
     PlayerType getRedPlayerType() {
         return this.redPlayerType;
+    }
+
+    void setRedPlayerType(PlayerType redPlayerType) {
+        this.redPlayerType = redPlayerType;
     }
 
     int getSearchDepth() {
         return 4;
     }
 
-    void setBluePlayerType(PlayerType bluePlayerType) {
-        this.bluePlayerType = bluePlayerType;
-    }
-
-    void setRedPlayerType(PlayerType redPlayerType) {
-        this.redPlayerType = redPlayerType;
-    }
 }

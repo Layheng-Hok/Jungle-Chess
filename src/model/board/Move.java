@@ -118,7 +118,10 @@ public abstract class Move {
 
         @Override
         public String toString() {
-            return movedPiece.getPieceType().toString() + disambiguationFile() + Utilities.getPositionAtCoordinate(this.destinationCoordinate);
+            return movedPiece.getPieceColor().toString().toLowerCase().substring(0, 2) + " "
+                    + movedPiece.getPieceType().toString().toLowerCase().substring(0, 2) + " "
+                    + movedPiece.getPieceCoordinate() + " "
+                    + destinationCoordinate;
         }
     }
 
@@ -160,8 +163,10 @@ public abstract class Move {
 
         @Override
         public String toString() {
-            return movedPiece.getPieceType() + disambiguationFile() + "x" +
-                    Utilities.getPositionAtCoordinate(this.destinationCoordinate);
+            return movedPiece.getPieceColor().toString().toLowerCase().substring(0, 2) + " "
+                    + movedPiece.getPieceType().toString().toLowerCase().substring(0, 2) + " "
+                    + movedPiece.getPieceCoordinate() + " "
+                    + destinationCoordinate;
         }
     }
 
@@ -201,12 +206,9 @@ public abstract class Move {
             return NULL_MOVE;
         }
 
-        public static Move createMove(final Board board,
-                                      final int currentCoordinate,
-                                      final int destinationCoordinate) {
+        public static Move createMove(final Board board, final int currentCoordinate, final int destinationCoordinate) {
             for (final Move move : board.getAllValidMoves()) {
-                if (move.getCurrentCoordinate() == currentCoordinate &&
-                        move.getDestinationCoordinate() == destinationCoordinate) {
+                if (move.getCurrentCoordinate() == currentCoordinate && move.getDestinationCoordinate() == destinationCoordinate) {
                     return move;
                 }
             }

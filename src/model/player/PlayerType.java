@@ -1,6 +1,16 @@
 package model.player;
 
 public enum PlayerType {
-    HUMAN,
-    AI
+    HUMAN {
+        @Override
+        public String toString() {
+            return "Human";
+        }
+    },
+    AI {
+        @Override
+        public String toString() {
+            return "AI";
+        }
+    }
 }

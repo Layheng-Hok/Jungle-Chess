@@ -1,11 +1,21 @@
 package view;
 
 
+import model.board.Board;
+import model.board.Move;
+import model.board.MoveTransition;
+import model.player.PlayerType;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainMenu extends JFrame {
     private JLabel background;
@@ -21,7 +31,7 @@ public class MainMenu extends JFrame {
     private String onePlayerIcon = iconsFolder + "oneplayer.png";
     private String twoPlayerIcon = iconsFolder + "twoplayer.png";
     private String loadGameIcon = iconsFolder + "loadgame.png";
-    private String exitIcon= iconsFolder + "exit.png";
+    private String exitIcon = iconsFolder + "exit.png";
 
     public MainMenu() {
         setTitle("Main Menu");
@@ -53,7 +63,8 @@ public class MainMenu extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
                 GameFrame.get().show();
-                GameFrame.get().setVisible(true);
+                GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
+                GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
                 System.out.println("Load a Two-Player Game");
             }
         });
@@ -62,7 +73,124 @@ public class MainMenu extends JFrame {
         loadGame = new JButton(loadGameI);
         loadGame.setBounds(170, 550, 180, 80);
         this.add(loadGame);
-        //rule.addActionListener(actions);
+        loadGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setCurrentDirectory(new File("database"));
+                fileChooser.showOpenDialog(null);
+                File file = fileChooser.getSelectedFile();
+
+                if (!file.getName().endsWith(".txt")) {
+                    JOptionPane.showMessageDialog(null, "The file extension is not supported.",
+                            "File Load Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                ArrayList<String> readList = new ArrayList<>();
+                try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        readList.add(line);
+                    }
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Error reading file.",
+                            "File Read Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                Board loadedBoard = Board.constructStandardBoard();
+                GameFrame.MoveLog moveLog = new GameFrame.MoveLog();
+
+                ArrayList<String> playerTypeList;
+                int numMoves;
+                ArrayList<String> playerList = new ArrayList<>();
+                ArrayList<Integer> currentCoordinateList = new ArrayList<>();
+                ArrayList<Integer> destinationCoordinateList = new ArrayList<>();
+                String playerTypeLine = readList.remove(0);
+                playerTypeList = new ArrayList<>(Arrays.asList(playerTypeLine.split(" ")));
+                numMoves = Integer.parseInt(readList.remove(0));
+
+                for (int i = 0; i < numMoves; i++) {
+                    String moveLine = readList.remove(0);
+                    String[] moveTokens = moveLine.split(" ");
+                    playerList.add(moveTokens[0]);
+                    currentCoordinateList.add(Integer.parseInt(moveTokens[2]));
+                    destinationCoordinateList.add(Integer.parseInt(moveTokens[3]));
+                }
+
+                if (numMoves == currentCoordinateList.size()) {
+                    for (int i = 0; i < currentCoordinateList.size(); i++) {
+                        Move move = Move.MoveCreator.createMove(loadedBoard, currentCoordinateList.get(i), destinationCoordinateList.get(i));
+                        MoveTransition transition = loadedBoard.getCurrentPlayer().makeMove(move);
+                        if (transition.getMoveStatus().isDone()) {
+                            loadedBoard = transition.getTransitionBoard();
+                            moveLog.addMove(move);
+                        }
+                    }
+                }
+
+                String lastTurn = readList.get(0);
+                readList.remove(0);
+                playerList.add(lastTurn);
+                int roundNumber = playerList.size() % 2 == 0 ? playerList.size() / 2 : playerList.size() / 2 + 1;
+                GameFrame.get().setLoadBoard(loadedBoard, moveLog, roundNumber);
+                GameFrame.get().setMoveLog(moveLog);
+
+                if (playerTypeList.get(0).equals("ai") && playerTypeList.get(1).equals("hu")) {
+                    GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.AI);
+                    GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
+                    switch (playerTypeList.get(2)) {
+                        case "ea" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.EASY);
+                        case "me" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.MEDIUM);
+                        case "ha" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.HARD);
+                    }
+                } else if (playerTypeList.get(0).equals("hu") && playerTypeList.get(1).equals("ai")) {
+                    GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
+                    GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.AI);
+                    switch (playerTypeList.get(2)) {
+                        case "ea" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.EASY);
+                        case "me" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.MEDIUM);
+                        case "ha" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.HARD);
+                    }
+                }
+                else if (playerTypeList.get(0).equals("hu") && playerTypeList.get(1).equals("hu")) {
+                    GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
+                    GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
+                }
+
+                ArrayList<String> animalList = new ArrayList<>();
+                ArrayList<Integer> coordinateList = new ArrayList<>();
+
+                int position = 0;
+                for (String line : readList) {
+                    String[] tokens = line.split("\\s+");
+                    for (String token : tokens) {
+                        if (token.length() == 2 && Character.isLetter(token.charAt(0)) && Character.isLetter(token.charAt(1))) {
+                            animalList.add(token);
+                            coordinateList.add(position);
+                        } else if (token.length() == 2 && Character.isDigit(token.charAt(0)) && Character.isDigit(token.charAt(1))) {
+                            position = Integer.parseInt(token);
+                        }
+                        position++;
+                    }
+                }
+
+                Board expectedBoard = Board.constructSpecificBoard(animalList, coordinateList, lastTurn);
+                System.out.println(loadedBoard);
+                System.out.println(expectedBoard);
+                if (!expectedBoard.equals(loadedBoard)) {
+                    System.out.println("Board is incorrect");
+                    JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                            "File Load Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    System.out.println("Board is correct");
+                    setVisible(false);
+                    GameFrame.get().setVisible(true);
+                    System.out.println("Load a Saved Game");
+                }
+            }
+        });
 
         ImageIcon exitI = new ImageIcon(new ImageIcon(exitIcon).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
@@ -86,28 +214,4 @@ public class MainMenu extends JFrame {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
     }
-
-    /* private ActionListener actions = new ActionListener()
-     {
-         @Override
-         public void actionPerformed(ActionEvent e)
-         {
-             if(e.getSource() == onePlayer)
-             {
-                 setVisible(false);
-                 jChessMain.showDifficultiesForm(); //show chess board with AI
-             }
-
-             else if(e.getSource() == twoPlayer){
-                 setVisible(false);
-                 jChessMain.showLeaderboard();// show chess board for two players
-             }
-
-             else if(e.getSource() == rule){
-                 setVisible(false);
-                 jChessMain.showLeaderboard();// show rule frame
-             }
-         }
-     };*/
 }
-

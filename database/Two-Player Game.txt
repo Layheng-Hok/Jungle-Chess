@@ -1,0 +1,42 @@
+hu hu nu
+30
+bl ra 48 41
+re el 20 27
+bl el 42 35
+re ra 14 21
+bl ra 41 34
+re ra 21 28
+bl ra 34 27
+re ra 28 35
+bl ra 27 20
+re ra 35 42
+bl ra 20 19
+re wo 18 19
+bl ca 50 43
+re li 0 7
+bl ca 43 42
+re li 7 14
+bl li 62 55
+re li 14 15
+bl li 55 48
+re le 16 17
+bl li 48 47
+re le 17 18
+bl li 47 19
+re ti 6 13
+bl li 19 18
+re ca 12 19
+bl li 18 19
+re li 15 43
+bl wo 44 51
+re li 43 42
+bl
+**  **  **  **  **  **  **
+**  do  **  **  **  **  ti
+**  **  **  **  **  LI  **
+**  **  **  **  **  **  **
+**  **  **  **  **  **  **
+**  **  **  **  **  **  **
+li  **  **  **  LE  **  **
+**  **  WO  **  **  DO  **
+TI  **  **  **  **  **  **
