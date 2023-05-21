@@ -126,6 +126,7 @@ public class GameFrame extends Observable {
             }
         });
         restartMenuItem.setMnemonic(KeyEvent.VK_R);
+        restartMenuItem.setMnemonic(KeyEvent.VK_R);
         settingMenu.add(restartMenuItem);
 
         final JMenuItem undoMenuItem = new JMenuItem("Undo");
@@ -258,17 +259,17 @@ public class GameFrame extends Observable {
         changeBoardMenuItem.setMnemonic(KeyEvent.VK_C);
         settingMenu.add(changeBoardMenuItem);
 
-        final JMenuItem changeSideMenuItem = new JMenuItem("Change Side");
-        changeSideMenuItem.addActionListener(new ActionListener() {
+        final JMenuItem rotateBoard = new JMenuItem("Rotate Board");
+        rotateBoard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 boardDirection = boardDirection.opposite();
                 boardPanel.drawBoard(chessBoard);
-                System.out.println("Side Changed");
+                System.out.println("Board Rotated");
             }
         });
-        changeSideMenuItem.setMnemonic(KeyEvent.VK_C);
-        settingMenu.add(changeSideMenuItem);
+        rotateBoard.setMnemonic(KeyEvent.VK_S);
+        settingMenu.add(rotateBoard);
 
         final JMenuItem backMenuItem = new JMenuItem("Back To Main Menu");
         backMenuItem.addActionListener(new ActionListener() {
@@ -401,6 +402,10 @@ public class GameFrame extends Observable {
                         sourceTerrain = null;
                         humanMovedPiece = null;
                     } else if (isLeftMouseButton(e)) {
+                        if (replayMovesInProgress) {
+                            JOptionPane.showMessageDialog(null, "Replay is already in progress. Please wait for the next replay.");
+                            return;
+                        }
                         if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
                             return;
                         }
