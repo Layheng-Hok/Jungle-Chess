@@ -266,6 +266,7 @@ public class MainMenu extends JFrame {
         background.setBounds(0, 0, 530, 850);
         this.add(background);
 
+        AudioPlayer.playMenuBGM();
         this.setLocationRelativeTo(null);
         this.setResizable(false);
     }

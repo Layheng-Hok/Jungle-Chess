@@ -74,6 +74,7 @@ public class GameFrame extends Observable {
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
         this.gameFrame.setIconImage(logo.getImage());
         this.gameFrame.setResizable(false);
+        AudioPlayer.playGameBGM();
     }
 
     private JMenuBar createGameFrameMenuBar() {
