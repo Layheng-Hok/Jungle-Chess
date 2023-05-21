@@ -25,7 +25,7 @@ class DifficultyFrame extends JFrame {
     private static Difficulty difficulty = null;
 
     DifficultyFrame() {
-        setTitle("Jungle Chess (斗兽棋) - Difficulty Selection");
+        this.setTitle("Jungle Chess (斗兽棋) - Difficulty Selection");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(null);
         this.setBounds(630, 180, 530, 850);

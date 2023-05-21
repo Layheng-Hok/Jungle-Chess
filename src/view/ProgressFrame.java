@@ -6,6 +6,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static view.GameFrame.defaultImagesPath;
+
 public class ProgressFrame extends JFrame {
     private Thread thread;
     private final int WIDTH;
@@ -16,6 +18,7 @@ public class ProgressFrame extends JFrame {
     private JProgressBar progressBar;
     private String loadingText;
     private List<ProgressListener> progressListeners = new ArrayList<>();
+    private final ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
 
     public ProgressFrame() {
         thread = new Thread();
@@ -25,9 +28,11 @@ public class ProgressFrame extends JFrame {
         frame = this;
         loadingText = "Progress";
 
+        setTitle("In Progress");
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null);
         setLayout(null);
+        setIconImage(logo.getImage());
 
         label = new JLabel(loadingText);
         label.setLocation(100, 20);

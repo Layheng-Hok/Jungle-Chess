@@ -187,7 +187,7 @@ public class GameFrame extends Observable {
         undoMenuItem.setMnemonic(KeyEvent.VK_U);
         settingMenu.add(undoMenuItem);
 
-        final JMenuItem replayAllMovesMenuItem = new JMenuItem("Replay Previous Moves");
+        final JMenuItem replayAllMovesMenuItem = new JMenuItem("Playback Moves");
         replayAllMovesMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -242,7 +242,7 @@ public class GameFrame extends Observable {
                 System.out.println("Replay Previous Moves");
             }
         });
-        replayAllMovesMenuItem.setMnemonic(KeyEvent.VK_R);
+        replayAllMovesMenuItem.setMnemonic(KeyEvent.VK_P);
         settingMenu.add(replayAllMovesMenuItem);
 
         final JMenuItem changeBoardMenuItem = new JMenuItem("Change Board");
@@ -259,7 +259,7 @@ public class GameFrame extends Observable {
         changeBoardMenuItem.setMnemonic(KeyEvent.VK_C);
         settingMenu.add(changeBoardMenuItem);
 
-        final JMenuItem rotateBoard = new JMenuItem("Rotate Board");
+        final JMenuItem rotateBoard = new JMenuItem("Toggle Board Orientation");
         rotateBoard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -268,7 +268,7 @@ public class GameFrame extends Observable {
                 System.out.println("Board Rotated");
             }
         });
-        rotateBoard.setMnemonic(KeyEvent.VK_S);
+        rotateBoard.setMnemonic(KeyEvent.VK_T);
         settingMenu.add(rotateBoard);
 
         final JMenuItem backMenuItem = new JMenuItem("Back To Main Menu");
