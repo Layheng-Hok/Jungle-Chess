@@ -153,7 +153,7 @@ public class GameFrame extends Observable {
                             restartGame();
                             return;
                         }
-                        playerPanel.undo();
+                        playerPanel.undoAIBlue();
                         boardPanel.drawBoard(chessBoard);
                         capturedPiecesPanel.redo(moveLog);
                         System.out.println("Undo");
@@ -171,16 +171,39 @@ public class GameFrame extends Observable {
                             } else {
                                 computerMove = null;
                             }
-                            playerPanel.undo();
                             setChanged();
                             notifyObservers();
                         }
                         boardPanel.drawBoard(chessBoard);
+                        if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.AI) {
+                            playerPanel.undoAIRed();
+                        }
                         playerPanel.undo();
                         capturedPiecesPanel.redo(moveLog);
                         System.out.println("Undo");
                     }
                 }
+//                if ((GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN)) {
+//                    if (moveLog.size() > 0) {
+//                        Move lastMove = moveLog.removeMove(moveLog.size() - 1);
+//                        chessBoard = lastMove.undo();
+//                        boardPanel.drawBoard(chessBoard);
+//                        playerPanel.undo();
+//                        capturedPiecesPanel.redo(moveLog);
+//                        System.out.println("Undo");
+//                    }
+//                } else {
+//                    if (moveLog.size() >= 2) {
+//                        for (int i = 0; i < 2; i++) {
+//                            Move lastMove = moveLog.removeMove(moveLog.size() - 1);
+//                            chessBoard = lastMove.undo();
+//                            playerPanel.undo();
+//                            capturedPiecesPanel.redo(moveLog);
+//                        }
+//                        boardPanel.drawBoard(chessBoard);
+//                        System.out.println("Undo");
+//                    }
+//                }
             }
         });
         undoMenuItem.setMnemonic(KeyEvent.VK_U);
@@ -699,10 +722,7 @@ public class GameFrame extends Observable {
                 GameFrame.get().updateGameBoard(GameFrame.get().getChessBoard().getCurrentPlayer().makeMove(optimalMove).getTransitionBoard());
                 GameFrame.get().getMoveLog().addMove(optimalMove);
                 GameFrame.get().getPlayerPanel().setCurrentPlayer(GameFrame.get().getChessBoard().getCurrentPlayer().toString());
-                if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor() == PlayerColor.BLUE) {
-                    GameFrame.get().getPlayerPanel().setRoundNumber(GameFrame.get().getPlayerPanel().getRoundNumber() + 1);
-                }
-                GameFrame.get().getPlayerPanel().update();
+                GameFrame.get().getPlayerPanel().redo(GameFrame.get().chessBoard);
                 GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 GameFrame.get().checkWin();

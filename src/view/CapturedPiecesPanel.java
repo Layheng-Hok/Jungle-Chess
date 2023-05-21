@@ -110,6 +110,7 @@ import static view.GameFrame.defaultImagesPath;
             }
         }
         validate();
+        repaint();
     }
 
     public void reset() {

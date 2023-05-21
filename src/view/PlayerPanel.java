@@ -1,8 +1,8 @@
 package view;
 
-import model.artificialintelligence.MinimaxAlgorithm;
 import model.board.Board;
 import model.board.Move;
+import model.player.PlayerColor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -123,18 +123,34 @@ class PlayerPanel extends JPanel {
     public void reset() {
         roundNumber = 1;
         currentPlayer = "Blue";
-        repaint();
         timerSeconds = 30;
         timer.restart();
+        repaint();
     }
 
     public void undo() {
-        if (currentPlayer.equals("Blue")) {
-            currentPlayer = "Red";
-            setRoundNumber(getRoundNumber() - 1);
-        } else {
+        if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor() == PlayerColor.BLUE) {
             currentPlayer = "Blue";
+        } else if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor() == PlayerColor.RED){
+            currentPlayer = "Red";
+
         }
+        timerSeconds = 30;
+        timer.restart();
+        repaint();
+    }
+
+    public void undoAIBlue() {
+        currentPlayer = "Red";
+        setRoundNumber(getRoundNumber() - 1);
+        timerSeconds = 30;
+        timer.restart();
+        repaint();
+    }
+
+    public void undoAIRed() {
+        currentPlayer = "Blue";
+        setRoundNumber(getRoundNumber() - 1);
         timerSeconds = 30;
         timer.restart();
         repaint();
@@ -166,9 +182,5 @@ class PlayerPanel extends JPanel {
 
     public void setTimerSeconds(int timerSeconds) {
         this.timerSeconds = timerSeconds;
-    }
-
-    public Timer getTimer(Timer timer) {
-        return this.timer;
     }
 }
