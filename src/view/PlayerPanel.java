@@ -1,22 +1,60 @@
 package view;
 
+import model.artificialintelligence.MinimaxAlgorithm;
 import model.board.Board;
+import model.board.Move;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.ArrayList;
 
 import static view.GameFrame.defaultImagesPath;
 
- class PlayerPanel extends JPanel {
+class PlayerPanel extends JPanel {
     private static final Dimension PLAYER_PANEL_DIMENSION = new Dimension(530, 100);
     private final Image topPanelImage;
     private int roundNumber = 1;
     private String currentPlayer = "Blue";
+    private Timer timer;
+    private int timerSeconds = 30;
 
     public PlayerPanel() {
         super(new BorderLayout());
         this.topPanelImage = new ImageIcon(defaultImagesPath + "toppanel.png").getImage();
         setPreferredSize(PLAYER_PANEL_DIMENSION);
+        timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                timerSeconds--;
+                if (timerSeconds == 0) {
+                    Board chessBoard = GameFrame.get().getChessBoard();
+                    List<Move> validMoves = new ArrayList<>(chessBoard.getCurrentPlayer().getValidMoves());
+                    Move selectedMove = null;
+                    for (Move move : validMoves) {
+                        if (move.isCaptureMove()) {
+                            selectedMove = move;
+                            break;
+                        }
+                    }
+                    if (selectedMove == null && !validMoves.isEmpty()) {
+                        int randomIndex = (int) (Math.random() * validMoves.size());
+                        selectedMove = validMoves.get(randomIndex);
+                    }
+                    if (selectedMove != null) {
+                        chessBoard = selectedMove.execute();
+                        GameFrame.get().getMoveLog().addMove(selectedMove);
+                        GameFrame.get().setGameBoard(chessBoard);
+                    }
+                    timer.stop();
+                    update();
+                }
+                repaint();
+            }
+        });
+        timer.start();
     }
 
     @Override
@@ -25,11 +63,18 @@ import static view.GameFrame.defaultImagesPath;
         g.drawImage(topPanelImage, 0, 0, getWidth(), getHeight(), this);
 
         g.setColor(Color.BLACK);
-        g.setFont(new Font("Arial", Font.BOLD, 20));
+        g.setFont(new Font("Consolas", Font.BOLD, 20));
         String text = "Round " + roundNumber + ": " + currentPlayer.toUpperCase();
         int x = (getWidth() - g.getFontMetrics().stringWidth(text)) / 2;
         int y = 33;
         g.drawString(text, x, y);
+
+        g.setFont(new Font("Consolas", Font.BOLD, 20));
+        g.setColor(Color.BLACK);
+        String timerText = "Timer: " + timerSeconds + "s";
+        int timerX = (getWidth() - g.getFontMetrics().stringWidth(timerText)) / 2;
+        int timerY = y + 30;
+        g.drawString(timerText, timerX, timerY);
 
         int imageWidth = 60;
         int imageHeight = 60;
@@ -45,6 +90,7 @@ import static view.GameFrame.defaultImagesPath;
             g2d.setStroke(new BasicStroke(3));
             g2d.setColor(new Color(0x00FF00));
         }
+
         g2d.drawRoundRect(leftImageX - 5, imageY - 5, imageWidth + 10, imageHeight + 10, 10, 10);
         Image leftImage = new ImageIcon(defaultImagesPath + "player1.png").getImage();
         g.drawImage(leftImage, leftImageX, imageY, imageWidth, imageHeight, this);
@@ -62,9 +108,47 @@ import static view.GameFrame.defaultImagesPath;
         validate();
     }
 
+    public void update() {
+        if (currentPlayer.equals("Blue")) {
+            currentPlayer = "Red";
+        } else {
+            currentPlayer = "Blue";
+            setRoundNumber(getRoundNumber() + 1);
+        }
+        timerSeconds = 30;
+        timer.restart();
+        repaint();
+    }
+
     public void reset() {
         roundNumber = 1;
         currentPlayer = "Blue";
+        repaint();
+        timerSeconds = 30;
+        timer.restart();
+    }
+
+    public void undo() {
+        if (currentPlayer.equals("Blue")) {
+            currentPlayer = "Red";
+            setRoundNumber(getRoundNumber() - 1);
+        } else {
+            currentPlayer = "Blue";
+        }
+        timerSeconds = 30;
+        timer.restart();
+        repaint();
+    }
+
+    public void redo(Board chessBoard) {
+        if (chessBoard.getCurrentPlayer().getAllyColor().isBlue()) {
+            currentPlayer = "Blue";
+            setRoundNumber(getRoundNumber() + 1);
+        } else {
+            currentPlayer = "Red";
+        }
+        timerSeconds = 30;
+        timer.restart();
         repaint();
     }
 
@@ -80,23 +164,11 @@ import static view.GameFrame.defaultImagesPath;
         this.currentPlayer = currentPlayer;
     }
 
-     public void undo() {
-            if (currentPlayer.equals("Blue")) {
-                currentPlayer = "Red";
-                setRoundNumber(getRoundNumber() - 1);
-            } else {
-                currentPlayer = "Blue";
-            }
-            repaint();
-     }
+    public void setTimerSeconds(int timerSeconds) {
+        this.timerSeconds = timerSeconds;
+    }
 
-     public void redo(Board chessBoard) {
-            if (chessBoard.getCurrentPlayer().getAllyColor().isBlue()) {
-                currentPlayer = "Blue";
-                setRoundNumber(getRoundNumber() + 1);
-            } else {
-                currentPlayer = "Red";
-            }
-            repaint();
-     }
- }
+    public Timer getTimer(Timer timer) {
+        return this.timer;
+    }
+}

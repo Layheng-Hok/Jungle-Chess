@@ -33,7 +33,7 @@ public class GameFrame extends Observable {
     private final PlayerPanel playerPanel;
     private final CapturedPiecesPanel capturedPiecesPanel;
     private final BoardPanel boardPanel;
-    private final GameConfiguration AIGameConfiguration;
+    private final GameConfiguration gameConfiguration;
     private MoveLog moveLog;
     private Board chessBoard;
     private Move computerMove;
@@ -65,7 +65,7 @@ public class GameFrame extends Observable {
         this.boardPanel = new BoardPanel();
         this.moveLog = new MoveLog();
         this.addObserver(new AIGameObserver());
-        this.AIGameConfiguration = new GameConfiguration(this.gameFrame, true);
+        this.gameConfiguration = new GameConfiguration(this.gameFrame, true);
         this.boardDirection = BoardDirection.NORMAL;
         this.gameFrame.add(this.leftPanel, BorderLayout.WEST);
         this.gameFrame.add(this.rightPanel, BorderLayout.EAST);
@@ -94,7 +94,7 @@ public class GameFrame extends Observable {
                     JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
                     return;
                 }
-                if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                if (GameFrame.get().gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
                     JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
                     return;
                 }
@@ -117,7 +117,7 @@ public class GameFrame extends Observable {
                     JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
                     return;
                 }
-                if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                if (GameFrame.get().gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
                     JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
                     return;
                 }
@@ -137,7 +137,7 @@ public class GameFrame extends Observable {
                     JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
                     return;
                 }
-                if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                if (GameFrame.get().gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
                     JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
                     return;
                 }
@@ -195,7 +195,7 @@ public class GameFrame extends Observable {
                     JOptionPane.showMessageDialog(null, "Replay is already in progress. Please wait for the next replay.");
                     return;
                 }
-                if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                if (GameFrame.get().gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
                     JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
                     return;
                 }
@@ -231,7 +231,7 @@ public class GameFrame extends Observable {
 
                     @Override
                     protected void done() {
-                        if (AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                        if (gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
                             GameFrame.get().moveMadeUpdate(PlayerType.HUMAN);
                         }
                         boardPanel.drawBoard(chessBoard);
@@ -275,12 +275,12 @@ public class GameFrame extends Observable {
         backMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (GameFrame.get().AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                if (GameFrame.get().gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
                     JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
                     return;
                 }
-                GameFrame.get().AIGameConfiguration.setBluePlayerType(PlayerType.HUMAN);
-                GameFrame.get().AIGameConfiguration.setRedPlayerType(PlayerType.HUMAN);
+                GameFrame.get().gameConfiguration.setBluePlayerType(PlayerType.HUMAN);
+                GameFrame.get().gameConfiguration.setRedPlayerType(PlayerType.HUMAN);
                 restartGame();
                 GameFrame.get().dispose();
                 new MainMenu().setVisible(true);
@@ -422,11 +422,7 @@ public class GameFrame extends Observable {
                             final MoveTransition transition = chessBoard.getCurrentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
                                 chessBoard = transition.getTransitionBoard();
-                                playerPanel.setCurrentPlayer(chessBoard.getCurrentPlayer().toString());
-                                if (chessBoard.getCurrentPlayer().getAllyColor() == PlayerColor.BLUE) {
-                                    playerPanel.setRoundNumber(playerPanel.getRoundNumber() + 1);
-                                }
-                                playerPanel.repaint();
+                                playerPanel.update();
                                 moveLog.addMove(move);
                             }
                             sourceTerrain = null;
@@ -436,7 +432,7 @@ public class GameFrame extends Observable {
                             @Override
                             public void run() {
                                 capturedPiecesPanel.redo(moveLog);
-                                if (AIGameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                                if (gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
                                     GameFrame.get().moveMadeUpdate(PlayerType.HUMAN);
                                 }
                                 boardPanel.drawBoard(chessBoard);
@@ -634,7 +630,7 @@ public class GameFrame extends Observable {
         notifyObservers(playerType);
     }
 
-    private void updateGameBoard(final Board board) {
+    void updateGameBoard(final Board board) {
         this.chessBoard = board;
     }
 
@@ -645,7 +641,7 @@ public class GameFrame extends Observable {
     public static class AIGameObserver implements Observer {
         @Override
         public void update(final Observable o, final Object arg) {
-            if (GameFrame.get().AIGameConfiguration.isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer()) &&
+            if (GameFrame.get().gameConfiguration.isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer()) &&
                     !GameFrame.get().getChessBoard().getCurrentPlayer().isDenPenetrated()) {
                 final IntelligenceHub intelligenceHub = new IntelligenceHub();
                 intelligenceHub.execute();
@@ -678,13 +674,13 @@ public class GameFrame extends Observable {
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.MEDIUM) {
                 isMinimaxRunning = true;
                 final Strategy minimax = new MinimaxAlgorithm(4, PoorBoardEvaluator.get());
-                System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().AIGameConfiguration.getSearchDepth()));
+                System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
                 return minimax.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.HARD) {
                 isMinimaxRunning = true;
                 final Strategy minimax = new MinimaxAlgorithm(4, ConcreteBoardEvaluator.get());
-                System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().AIGameConfiguration.getSearchDepth()));
+                System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
                 return minimax.execute(GameFrame.get().getChessBoard());
             }
             return null;
@@ -701,7 +697,7 @@ public class GameFrame extends Observable {
                 if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor() == PlayerColor.BLUE) {
                     GameFrame.get().getPlayerPanel().setRoundNumber(GameFrame.get().getPlayerPanel().getRoundNumber() + 1);
                 }
-                GameFrame.get().getPlayerPanel().repaint();
+                GameFrame.get().getPlayerPanel().update();
                 GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
             } catch (final Exception e) {
@@ -811,7 +807,7 @@ public class GameFrame extends Observable {
     }
 
     public GameConfiguration getGameConfiguration() {
-        return this.AIGameConfiguration;
+        return this.gameConfiguration;
     }
 
     public BoardPanel getBoardPanel() {
@@ -832,6 +828,15 @@ public class GameFrame extends Observable {
 
     public MoveLog getMoveLog() {
         return moveLog;
+    }
+
+    public void setGameBoard(final Board chessBoard) {
+        this.chessBoard = chessBoard;
+        boardPanel.drawBoard(chessBoard);
+        capturedPiecesPanel.redo(moveLog);
+        if (GameFrame.get().getGameConfiguration().isAIPlayer(chessBoard.getCurrentPlayer())) {
+            moveMadeUpdate(PlayerType.HUMAN);
+        }
     }
 
     public void setMoveLog(MoveLog moveLog) {

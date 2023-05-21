@@ -83,8 +83,10 @@ class DifficultyFrame extends JFrame {
                 (530, 850, Image.SCALE_DEFAULT));
         background = new JLabel(backgroundI);
         background.setBounds(0, 0, 530, 850);
+
+        this.setLocationRelativeTo(null);
         this.add(background);
-        setResizable(false);
+        this.setResizable(false);
     }
 
     enum Difficulty {
