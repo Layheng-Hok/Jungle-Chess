@@ -657,19 +657,26 @@ public class GameFrame extends Observable {
         protected Move doInBackground() throws Exception {
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.EASY) {
                 isMinimaxRunning = true;
-                final Strategy minimax = new MinimaxAlgorithm(4, PoorBoardEvaluator.get());
-                System.out.println(PoorBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().AIGameConfiguration.getSearchDepth()));
-                return minimax.execute(GameFrame.get().getChessBoard());
+                final List<Move> validMoves = new ArrayList<>(GameFrame.get().getChessBoard().getCurrentPlayer().getValidMoves());
+                for (Move move : validMoves) {
+                    if (move.isCaptureMove()) {
+                        return move;
+                    }
+                }
+                if (validMoves.size() == 0) {
+                    return null;
+                }
+                return validMoves.get(new Random().nextInt(validMoves.size()));
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.MEDIUM) {
                 isMinimaxRunning = true;
-                final Strategy minimax = new MinimaxAlgorithm(4, ConcreteBoardEvaluator.get());
+                final Strategy minimax = new MinimaxAlgorithm(4, PoorBoardEvaluator.get());
                 System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().AIGameConfiguration.getSearchDepth()));
                 return minimax.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.HARD) {
                 isMinimaxRunning = true;
-                final Strategy minimax = new MinimaxAlgorithm(5, ConcreteBoardEvaluator.get());
+                final Strategy minimax = new MinimaxAlgorithm(4, ConcreteBoardEvaluator.get());
                 System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().AIGameConfiguration.getSearchDepth()));
                 return minimax.execute(GameFrame.get().getChessBoard());
             }
@@ -777,7 +784,7 @@ public class GameFrame extends Observable {
     public void checkWin() {
         if (GameFrame.get().getChessBoard().getCurrentPlayer().isDenPenetrated()) {
             GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+            JOptionPane.showMessageDialog(null,
                     "Game Over: Player " + GameFrame.get().getChessBoard().getCurrentPlayer() + "'s den is penetrated by the enemy!", "Game Over",
                     JOptionPane.INFORMATION_MESSAGE);
             System.out.println("Game Over: Player " + GameFrame.get().getChessBoard().getCurrentPlayer() + "'s den is penetrated by the enemy!");
@@ -786,7 +793,7 @@ public class GameFrame extends Observable {
         }
         if (GameFrame.get().getChessBoard().getCurrentPlayer().getActivePieces().isEmpty()) {
             GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+            JOptionPane.showMessageDialog(null,
                     "Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player has no more pieces!", "Game Over",
                     JOptionPane.INFORMATION_MESSAGE);
             System.out.println("Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player has no more pieces!");

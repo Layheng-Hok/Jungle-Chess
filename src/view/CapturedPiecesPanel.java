@@ -47,6 +47,10 @@ import static view.GameFrame.defaultImagesPath;
         this.westPanel.removeAll();
         final List<Piece> blueCapturedPieces = new ArrayList<>();
         final List<Piece> redCapturedPieces = new ArrayList<>();
+        if (moveLog == null) {
+            reset();
+            return;
+        }
         for (final Move move : moveLog.getMoves()) {
             if (move.isCaptureMove()) {
                 final Piece capturedPiece = move.getCapturedPiece();
