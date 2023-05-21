@@ -183,27 +183,6 @@ public class GameFrame extends Observable {
                         System.out.println("Undo");
                     }
                 }
-//                if ((GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN)) {
-//                    if (moveLog.size() > 0) {
-//                        Move lastMove = moveLog.removeMove(moveLog.size() - 1);
-//                        chessBoard = lastMove.undo();
-//                        boardPanel.drawBoard(chessBoard);
-//                        playerPanel.undo();
-//                        capturedPiecesPanel.redo(moveLog);
-//                        System.out.println("Undo");
-//                    }
-//                } else {
-//                    if (moveLog.size() >= 2) {
-//                        for (int i = 0; i < 2; i++) {
-//                            Move lastMove = moveLog.removeMove(moveLog.size() - 1);
-//                            chessBoard = lastMove.undo();
-//                            playerPanel.undo();
-//                            capturedPiecesPanel.redo(moveLog);
-//                        }
-//                        boardPanel.drawBoard(chessBoard);
-//                        System.out.println("Undo");
-//                    }
-//                }
             }
         });
         undoMenuItem.setMnemonic(KeyEvent.VK_U);
