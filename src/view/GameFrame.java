@@ -451,10 +451,12 @@ public class GameFrame extends Observable {
 
                 @Override
                 public void mouseEntered(final MouseEvent e) {
+                    setBorder(BorderFactory.createLineBorder(new Color(195, 80, 170), 2));
                 }
 
                 @Override
                 public void mouseExited(final MouseEvent e) {
+                    setBorder(BorderFactory.createEmptyBorder());
                 }
             });
 
@@ -750,6 +752,7 @@ public class GameFrame extends Observable {
             fileWriter.write(GameFrame.get().getChessBoard().getCurrentPlayer().toString().toLowerCase().substring(0, 2) + "\n");
             fileWriter.write(GameFrame.get().getChessBoard().toString());
             fileWriter.close();
+            new ProgressFrame();
             System.out.println("Game Saved");
         } catch (IOException e) {
             e.printStackTrace();

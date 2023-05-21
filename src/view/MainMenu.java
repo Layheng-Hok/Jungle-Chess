@@ -230,9 +230,15 @@ public class MainMenu extends JFrame {
                             "File Load Error", JOptionPane.ERROR_MESSAGE);
                 } else {
                     System.out.println("Board is correct");
-                    setVisible(false);
-                    GameFrame.get().setVisible(true);
-                    System.out.println("Load a Saved Game");
+                    ProgressFrame progressFrame = new ProgressFrame();
+                    progressFrame.addProgressListener(new ProgressFrame.ProgressListener() {
+                        @Override
+                        public void onProgressComplete() {
+                            setVisible(false);
+                            GameFrame.get().setVisible(true);
+                            System.out.println("Load a Saved Game");
+                        }
+                    });
                 }
             }
         });
