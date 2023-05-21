@@ -3,7 +3,7 @@ package view;
 
 import model.board.Board;
 import model.board.Move;
-import model.board.MoveTransition;
+import model.board.BoardTransition;
 import model.player.PlayerType;
 
 import javax.swing.*;
@@ -143,7 +143,7 @@ public class MainMenu extends JFrame {
                 if (numMoves == currentCoordinateList.size() && numMoves == destinationCoordinateList.size() && numMoves == playerList.size()) {
                     for (int i = 0; i < currentCoordinateList.size(); i++) {
                         Move move = Move.MoveCreator.createMove(loadedBoard, currentCoordinateList.get(i), destinationCoordinateList.get(i));
-                        MoveTransition transition = loadedBoard.getCurrentPlayer().makeMove(move);
+                        BoardTransition transition = loadedBoard.getCurrentPlayer().makeMove(move);
                         if (transition.getMoveStatus().isDone()) {
                             loadedBoard = transition.getTransitionBoard();
                             moveLog.addMove(move);

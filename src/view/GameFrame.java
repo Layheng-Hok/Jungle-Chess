@@ -6,7 +6,7 @@ import model.artificialintelligence.PoorBoardEvaluator;
 import model.artificialintelligence.Strategy;
 import model.board.Board;
 import model.board.Move;
-import model.board.MoveTransition;
+import model.board.BoardTransition;
 import model.board.Utilities;
 import model.piece.Piece;
 import model.player.PlayerColor;
@@ -419,7 +419,7 @@ public class GameFrame extends Observable {
                         } else {
                             computerMove = null;
                             final Move move = Move.MoveCreator.createMove(chessBoard, sourceTerrain.getPieceCoordinate(), terrainCoordinate);
-                            final MoveTransition transition = chessBoard.getCurrentPlayer().makeMove(move);
+                            final BoardTransition transition = chessBoard.getCurrentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
                                 chessBoard = transition.getTransitionBoard();
                                 playerPanel.update();
