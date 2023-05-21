@@ -145,7 +145,7 @@ public class GameFrame extends Observable {
                     if (moveLog.size() > 0) {
                         Move lastMove = moveLog.removeMove(moveLog.size() - 1);
                         chessBoard = lastMove.undo();
-                        if (lastMove == computerMove && moveLog.size() > 0) {
+                        if (lastMove.equals(computerMove) && moveLog.size() > 0) {
                             Move secondLastMove = moveLog.removeMove(moveLog.size() - 1);
                             chessBoard = secondLastMove.undo();
                             computerMove = moveLog.getMove(moveLog.size() - 1);
@@ -163,7 +163,7 @@ public class GameFrame extends Observable {
                     if (moveLog.size() > 0) {
                         Move lastMove = moveLog.removeMove(moveLog.size() - 1);
                         chessBoard = lastMove.undo();
-                        if (lastMove == computerMove) {
+                        if (lastMove.equals(computerMove)) {
                             Move secondLastMove = moveLog.removeMove(moveLog.size() - 1);
                             chessBoard = secondLastMove.undo();
                             if (moveLog.size() > 0) {

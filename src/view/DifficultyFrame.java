@@ -32,9 +32,9 @@ class DifficultyFrame extends JFrame {
         this.setIconImage(logo.getImage());
 
         ImageIcon easyI = new ImageIcon(new ImageIcon(easyIcon).getImage().getScaledInstance
-                (310, 90, Image.SCALE_DEFAULT));
+                (180, 80, Image.SCALE_DEFAULT));
         easy = new JButton(easyI);
-        easy.setBounds(120, 200, 300, 90);
+        easy.setBounds(170, 200, 180, 80);
         this.add(easy);
         easy.addActionListener((e) -> {
             this.setVisible(false);
@@ -44,9 +44,9 @@ class DifficultyFrame extends JFrame {
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
         });
         ImageIcon mediumI = new ImageIcon(new ImageIcon(mediumIcon).getImage().getScaledInstance
-                (310, 90, Image.SCALE_DEFAULT));
+                (180, 80, Image.SCALE_DEFAULT));
         medium = new JButton(mediumI);
-        medium.setBounds(120, 350, 300, 90);
+        medium.setBounds(170, 350, 180, 80);
         this.add(medium);
         medium.addActionListener((e) -> {
             this.setVisible(false);
@@ -56,9 +56,9 @@ class DifficultyFrame extends JFrame {
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
         });
         ImageIcon hardI = new ImageIcon(new ImageIcon(hardIcon).getImage().getScaledInstance
-                (310, 90, Image.SCALE_DEFAULT));
+                (180, 80, Image.SCALE_DEFAULT));
         hard = new JButton(hardI);
-        hard.setBounds(120, 500, 310, 90);
+        hard.setBounds(170, 500, 180, 80);
         this.add(hard);
         hard.addActionListener((e) -> {
             this.setVisible(false);
@@ -69,9 +69,9 @@ class DifficultyFrame extends JFrame {
         });
 
         ImageIcon backI = new ImageIcon(new ImageIcon(backIcon).getImage().getScaledInstance
-                (180, 75, Image.SCALE_DEFAULT));
+                (128, 57, Image.SCALE_DEFAULT));
         back = new JButton(backI);
-        back.setBounds(50, 650, 170, 70);
+        back.setBounds(50, 650, 128, 57);
         this.add(back);
         back.addActionListener((e) -> {
             this.setVisible(false);
@@ -83,6 +83,19 @@ class DifficultyFrame extends JFrame {
                 (530, 850, Image.SCALE_DEFAULT));
         background = new JLabel(backgroundI);
         background.setBounds(0, 0, 530, 850);
+
+        JLabel chooseLevelLabel = new JLabel("CHOOSE LEVEL");
+        chooseLevelLabel.setFont(new Font("Consolas", Font.BOLD, 38));
+        chooseLevelLabel.setForeground(Color.BLACK);
+        chooseLevelLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Position the text label above the easy button
+        int labelWidth = 300;
+        int labelHeight = 50;
+        int labelX = easy.getX() + (easy.getWidth() - labelWidth) / 2;
+        int labelY = easy.getY() - labelHeight - 10;
+        chooseLevelLabel.setBounds(labelX, labelY-55, labelWidth, labelHeight);
+        background.add(chooseLevelLabel);
 
         this.setLocationRelativeTo(null);
         this.add(background);
