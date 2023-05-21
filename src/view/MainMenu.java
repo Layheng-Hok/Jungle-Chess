@@ -235,8 +235,9 @@ public class MainMenu extends JFrame {
                         @Override
                         public void onProgressComplete() {
                             setVisible(false);
-                            GameFrame.get().setVisible(true);  GameFrame.get().getPlayerPanel().setTimerSeconds(30);
-
+                            GameFrame.get().setVisible(true);
+                            AudioPlayer.playGameBGM();
+                            GameFrame.get().getPlayerPanel().setTimerSeconds(30);
                             System.out.println("Load a Saved Game");
                         }
                     });

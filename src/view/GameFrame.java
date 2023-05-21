@@ -74,7 +74,6 @@ public class GameFrame extends Observable {
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
         this.gameFrame.setIconImage(logo.getImage());
         this.gameFrame.setResizable(false);
-        AudioPlayer.playGameBGM();
     }
 
     private JMenuBar createGameFrameMenuBar() {
@@ -126,7 +125,6 @@ public class GameFrame extends Observable {
                 System.out.println("Game Restarted");
             }
         });
-        restartMenuItem.setMnemonic(KeyEvent.VK_R);
         restartMenuItem.setMnemonic(KeyEvent.VK_R);
         settingMenu.add(restartMenuItem);
 
@@ -410,6 +408,7 @@ public class GameFrame extends Observable {
                         if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
                             return;
                         }
+                        AudioPlayer.SinglePlayer.playClickEffect();
                         if (sourceTerrain == null) {
                             sourceTerrain = chessBoard.getPiece(terrainCoordinate);
                             if (sourceTerrain != null && sourceTerrain.getPieceColor() != chessBoard.getCurrentPlayer().getAllyColor()) {
@@ -420,6 +419,9 @@ public class GameFrame extends Observable {
                         } else {
                             computerMove = null;
                             final Move move = Move.MoveCreator.createMove(chessBoard, sourceTerrain.getPieceCoordinate(), terrainCoordinate);
+                            if (move.isCaptureMove()) {
+                                AudioPlayer.SinglePlayer.playAnimalSoundEffect(move.getMovedPiece());
+                            }
                             final BoardTransition transition = chessBoard.getCurrentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
                                 chessBoard = transition.getTransitionBoard();
@@ -647,7 +649,6 @@ public class GameFrame extends Observable {
                 final IntelligenceHub intelligenceHub = new IntelligenceHub();
                 intelligenceHub.execute();
             }
-            GameFrame.get().checkWin();
         }
     }
 
@@ -691,6 +692,9 @@ public class GameFrame extends Observable {
         public void done() {
             try {
                 final Move optimalMove = get();
+                if (optimalMove.isCaptureMove()) {
+                    AudioPlayer.SinglePlayer.playAnimalSoundEffect(optimalMove.getMovedPiece());
+                }
                 GameFrame.get().updateComputerMove(optimalMove);
                 GameFrame.get().updateGameBoard(GameFrame.get().getChessBoard().getCurrentPlayer().makeMove(optimalMove).getTransitionBoard());
                 GameFrame.get().getMoveLog().addMove(optimalMove);
@@ -701,6 +705,7 @@ public class GameFrame extends Observable {
                 GameFrame.get().getPlayerPanel().update();
                 GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+                GameFrame.get().checkWin();
             } catch (final Exception e) {
                 e.printStackTrace();
             }
@@ -718,6 +723,7 @@ public class GameFrame extends Observable {
         GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
         GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
         GameFrame.get().getBoardPanel().removeAllBorders();
+        AudioPlayer.playGameBGM();
         GameFrame.get().setVisible(true);
     }
 
@@ -754,7 +760,21 @@ public class GameFrame extends Observable {
             fileWriter.write(GameFrame.get().getChessBoard().getCurrentPlayer().toString().toLowerCase().substring(0, 2) + "\n");
             fileWriter.write(GameFrame.get().getChessBoard().toString());
             fileWriter.close();
-            new ProgressFrame();
+            ProgressFrame progressFrame = new ProgressFrame();
+            progressFrame.addProgressListener(new ProgressFrame.ProgressListener() {
+                @Override
+                public void onProgressComplete() {
+                    int continueResponse = JOptionPane.showOptionDialog(null, "Game saved successfully.\nWould you want to continue playing or go back to the main menu?", "Game Saved", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Continue", "Back"}, "Continue");
+                    if (continueResponse == JOptionPane.NO_OPTION) {
+                        GameFrame.get().gameConfiguration.setBluePlayerType(PlayerType.HUMAN);
+                        GameFrame.get().gameConfiguration.setRedPlayerType(PlayerType.HUMAN);
+                        restartGame();
+                        GameFrame.get().dispose();
+                        new MainMenu().setVisible(true);
+                        System.out.println("Back To Main Menu");
+                    }
+                }
+            });
             System.out.println("Game Saved");
         } catch (IOException e) {
             e.printStackTrace();

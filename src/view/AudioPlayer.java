@@ -1,5 +1,7 @@
 package view;
 
+import model.piece.Piece;
+
 import javax.sound.sampled.*;
 import java.io.File;
 
@@ -10,9 +12,9 @@ public class AudioPlayer {
 
         public static void playAudio(String path) {
             try {
-                File musicPath = new File(path);
-                if (musicPath.exists()) {
-                    AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+                File soundPath = new File(path);
+                if (soundPath.exists()) {
+                    AudioInputStream audioInput = AudioSystem.getAudioInputStream(soundPath);
                     clip = AudioSystem.getClip();
                     clip.open(audioInput);
                     clip.loop(Clip.LOOP_CONTINUOUSLY);
@@ -52,5 +54,37 @@ public class AudioPlayer {
     public static void playGameBGM() {
         LoopPlayer.stopAudio();
         LoopPlayer.playAudio("resource/audio/gamebgm.wav");
+    }
+
+    public static class SinglePlayer {
+        public static void playAnimalSoundEffect(Piece piece) {
+            String animalName = piece.getPieceType().toString().toLowerCase();
+            String path = "resource/audio/" + animalName + ".wav";
+            try {
+                File soundPath = new File(path);
+                if (soundPath.exists()) {
+                    AudioInputStream audioInput = AudioSystem.getAudioInputStream(soundPath);
+                    Clip clip = AudioSystem.getClip();
+                    clip.open(audioInput);
+                    clip.start();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        public static void playClickEffect() {
+            try {
+                File soundPath = new File("resource/audio/click.wav");
+                if (soundPath.exists()) {
+                    AudioInputStream audioInput = AudioSystem.getAudioInputStream(soundPath);
+                    Clip clip = AudioSystem.getClip();
+                    clip.open(audioInput);
+                    clip.start();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
