@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Jungle-Chess:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Jungle_Chess_jar</output-path>
+    <root id="archive" name="Jungle-Chess.jar">
+      <element id="module-output" name="Jungle-Chess" />
+    </root>
+  </artifact>
+</component>
