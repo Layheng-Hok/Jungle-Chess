@@ -89,7 +89,6 @@ class DifficultyFrame extends JFrame {
         chooseLevelLabel.setForeground(Color.BLACK);
         chooseLevelLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // Position the text label above the easy button
         int labelWidth = 300;
         int labelHeight = 50;
         int labelX = easy.getX() + (easy.getWidth() - labelWidth) / 2;
