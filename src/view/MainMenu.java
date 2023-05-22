@@ -26,7 +26,6 @@ public class MainMenu extends JFrame {
     private JButton twoPlayer;
     private JButton loadGame;
     private JButton exit;
-
     private String iconsFolder = defaultImagesPath + File.separator;
     private final ImageIcon logoImage = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
     private String jChessIcon = iconsFolder + "logo.png";
