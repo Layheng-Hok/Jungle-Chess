@@ -586,7 +586,6 @@ public class GameFrame extends Observable {
         abstract List<TerrainPanel> traverse(final List<TerrainPanel> boardTiles);
 
         abstract BoardDirection opposite();
-
     }
 
     public static class MoveLog {
