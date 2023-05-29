@@ -1,7 +1,7 @@
 package model.piece;
 
 import model.board.Board;
-import model.board.Utilities;
+import model.board.BoardUtilities;
 import model.board.Move;
 import model.board.Terrain;
 import model.piece.animal.Animal;
@@ -26,7 +26,7 @@ public abstract class CommonPiece extends Piece {
         final List<Move> validMoves = new ArrayList<>();
         for (final int currentPotentialOffset : POTENTIAL_MOVE_COORDINATES) {
             int potentialDestinationCoordinate = this.pieceCoordinate + currentPotentialOffset;
-            if (Utilities.isInBoundary(potentialDestinationCoordinate) && !Utilities.isRiverOrDen(potentialDestinationCoordinate, this.pieceColor)) {
+            if (BoardUtilities.isInBoundary(potentialDestinationCoordinate) && !BoardUtilities.isRiverOrDen(potentialDestinationCoordinate, this.pieceColor)) {
                 if (isColumnZeroExclusion(this.pieceCoordinate, currentPotentialOffset) || isColumnSixExclusion(this.pieceCoordinate, currentPotentialOffset)) {
                     continue;
                 }
@@ -46,10 +46,10 @@ public abstract class CommonPiece extends Piece {
     }
 
     private static boolean isColumnZeroExclusion(final int currentCoordinate, final int potentialOffset) {
-        return (Utilities.COLUMN_ZERO[currentCoordinate] && (potentialOffset == -1));
+        return (BoardUtilities.COLUMN_ZERO[currentCoordinate] && (potentialOffset == -1));
     }
 
     private static boolean isColumnSixExclusion(final int currentCoordinate, final int potentialOffset) {
-        return (Utilities.COLUMN_SIX[currentCoordinate] && (potentialOffset == 1));
+        return (BoardUtilities.COLUMN_SIX[currentCoordinate] && (potentialOffset == 1));
     }
 }

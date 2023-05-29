@@ -26,12 +26,12 @@ public abstract class Player {
 
     public abstract boolean isDenPenetrated();
 
-    public BoardTransition makeMove (final Move move) {
+    public MoveTransition makeMove (final Move move) {
         if (!isMoveValid(move)) {
-            return new BoardTransition(this.board, move, MoveStatus.INVALID_MOVE);
+            return new MoveTransition(this.board, move, MoveStatus.INVALID_MOVE);
         }
         final Board transitionBoard = move.execute();
-        return new BoardTransition(transitionBoard, move, MoveStatus.DONE);
+        return new MoveTransition(transitionBoard, move, MoveStatus.DONE);
     }
 
     public Collection<Move> getValidMoves() {

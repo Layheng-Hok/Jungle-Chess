@@ -6,8 +6,8 @@ import model.artificialintelligence.PoorBoardEvaluator;
 import model.artificialintelligence.Strategy;
 import model.board.Board;
 import model.board.Move;
-import model.board.BoardTransition;
-import model.board.Utilities;
+import model.board.MoveTransition;
+import model.board.BoardUtilities;
 import model.piece.Piece;
 import model.player.PlayerColor;
 import model.player.PlayerType;
@@ -313,7 +313,7 @@ public class GameFrame extends Observable {
             super(new GridLayout(9, 7));
             this.boardTerrains = new ArrayList<>();
             setBoardImage("chessboard1.png");
-            for (int i = 0; i < Utilities.NUM_TERRAINS; i++) {
+            for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
                 final TerrainPanel terrainPanel = new TerrainPanel(this, i);
                 this.boardTerrains.add(terrainPanel);
                 add(terrainPanel);
@@ -424,7 +424,7 @@ public class GameFrame extends Observable {
                             if (move.isCaptureMove()) {
                                 AudioPlayer.SinglePlayer.playAnimalSoundEffect(move.getMovedPiece());
                             }
-                            final BoardTransition transition = chessBoard.getCurrentPlayer().makeMove(move);
+                            final MoveTransition transition = chessBoard.getCurrentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
                                 chessBoard = transition.getTransitionBoard();
                                 playerPanel.update();
@@ -540,17 +540,17 @@ public class GameFrame extends Observable {
         }
 
         private void assignTerrainColor(final int coordinate) {
-            if (Utilities.isLand(coordinate)) {
+            if (BoardUtilities.isLand(coordinate)) {
                 setBackground(new Color(0x28B463));
-            } else if (Utilities.isRiver(coordinate)) {
+            } else if (BoardUtilities.isRiver(coordinate)) {
                 setBackground(new Color(0x63B8FF));
-            } else if (Utilities.isEnemyTrap(coordinate, PlayerColor.BLUE)) {
+            } else if (BoardUtilities.isEnemyTrap(coordinate, PlayerColor.BLUE)) {
                 setBackground(new Color(0xE67E22));
-            } else if (Utilities.isEnemyTrap(coordinate, PlayerColor.RED)) {
+            } else if (BoardUtilities.isEnemyTrap(coordinate, PlayerColor.RED)) {
                 setBackground(new Color(0xE67E22));
-            } else if (Utilities.isDen(coordinate, PlayerColor.BLUE)) {
+            } else if (BoardUtilities.isDen(coordinate, PlayerColor.BLUE)) {
                 setBackground(new Color(0x3498DB));
-            } else if (Utilities.isDen(coordinate, PlayerColor.RED)) {
+            } else if (BoardUtilities.isDen(coordinate, PlayerColor.RED)) {
                 setBackground(new Color(0xEC7063));
             }
             setOpaque(false);

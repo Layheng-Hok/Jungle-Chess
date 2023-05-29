@@ -4,7 +4,7 @@ import model.player.PlayerColor;
 
 import java.util.*;
 
-public class Utilities {
+public class BoardUtilities {
     public static final int START_TERRAIN_INDEX = 0;
     public static final int NUM_TERRAINS = 63;
     public static final int NUM_TERRAINS_PER_ROW = 7;
@@ -23,7 +23,7 @@ public class Utilities {
     public static final  Map<String, Integer> POSITION_TO_COORDINATE = initializePositionToCoordinateMap();
 
 
-    private Utilities() {
+    private BoardUtilities() {
         throw new RuntimeException("You cannot instantiate an object of \"BoardTools\" class.");
     }
 

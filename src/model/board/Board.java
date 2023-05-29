@@ -33,10 +33,10 @@ public class Board {
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < Utilities.NUM_TERRAINS; i++) {
+        for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
             final String terrainText = this.chessboard.get(i).toString();
             stringBuilder.append(terrainText);
-            if ((i + 1) % Utilities.NUM_TERRAINS_PER_ROW == 0) {
+            if ((i + 1) % BoardUtilities.NUM_TERRAINS_PER_ROW == 0) {
                 stringBuilder.append("\n");
             } else {
                 stringBuilder.append("  ");
@@ -119,8 +119,8 @@ public class Board {
     }
 
     private static List<Terrain> constructChessboard(final Builder builder) {
-        final Terrain[] terrains = new Terrain[Utilities.NUM_TERRAINS];
-        for (int i = 0; i < Utilities.NUM_TERRAINS; i++) {
+        final Terrain[] terrains = new Terrain[BoardUtilities.NUM_TERRAINS];
+        for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
             terrains[i] = Terrain.constructTerrain(i, builder.boardConfig.get(i));
         }
         return Collections.unmodifiableList(Arrays.asList(terrains));
@@ -206,7 +206,7 @@ public class Board {
     }
 
     public void setBoard(ArrayList<String> readList) {
-        for (int i = 0; i < Utilities.NUM_TERRAINS; i++) {
+        for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
             String[] split = readList.get(i).split(" ");
             System.out.println(split[i]);
         }
@@ -222,7 +222,7 @@ public class Board {
 
         public Builder setPiece(final Piece piece) {
             this.boardConfig.put(piece.getPieceCoordinate(), piece);
-            if (Utilities.isEnemyTrap(piece.getPieceCoordinate(), piece.getPieceColor())) {
+            if (BoardUtilities.isEnemyTrap(piece.getPieceCoordinate(), piece.getPieceColor())) {
                 piece.setPieceDefenseRank(0);
             } else {
                 piece.setPieceDefenseRank(piece.getPieceAttackRank());

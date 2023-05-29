@@ -2,7 +2,7 @@ package model.artificialintelligence;
 
 import model.board.Board;
 import model.board.Move;
-import model.board.BoardTransition;
+import model.board.MoveTransition;
 
 public class MinimaxAlgorithm implements Strategy {
     private final GameEvaluator evaluator;
@@ -29,7 +29,7 @@ public class MinimaxAlgorithm implements Strategy {
         int moveCounter = 1;
         int numMoves = board.getCurrentPlayer().getValidMoves().size();
         for (final Move move : board.getCurrentPlayer().getValidMoves()) {
-            final BoardTransition moveTransition = board.getCurrentPlayer().makeMove(move);
+            final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
                 currentValue = board.getCurrentPlayer().getAllyColor().isBlue() ?
                         min(moveTransition.getTransitionBoard(), this.depth - 1) :
@@ -61,7 +61,7 @@ public class MinimaxAlgorithm implements Strategy {
         }
         int lowestValue = Integer.MAX_VALUE;
         for (final Move move : board.getCurrentPlayer().getValidMoves()) {
-            final BoardTransition moveTransition = board.getCurrentPlayer().makeMove(move);
+            final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
                 final int currentValue = max(moveTransition.getTransitionBoard(), depth - 1);
                 if (currentValue <= lowestValue) {
@@ -81,7 +81,7 @@ public class MinimaxAlgorithm implements Strategy {
         }
         int highestValue = Integer.MIN_VALUE;
         for (final Move move : board.getCurrentPlayer().getValidMoves()) {
-            final BoardTransition moveTransition = board.getCurrentPlayer().makeMove(move);
+            final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
                 final int currentValue = min(moveTransition.getTransitionBoard(), depth - 1);
                 if (currentValue >= highestValue) {
