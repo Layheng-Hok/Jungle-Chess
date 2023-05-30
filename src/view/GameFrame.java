@@ -3,7 +3,7 @@ package view;
 import model.artificialintelligence.ConcreteBoardEvaluator;
 import model.artificialintelligence.MinimaxAlgorithm;
 import model.artificialintelligence.PoorBoardEvaluator;
-import model.artificialintelligence.Strategy;
+import model.artificialintelligence.MoveStrategy;
 import model.board.Board;
 import model.board.Move;
 import model.board.MoveTransition;
@@ -676,13 +676,13 @@ public class GameFrame extends Observable {
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.MEDIUM) {
                 isMinimaxRunning = true;
-                final Strategy minimax = new MinimaxAlgorithm(4, PoorBoardEvaluator.get());
+                final MoveStrategy minimax = new MinimaxAlgorithm(4, PoorBoardEvaluator.get());
                 System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
                 return minimax.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.HARD) {
                 isMinimaxRunning = true;
-                final Strategy minimax = new MinimaxAlgorithm(4, ConcreteBoardEvaluator.get());
+                final MoveStrategy minimax = new MinimaxAlgorithm(4, ConcreteBoardEvaluator.get());
                 System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
                 return minimax.execute(GameFrame.get().getChessBoard());
             }

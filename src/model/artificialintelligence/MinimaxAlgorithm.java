@@ -4,7 +4,7 @@ import model.board.Board;
 import model.board.Move;
 import model.board.MoveTransition;
 
-public class MinimaxAlgorithm implements Strategy {
+public class MinimaxAlgorithm implements MoveStrategy {
     private final GameEvaluator evaluator;
     private final int depth;
 
