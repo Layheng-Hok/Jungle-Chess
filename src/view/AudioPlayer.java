@@ -18,7 +18,6 @@ public class AudioPlayer {
                     clip = AudioSystem.getClip();
                     clip.open(audioInput);
                     clip.loop(Clip.LOOP_CONTINUOUSLY);
-
                     thread = new Thread(() -> {
                         try {
                             while (true) {
@@ -28,7 +27,6 @@ public class AudioPlayer {
                            // e.printStackTrace();
                         }
                     });
-
                     thread.start();
                 }
             } catch (Exception e) {
