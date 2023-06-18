@@ -1,6 +1,5 @@
 package view;
 
-
 import model.board.Board;
 import model.board.Move;
 import model.board.MoveLog;
@@ -43,11 +42,37 @@ public class MainMenu extends JFrame {
         this.setBounds(630, 180, 530, 850);
         this.setIconImage(logoImage.getImage());
         this.getContentPane().setBackground(Color.GRAY);
+        createOnePlayerButton();
+        createTwoPlayerButton();
+        createLoadGameButton();
+        createExitButton();
+        setBackground();
+        AudioPlayer.playMenuBGM();
+        this.setLocationRelativeTo(null);
+        this.setResizable(false);
+    }
+
+    private void setBackground() {
+        ImageIcon jChessI = new ImageIcon(new ImageIcon(jChessIcon).getImage().getScaledInstance
+                (390, 390, Image.SCALE_DEFAULT));
+        logo = new JLabel(jChessI);
+        logo.setBounds(70, 0, 400, 300);
+        this.add(logo);
+
+        ImageIcon backgroundI = new ImageIcon(new ImageIcon(backgroundIcon).getImage().getScaledInstance
+                (530, 850, Image.SCALE_DEFAULT));
+        background = new JLabel(backgroundI);
+        background.setBounds(0, 0, 530, 850);
+        this.add(background);
+    }
+
+    private void createOnePlayerButton() {
         ImageIcon onePlayerI = new ImageIcon(new ImageIcon(onePlayerIcon).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
         onePlayer = new JButton(onePlayerI);
         onePlayer.setBounds(170, 350, 180, 80);
         this.add(onePlayer);
+        onePlayer.setIcon(onePlayerI);
         onePlayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -56,12 +81,15 @@ public class MainMenu extends JFrame {
                 System.out.println("Load Difficulty Frame");
             }
         });
+    }
 
+    private void createTwoPlayerButton(){
         ImageIcon twoPlayerI = new ImageIcon(new ImageIcon(twoPlayerIcon).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
         twoPlayer = new JButton(twoPlayerI);
         twoPlayer.setBounds(170, 450, 180, 80);
         this.add(twoPlayer);
+        twoPlayer.setIcon(twoPlayerI);
         twoPlayer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -72,11 +100,15 @@ public class MainMenu extends JFrame {
                 System.out.println("Load a Two-Player Game");
             }
         });
+    }
+
+    private void createLoadGameButton(){
         ImageIcon loadGameI = new ImageIcon(new ImageIcon(loadGameIcon).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
         loadGame = new JButton(loadGameI);
         loadGame.setBounds(170, 550, 180, 80);
         this.add(loadGame);
+        loadGame.setIcon(loadGameI);
         loadGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -113,7 +145,7 @@ public class MainMenu extends JFrame {
                 ArrayList<Integer> destinationCoordinateList = new ArrayList<>();
                 String playerTypeLine = readList.remove(0);
                 try {
-                playerTypeList = new ArrayList<>(Arrays.asList(playerTypeLine.split(" "))); }
+                    playerTypeList = new ArrayList<>(Arrays.asList(playerTypeLine.split(" "))); }
                 catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "The file is corrupted.",
                             "File Load Error", JOptionPane.ERROR_MESSAGE);
@@ -244,31 +276,18 @@ public class MainMenu extends JFrame {
                 }
             }
         });
+    }
 
+    private void createExitButton(){
         ImageIcon exitI = new ImageIcon(new ImageIcon(exitIcon).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
         exit = new JButton(exitI);
         exit.setBounds(170, 650, 180, 80);
         this.add(exit);
+        exit.setIcon(exitI);
         exit.addActionListener(e -> {
             System.out.println("Exit");
             System.exit(0);
         });
-
-        ImageIcon jChessI = new ImageIcon(new ImageIcon(jChessIcon).getImage().getScaledInstance
-                (390, 390, Image.SCALE_DEFAULT));
-        logo = new JLabel(jChessI);
-        logo.setBounds(70, 0, 400, 300);
-        this.add(logo);
-
-        ImageIcon backgroundI = new ImageIcon(new ImageIcon(backgroundIcon).getImage().getScaledInstance
-                (530, 850, Image.SCALE_DEFAULT));
-        background = new JLabel(backgroundI);
-        background.setBounds(0, 0, 530, 850);
-        this.add(background);
-
-        AudioPlayer.playMenuBGM();
-        this.setLocationRelativeTo(null);
-        this.setResizable(false);
     }
 }

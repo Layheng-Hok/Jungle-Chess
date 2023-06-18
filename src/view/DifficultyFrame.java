@@ -7,7 +7,6 @@ import java.io.File;
 import static view.GameFrame.defaultImagesPath;
 
 class DifficultyFrame extends JFrame {
-    private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
     private JButton easy;
     private JButton medium;
     private JButton hard;
@@ -28,7 +27,36 @@ class DifficultyFrame extends JFrame {
         this.setLayout(null);
         this.setBounds(630, 180, 530, 850);
         this.setIconImage(logo.getImage());
+        createEasyButton();
+        createMediumButton();
+        createHardButton();
+        createEasyButton();
+        createBackButton();
+        setBackground();
+        this.setLocationRelativeTo(null);
+        this.add(background);
+        this.setResizable(false);
+    }
 
+    private void setBackground() {
+        ImageIcon backgroundI = new ImageIcon(new ImageIcon(backgroundIcon).getImage().getScaledInstance
+                (530, 850, Image.SCALE_DEFAULT));
+        background = new JLabel(backgroundI);
+        background.setBounds(0, 0, 530, 850);
+
+        JLabel chooseLevelLabel = new JLabel("CHOOSE LEVEL");
+        chooseLevelLabel.setFont(new Font("Consolas", Font.BOLD, 38));
+        chooseLevelLabel.setForeground(Color.BLACK);
+        chooseLevelLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        int labelWidth = 300;
+        int labelHeight = 50;
+        int labelX = easy.getX() + (easy.getWidth() - labelWidth) / 2;
+        int labelY = easy.getY() - labelHeight - 10;
+        chooseLevelLabel.setBounds(labelX, labelY - 55, labelWidth, labelHeight);
+        background.add(chooseLevelLabel);
+    }
+
+    private void createEasyButton() {
         ImageIcon easyI = new ImageIcon(new ImageIcon(easyIcon).getImage().getScaledInstance
                 (180, 80, Image.SCALE_DEFAULT));
         easy = new JButton(easyI);
@@ -41,6 +69,9 @@ class DifficultyFrame extends JFrame {
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
         });
+    }
+
+    private void createMediumButton() {
         ImageIcon mediumI = new ImageIcon(new ImageIcon(mediumIcon).getImage().getScaledInstance
                 (180, 80, Image.SCALE_DEFAULT));
         medium = new JButton(mediumI);
@@ -53,6 +84,9 @@ class DifficultyFrame extends JFrame {
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
         });
+    }
+
+    private void createHardButton() {
         ImageIcon hardI = new ImageIcon(new ImageIcon(hardIcon).getImage().getScaledInstance
                 (180, 80, Image.SCALE_DEFAULT));
         hard = new JButton(hardI);
@@ -65,7 +99,9 @@ class DifficultyFrame extends JFrame {
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
         });
+    }
 
+    private void createBackButton() {
         ImageIcon backI = new ImageIcon(new ImageIcon(backIcon).getImage().getScaledInstance
                 (128, 57, Image.SCALE_DEFAULT));
         back = new JButton(backI);
@@ -76,27 +112,6 @@ class DifficultyFrame extends JFrame {
             new MainMenu().setVisible(true);
             System.out.println("Back To Main Menu");
         });
-
-        ImageIcon backgroundI = new ImageIcon(new ImageIcon(backgroundIcon).getImage().getScaledInstance
-                (530, 850, Image.SCALE_DEFAULT));
-        background = new JLabel(backgroundI);
-        background.setBounds(0, 0, 530, 850);
-
-        JLabel chooseLevelLabel = new JLabel("CHOOSE LEVEL");
-        chooseLevelLabel.setFont(new Font("Consolas", Font.BOLD, 38));
-        chooseLevelLabel.setForeground(Color.BLACK);
-        chooseLevelLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-        int labelWidth = 300;
-        int labelHeight = 50;
-        int labelX = easy.getX() + (easy.getWidth() - labelWidth) / 2;
-        int labelY = easy.getY() - labelHeight - 10;
-        chooseLevelLabel.setBounds(labelX, labelY-55, labelWidth, labelHeight);
-        background.add(chooseLevelLabel);
-
-        this.setLocationRelativeTo(null);
-        this.add(background);
-        this.setResizable(false);
     }
 
     enum Difficulty {
