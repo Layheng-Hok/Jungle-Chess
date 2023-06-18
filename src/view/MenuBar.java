@@ -106,7 +106,7 @@ public class MenuBar {
         restartMenuItem.setMnemonic(KeyEvent.VK_R);
         gameplayOptionsMenu.add(restartMenuItem);
 
-        final JMenuItem undoMenuItem = new JMenuItem("↩\uFE0F  Undo");
+        final JMenuItem undoMenuItem = new JMenuItem("↩\uFE0F   Undo");
         undoMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -164,7 +164,7 @@ public class MenuBar {
         undoMenuItem.setMnemonic(KeyEvent.VK_U);
         gameplayOptionsMenu.add(undoMenuItem);
 
-        final JMenuItem replayAllMovesMenuItem = new JMenuItem(" ⏯\uFE0F  Playback Moves");
+        final JMenuItem replayAllMovesMenuItem = new JMenuItem(" ⏯\uFE0F   Playback Moves");
         replayAllMovesMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -222,7 +222,7 @@ public class MenuBar {
         replayAllMovesMenuItem.setMnemonic(KeyEvent.VK_P);
         gameplayOptionsMenu.add(replayAllMovesMenuItem);
 
-        final JMenuItem changeBoardMenuItem = new JMenuItem("\uD83D\uDDBC Change Board");
+        final JMenuItem changeBoardMenuItem = new JMenuItem("\uD83D\uDDBC  Change Board");
         changeBoardMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -236,7 +236,7 @@ public class MenuBar {
         changeBoardMenuItem.setMnemonic(KeyEvent.VK_C);
         gameplayOptionsMenu.add(changeBoardMenuItem);
 
-        final JMenuItem flipBoard = new JMenuItem(" ↕\uFE0F  Flip Board");
+        final JMenuItem flipBoard = new JMenuItem(" ↕\uFE0F   Flip Board");
         flipBoard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
