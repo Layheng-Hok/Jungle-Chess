@@ -79,7 +79,6 @@ public class MenuBar {
             }
         });
         exitMenuItem.setMnemonic(KeyEvent.VK_E);
-        settingMenu.addSeparator();
         settingMenu.add(exitMenuItem);
         return settingMenu;
     }
