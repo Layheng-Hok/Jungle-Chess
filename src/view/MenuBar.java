@@ -26,7 +26,6 @@ public class MenuBar {
 
     private static JMenu createSettingMenu() {
         final JMenu settingMenu = new JMenu("⚙\uFE0F  Game Setting");
-        settingMenu.setMnemonic(KeyEvent.VK_S);
 
         final JMenuItem saveMenuItem = new JMenuItem("\uD83D\uDCBE  Save Game");
         saveMenuItem.addActionListener(new ActionListener() {
@@ -48,7 +47,6 @@ public class MenuBar {
                 writeGame(fileName);
             }
         });
-        saveMenuItem.setMnemonic(KeyEvent.VK_S);
         settingMenu.add(saveMenuItem);
 
         final JMenuItem backMenuItem = new JMenuItem("\uD83D\uDD19  Back To Main Menu");
@@ -67,7 +65,6 @@ public class MenuBar {
                 System.out.println("Back To Main Menu");
             }
         });
-        backMenuItem.setMnemonic(KeyEvent.VK_B);
         settingMenu.add(backMenuItem);
 
         final JMenuItem exitMenuItem = new JMenuItem("❌  Exit");
@@ -78,14 +75,12 @@ public class MenuBar {
                 System.exit(0);
             }
         });
-        exitMenuItem.setMnemonic(KeyEvent.VK_E);
         settingMenu.add(exitMenuItem);
         return settingMenu;
     }
 
     private static JMenu createGameplayOptions() {
         final JMenu gameplayOptionsMenu = new JMenu("\uD83C\uDFAE  Gameplay Options");
-        gameplayOptionsMenu.setMnemonic(KeyEvent.VK_O);
 
         final JMenuItem restartMenuItem = new JMenuItem("\uD83D\uDD04  Restart");
         restartMenuItem.addActionListener(new ActionListener() {
@@ -103,7 +98,6 @@ public class MenuBar {
                 System.out.println("Game Restarted");
             }
         });
-        restartMenuItem.setMnemonic(KeyEvent.VK_R);
         gameplayOptionsMenu.add(restartMenuItem);
 
         final JMenuItem undoMenuItem = new JMenuItem("↩\uFE0F   Undo");
@@ -161,7 +155,6 @@ public class MenuBar {
                 }
             }
         });
-        undoMenuItem.setMnemonic(KeyEvent.VK_U);
         gameplayOptionsMenu.add(undoMenuItem);
 
         final JMenuItem replayAllMovesMenuItem = new JMenuItem(" ⏯\uFE0F   Playback Moves");
@@ -219,7 +212,6 @@ public class MenuBar {
                 System.out.println("Replay Previous Moves");
             }
         });
-        replayAllMovesMenuItem.setMnemonic(KeyEvent.VK_P);
         gameplayOptionsMenu.add(replayAllMovesMenuItem);
 
         final JMenuItem changeBoardMenuItem = new JMenuItem("\uD83D\uDDBC  Change Board");
@@ -233,7 +225,6 @@ public class MenuBar {
                 System.out.println("Board Changed");
             }
         });
-        changeBoardMenuItem.setMnemonic(KeyEvent.VK_C);
         gameplayOptionsMenu.add(changeBoardMenuItem);
 
         final JMenuItem flipBoard = new JMenuItem(" ↕\uFE0F   Flip Board");
@@ -245,7 +236,6 @@ public class MenuBar {
                 System.out.println("Board Rotated");
             }
         });
-        flipBoard.setMnemonic(KeyEvent.VK_F);
         gameplayOptionsMenu.add(flipBoard);
 
         return gameplayOptionsMenu;
