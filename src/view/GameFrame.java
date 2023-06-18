@@ -79,14 +79,15 @@ public class GameFrame extends Observable {
     private JMenuBar createGameFrameMenuBar() {
         final JMenuBar gameFrameMenuBar = new JMenuBar();
         gameFrameMenuBar.add(createSettingMenu());
+        gameFrameMenuBar.add(createGameplayOptions());
         return gameFrameMenuBar;
     }
 
     private JMenu createSettingMenu() {
-        final JMenu settingMenu = new JMenu("Alt + S to open Setting Menu");
+        final JMenu settingMenu = new JMenu("⚙\uFE0F  Game Setting");
         settingMenu.setMnemonic(KeyEvent.VK_S);
 
-        final JMenuItem saveMenuItem = new JMenuItem("Save Game");
+        final JMenuItem saveMenuItem = new JMenuItem("\uD83D\uDCBE  Save Game");
         saveMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -109,7 +110,44 @@ public class GameFrame extends Observable {
         saveMenuItem.setMnemonic(KeyEvent.VK_S);
         settingMenu.add(saveMenuItem);
 
-        final JMenuItem restartMenuItem = new JMenuItem("Restart");
+        final JMenuItem backMenuItem = new JMenuItem("\uD83D\uDD19  Back To Main Menu");
+        backMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (GameFrame.get().gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                    JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
+                    return;
+                }
+                GameFrame.get().gameConfiguration.setBluePlayerType(PlayerType.HUMAN);
+                GameFrame.get().gameConfiguration.setRedPlayerType(PlayerType.HUMAN);
+                restartGame();
+                GameFrame.get().dispose();
+                new MainMenu().setVisible(true);
+                System.out.println("Back To Main Menu");
+            }
+        });
+        backMenuItem.setMnemonic(KeyEvent.VK_B);
+        settingMenu.add(backMenuItem);
+
+        final JMenuItem exitMenuItem = new JMenuItem("❌  Exit");
+        exitMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameFrame.dispose();
+                System.exit(0);
+            }
+        });
+        exitMenuItem.setMnemonic(KeyEvent.VK_E);
+        settingMenu.addSeparator();
+        settingMenu.add(exitMenuItem);
+        return settingMenu;
+    }
+
+    private JMenu createGameplayOptions() {
+        final JMenu gameplayOptionsMenu = new JMenu("\uD83C\uDFAE  Gameplay Options");
+        gameplayOptionsMenu.setMnemonic(KeyEvent.VK_O);
+
+        final JMenuItem restartMenuItem = new JMenuItem("\uD83D\uDD04  Restart");
         restartMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -126,9 +164,9 @@ public class GameFrame extends Observable {
             }
         });
         restartMenuItem.setMnemonic(KeyEvent.VK_R);
-        settingMenu.add(restartMenuItem);
+        gameplayOptionsMenu.add(restartMenuItem);
 
-        final JMenuItem undoMenuItem = new JMenuItem("Undo");
+        final JMenuItem undoMenuItem = new JMenuItem("↩\uFE0F  Undo");
         undoMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -186,9 +224,9 @@ public class GameFrame extends Observable {
             }
         });
         undoMenuItem.setMnemonic(KeyEvent.VK_U);
-        settingMenu.add(undoMenuItem);
+        gameplayOptionsMenu.add(undoMenuItem);
 
-        final JMenuItem replayAllMovesMenuItem = new JMenuItem("Playback Moves");
+        final JMenuItem replayAllMovesMenuItem = new JMenuItem(" ⏯\uFE0F  Playback Moves");
         replayAllMovesMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -244,9 +282,9 @@ public class GameFrame extends Observable {
             }
         });
         replayAllMovesMenuItem.setMnemonic(KeyEvent.VK_P);
-        settingMenu.add(replayAllMovesMenuItem);
+        gameplayOptionsMenu.add(replayAllMovesMenuItem);
 
-        final JMenuItem changeBoardMenuItem = new JMenuItem("Change Board");
+        final JMenuItem changeBoardMenuItem = new JMenuItem("\uD83D\uDDBC Change Board");
         changeBoardMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -258,10 +296,10 @@ public class GameFrame extends Observable {
             }
         });
         changeBoardMenuItem.setMnemonic(KeyEvent.VK_C);
-        settingMenu.add(changeBoardMenuItem);
+        gameplayOptionsMenu.add(changeBoardMenuItem);
 
-        final JMenuItem rotateBoard = new JMenuItem("Toggle Board Orientation");
-        rotateBoard.addActionListener(new ActionListener() {
+        final JMenuItem flipBoard = new JMenuItem(" ↕\uFE0F  Flip Board");
+        flipBoard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 boardDirection = boardDirection.opposite();
@@ -269,40 +307,10 @@ public class GameFrame extends Observable {
                 System.out.println("Board Rotated");
             }
         });
-        rotateBoard.setMnemonic(KeyEvent.VK_T);
-        settingMenu.add(rotateBoard);
+        flipBoard.setMnemonic(KeyEvent.VK_F);
+        gameplayOptionsMenu.add(flipBoard);
 
-        final JMenuItem backMenuItem = new JMenuItem("Back To Main Menu");
-        backMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (GameFrame.get().gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
-                    JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
-                    return;
-                }
-                GameFrame.get().gameConfiguration.setBluePlayerType(PlayerType.HUMAN);
-                GameFrame.get().gameConfiguration.setRedPlayerType(PlayerType.HUMAN);
-                restartGame();
-                GameFrame.get().dispose();
-                new MainMenu().setVisible(true);
-                System.out.println("Back To Main Menu");
-            }
-        });
-        backMenuItem.setMnemonic(KeyEvent.VK_B);
-        settingMenu.add(backMenuItem);
-
-        final JMenuItem exitMenuItem = new JMenuItem("Exit");
-        exitMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                gameFrame.dispose();
-                System.exit(0);
-            }
-        });
-        exitMenuItem.setMnemonic(KeyEvent.VK_E);
-        settingMenu.addSeparator();
-        settingMenu.add(exitMenuItem);
-        return settingMenu;
+        return gameplayOptionsMenu;
     }
 
     private class BoardPanel extends JPanel {
