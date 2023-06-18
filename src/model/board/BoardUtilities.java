@@ -10,15 +10,6 @@ public class BoardUtilities {
     public static final int NUM_TERRAINS_PER_ROW = 7;
     public static final boolean[] COLUMN_ZERO = populateColumn(0);
     public static final boolean[] COLUMN_SIX = populateColumn(6);
-    public static final boolean[] ROW_ZERO = populateRow(0);
-    public static final boolean[] ROW_ONE = populateRow(7);
-    public static final boolean[] ROW_TWO = populateRow(14);
-    public static final boolean[] ROW_THREE = populateRow(21);
-    public static final boolean[] ROW_FOUR = populateRow(28);
-    public static final boolean[] ROW_FIVE = populateRow(35);
-    public static final boolean[] ROW_SIX = populateRow(42);
-    public static final boolean[] ROW_SEVEN = populateRow(49);
-    public static final boolean[] ROW_EIGHT = populateRow(56);
     public static final List<String> ALGEBRAIC_NOTATION = initializeAlgebraicNotation();
     public static final  Map<String, Integer> POSITION_TO_COORDINATE = initializePositionToCoordinateMap();
 
@@ -78,15 +69,6 @@ public class BoardUtilities {
             columnIndex += NUM_TERRAINS_PER_ROW;
         } while (columnIndex < NUM_TERRAINS);
         return column;
-    }
-
-    private static boolean[] populateRow(int rowIndex) {
-        final boolean[] row = new boolean[NUM_TERRAINS];
-        do {
-            row[rowIndex] = true;
-            rowIndex++;
-        } while (rowIndex % NUM_TERRAINS_PER_ROW != 0);
-        return row;
     }
 
     private static Map<String, Integer> initializePositionToCoordinateMap() {

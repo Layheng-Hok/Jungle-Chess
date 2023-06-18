@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static view.GameFrame.MoveLog;
+import model.board.MoveLog;
 import static view.GameFrame.defaultImagesPath;
 
  class CapturedPiecesPanel extends JPanel {

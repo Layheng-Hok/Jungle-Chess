@@ -3,6 +3,7 @@ package view;
 
 import model.board.Board;
 import model.board.Move;
+import model.board.MoveLog;
 import model.board.MoveTransition;
 import model.player.PlayerType;
 
@@ -103,7 +104,7 @@ public class MainMenu extends JFrame {
                 }
 
                 Board loadedBoard = Board.constructStandardBoard();
-                GameFrame.MoveLog moveLog = new GameFrame.MoveLog();
+                MoveLog moveLog = new MoveLog();
 
                 ArrayList<String> playerTypeList;
                 int numMoves;

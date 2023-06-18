@@ -4,10 +4,7 @@ import model.artificialintelligence.ConcreteBoardEvaluator;
 import model.artificialintelligence.MinimaxAlgorithm;
 import model.artificialintelligence.PoorBoardEvaluator;
 import model.artificialintelligence.MoveStrategy;
-import model.board.Board;
-import model.board.Move;
-import model.board.MoveTransition;
-import model.board.BoardUtilities;
+import model.board.*;
 import model.piece.Piece;
 import model.player.PlayerColor;
 import model.player.PlayerType;
@@ -18,13 +15,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.*;
 
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
+import static view.MenuBar.createGameFrameMenuBar;
 
 public class GameFrame extends Observable {
     private final JFrame gameFrame;
@@ -39,7 +36,7 @@ public class GameFrame extends Observable {
     private Move computerMove;
     private Piece sourceTerrain;
     private Piece humanMovedPiece;
-    private BoardDirection boardDirection;
+    MenuBar.BoardDirection boardDirection;
     private boolean isBoard1 = true;
     private boolean replayMovesInProgress = false;
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
@@ -66,7 +63,7 @@ public class GameFrame extends Observable {
         this.moveLog = new MoveLog();
         this.addObserver(new AIGameObserver());
         this.gameConfiguration = new GameConfiguration(this.gameFrame, true);
-        this.boardDirection = BoardDirection.NORMAL;
+        this.boardDirection = MenuBar.BoardDirection.NORMAL;
         this.gameFrame.add(this.leftPanel, BorderLayout.WEST);
         this.gameFrame.add(this.rightPanel, BorderLayout.EAST);
         this.gameFrame.add(this.playerPanel, BorderLayout.NORTH);
@@ -76,244 +73,7 @@ public class GameFrame extends Observable {
         this.gameFrame.setResizable(false);
     }
 
-    private JMenuBar createGameFrameMenuBar() {
-        final JMenuBar gameFrameMenuBar = new JMenuBar();
-        gameFrameMenuBar.add(createSettingMenu());
-        gameFrameMenuBar.add(createGameplayOptions());
-        return gameFrameMenuBar;
-    }
-
-    private JMenu createSettingMenu() {
-        final JMenu settingMenu = new JMenu("⚙\uFE0F  Game Setting");
-        settingMenu.setMnemonic(KeyEvent.VK_S);
-
-        final JMenuItem saveMenuItem = new JMenuItem("\uD83D\uDCBE  Save Game");
-        saveMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (replayMovesInProgress) {
-                    JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
-                    return;
-                }
-                if (GameFrame.get().gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
-                    JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
-                    return;
-                }
-                String fileName = JOptionPane.showInputDialog("File Name");
-                while (fileName.equals("")) {
-                    JOptionPane.showMessageDialog(null, "Name cannot be empty. Please enter again.");
-                    fileName = JOptionPane.showInputDialog("File Name");
-                }
-                writeGame(fileName);
-            }
-        });
-        saveMenuItem.setMnemonic(KeyEvent.VK_S);
-        settingMenu.add(saveMenuItem);
-
-        final JMenuItem backMenuItem = new JMenuItem("\uD83D\uDD19  Back To Main Menu");
-        backMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (GameFrame.get().gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
-                    JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
-                    return;
-                }
-                GameFrame.get().gameConfiguration.setBluePlayerType(PlayerType.HUMAN);
-                GameFrame.get().gameConfiguration.setRedPlayerType(PlayerType.HUMAN);
-                restartGame();
-                GameFrame.get().dispose();
-                new MainMenu().setVisible(true);
-                System.out.println("Back To Main Menu");
-            }
-        });
-        backMenuItem.setMnemonic(KeyEvent.VK_B);
-        settingMenu.add(backMenuItem);
-
-        final JMenuItem exitMenuItem = new JMenuItem("❌  Exit");
-        exitMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                gameFrame.dispose();
-                System.exit(0);
-            }
-        });
-        exitMenuItem.setMnemonic(KeyEvent.VK_E);
-        settingMenu.addSeparator();
-        settingMenu.add(exitMenuItem);
-        return settingMenu;
-    }
-
-    private JMenu createGameplayOptions() {
-        final JMenu gameplayOptionsMenu = new JMenu("\uD83C\uDFAE  Gameplay Options");
-        gameplayOptionsMenu.setMnemonic(KeyEvent.VK_O);
-
-        final JMenuItem restartMenuItem = new JMenuItem("\uD83D\uDD04  Restart");
-        restartMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (replayMovesInProgress) {
-                    JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
-                    return;
-                }
-                if (GameFrame.get().gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
-                    JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
-                    return;
-                }
-                restartGame();
-                System.out.println("Game Restarted");
-            }
-        });
-        restartMenuItem.setMnemonic(KeyEvent.VK_R);
-        gameplayOptionsMenu.add(restartMenuItem);
-
-        final JMenuItem undoMenuItem = new JMenuItem("↩\uFE0F  Undo");
-        undoMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (replayMovesInProgress) {
-                    JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
-                    return;
-                }
-                if (GameFrame.get().gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
-                    JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
-                    return;
-                }
-                if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.AI &&
-                        GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
-                    if (moveLog.size() > 0) {
-                        Move lastMove = moveLog.removeMove(moveLog.size() - 1);
-                        chessBoard = lastMove.undo();
-                        if (lastMove.equals(computerMove) && moveLog.size() > 0) {
-                            Move secondLastMove = moveLog.removeMove(moveLog.size() - 1);
-                            chessBoard = secondLastMove.undo();
-                            computerMove = moveLog.getMove(moveLog.size() - 1);
-                        } else {
-                            restartGame();
-                            return;
-                        }
-                        playerPanel.undoAIBlue();
-                        boardPanel.drawBoard(chessBoard);
-                        capturedPiecesPanel.redo(moveLog);
-                        System.out.println("Undo");
-                    }
-                } else if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.AI
-                        || GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
-                    if (moveLog.size() > 0) {
-                        Move lastMove = moveLog.removeMove(moveLog.size() - 1);
-                        chessBoard = lastMove.undo();
-                        if (lastMove.equals(computerMove)) {
-                            Move secondLastMove = moveLog.removeMove(moveLog.size() - 1);
-                            chessBoard = secondLastMove.undo();
-                            if (moveLog.size() > 0) {
-                                computerMove = moveLog.getMove(moveLog.size() - 1);
-                            } else {
-                                computerMove = null;
-                            }
-                            setChanged();
-                            notifyObservers();
-                        }
-                        boardPanel.drawBoard(chessBoard);
-                        if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.AI) {
-                            playerPanel.undoAIRed();
-                        }
-                        playerPanel.undo();
-                        capturedPiecesPanel.redo(moveLog);
-                        System.out.println("Undo");
-                    }
-                }
-            }
-        });
-        undoMenuItem.setMnemonic(KeyEvent.VK_U);
-        gameplayOptionsMenu.add(undoMenuItem);
-
-        final JMenuItem replayAllMovesMenuItem = new JMenuItem(" ⏯\uFE0F  Playback Moves");
-        replayAllMovesMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (replayMovesInProgress) {
-                    JOptionPane.showMessageDialog(null, "Replay is already in progress. Please wait for the next replay.");
-                    return;
-                }
-                if (GameFrame.get().gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
-                    JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
-                    return;
-                }
-                replayMovesInProgress = true;
-                playerPanel.setRoundNumber(1);
-                capturedPiecesPanel.reset();
-                MoveLog seperateMoveLog = new MoveLog();
-                SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-                    @Override
-                    protected Void doInBackground() throws Exception {
-                        chessBoard = Board.constructStandardBoard();
-                        boardPanel.drawBoard(chessBoard);
-                        boardPanel.removeAllBorders();
-                        Thread.sleep(1000);
-                        for (int i = 0; i < moveLog.size(); i++) {
-                            Move move = moveLog.getMove(i);
-                            chessBoard = move.execute();
-                            System.out.println(move);
-                            seperateMoveLog.addMove(move);
-                            computerMove = move;
-                            publish();
-                            Thread.sleep(1000);
-                        }
-                        return null;
-                    }
-
-                    @Override
-                    protected void process(List<Void> chunks) {
-                        boardPanel.drawBoard(chessBoard);
-                        playerPanel.redo(chessBoard);
-                        capturedPiecesPanel.redo(seperateMoveLog);
-                    }
-
-                    @Override
-                    protected void done() {
-                        if (gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
-                            GameFrame.get().moveMadeUpdate(PlayerType.HUMAN);
-                        }
-                        boardPanel.drawBoard(chessBoard);
-                        replayMovesInProgress = false;
-                    }
-                };
-                worker.execute();
-                System.out.println("Replay Previous Moves");
-            }
-        });
-        replayAllMovesMenuItem.setMnemonic(KeyEvent.VK_P);
-        gameplayOptionsMenu.add(replayAllMovesMenuItem);
-
-        final JMenuItem changeBoardMenuItem = new JMenuItem("\uD83D\uDDBC Change Board");
-        changeBoardMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                isBoard1 = !isBoard1;
-                String boardImageFileName = isBoard1 ? "chessboard1.png" : "chessboard2.png";
-                boardPanel.setBoardImage(boardImageFileName);
-                boardPanel.drawBoard(chessBoard);
-                System.out.println("Board Changed");
-            }
-        });
-        changeBoardMenuItem.setMnemonic(KeyEvent.VK_C);
-        gameplayOptionsMenu.add(changeBoardMenuItem);
-
-        final JMenuItem flipBoard = new JMenuItem(" ↕\uFE0F  Flip Board");
-        flipBoard.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                boardDirection = boardDirection.opposite();
-                boardPanel.drawBoard(chessBoard);
-                System.out.println("Board Rotated");
-            }
-        });
-        flipBoard.setMnemonic(KeyEvent.VK_F);
-        gameplayOptionsMenu.add(flipBoard);
-
-        return gameplayOptionsMenu;
-    }
-
-    private class BoardPanel extends JPanel {
+     class BoardPanel extends JPanel {
         final List<TerrainPanel> boardTerrains;
         private Image boardImage;
 
@@ -395,7 +155,7 @@ public class GameFrame extends Observable {
         }
     }
 
-    private class TerrainPanel extends JPanel {
+    class TerrainPanel extends JPanel {
         private final int terrainCoordinate;
 
         TerrainPanel(final BoardPanel boardPanel, final int terrainCoordinate) {
@@ -565,79 +325,12 @@ public class GameFrame extends Observable {
         }
     }
 
-    enum BoardDirection {
-        NORMAL {
-            @Override
-            List<TerrainPanel> traverse(final List<TerrainPanel> boardTiles) {
-                return boardTiles;
-            }
-
-            @Override
-            BoardDirection opposite() {
-                return FLIPPED;
-            }
-        },
-        FLIPPED {
-            @Override
-            List<TerrainPanel> traverse(final List<TerrainPanel> boardTiles) {
-                List<TerrainPanel> reversedTiles = new ArrayList<>(boardTiles);
-                Collections.reverse(reversedTiles);
-                return reversedTiles;
-            }
-
-            @Override
-            BoardDirection opposite() {
-                return NORMAL;
-            }
-        };
-
-        abstract List<TerrainPanel> traverse(final List<TerrainPanel> boardTiles);
-
-        abstract BoardDirection opposite();
-    }
-
-    public static class MoveLog {
-        private final List<Move> moves;
-
-        MoveLog() {
-            this.moves = new ArrayList<>();
-        }
-
-        public List<Move> getMoves() {
-            return this.moves;
-        }
-
-        void addMove(final Move move) {
-            this.moves.add(move);
-        }
-
-        public int size() {
-            return this.moves.size();
-        }
-
-        void clear() {
-            this.moves.clear();
-        }
-
-        Move removeMove(final int index) {
-            return this.moves.remove(index);
-        }
-
-        boolean removeMove(final Move move) {
-            return this.moves.remove(move);
-        }
-
-        public Move getMove(int index) {
-            return this.moves.get(index);
-        }
-    }
-
     public void setupUpdate(final GameConfiguration AIGameConfiguration) {
         setChanged();
         notifyObservers(AIGameConfiguration);
     }
 
-    private void moveMadeUpdate(final PlayerType playerType) {
+    void moveMadeUpdate(final PlayerType playerType) {
         setChanged();
         notifyObservers(playerType);
     }
@@ -733,60 +426,6 @@ public class GameFrame extends Observable {
         GameFrame.get().setVisible(true);
     }
 
-    private void writeGame(String fileName) {
-        String location = "database\\" + fileName + ".txt";
-        if (!fileName.matches("[^\\\\/:*?\"<>|]+")) {
-            JOptionPane.showMessageDialog(null, "A file name cannot contain any illegal characters.", "Invalid File Name", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        File file = new File(location);
-        try {
-            if (file.exists()) {
-                int response = JOptionPane.showConfirmDialog(null, "The file already exists, do you want to overwrite it?",
-                        "Overlapped File Name", JOptionPane.YES_NO_OPTION);
-                if (response == JOptionPane.NO_OPTION) {
-                    return;
-                }
-            }
-            FileWriter fileWriter = new FileWriter(file);
-            String difficulty = "nu";
-            if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN &&
-                    GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.AI
-                    || GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.AI &&
-                    GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
-                difficulty = DifficultyFrame.getDifficulty().toString().toLowerCase().substring(0, 2);
-            }
-            fileWriter.write(GameFrame.get().getGameConfiguration().getBluePlayerType().toString().toLowerCase().substring(0, 2) + " "
-                    + GameFrame.get().getGameConfiguration().getRedPlayerType().toString().toLowerCase().substring(0, 2) + " "
-                    + difficulty + "\n");
-            fileWriter.write(String.valueOf(GameFrame.get().getMoveLog().size()) + "\n");
-            for (int i = 0; i < GameFrame.get().getMoveLog().size(); i++) {
-                fileWriter.write(GameFrame.get().getMoveLog().getMove(i).toString() + "\n");
-            }
-            fileWriter.write(GameFrame.get().getChessBoard().getCurrentPlayer().toString().toLowerCase().substring(0, 2) + "\n");
-            fileWriter.write(GameFrame.get().getChessBoard().toString());
-            fileWriter.close();
-            ProgressFrame progressFrame = new ProgressFrame();
-            progressFrame.addProgressListener(new ProgressFrame.ProgressListener() {
-                @Override
-                public void onProgressComplete() {
-                    int continueResponse = JOptionPane.showOptionDialog(null, "Game saved successfully.\nWould you want to continue playing or go back to the main menu?", "Game Saved", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Continue", "Back"}, "Continue");
-                    if (continueResponse == JOptionPane.NO_OPTION) {
-                        GameFrame.get().gameConfiguration.setBluePlayerType(PlayerType.HUMAN);
-                        GameFrame.get().gameConfiguration.setRedPlayerType(PlayerType.HUMAN);
-                        restartGame();
-                        GameFrame.get().dispose();
-                        new MainMenu().setVisible(true);
-                        System.out.println("Back To Main Menu");
-                    }
-                }
-            });
-            System.out.println("Game Saved");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void restartGame() {
         chessBoard = Board.constructStandardBoard();
         boardPanel.drawBoard(chessBoard);
@@ -853,8 +492,40 @@ public class GameFrame extends Observable {
         return this.chessBoard;
     }
 
+    public void setChessBoard(Board chessBoard) {
+        this.chessBoard = chessBoard;
+    }
+
+    public Move getComputerMove() {
+        return computerMove;
+    }
+
+    public void setComputerMove(Move computerMove) {
+        this.computerMove = computerMove;
+    }
+
     public MoveLog getMoveLog() {
         return moveLog;
+    }
+
+    public void setMoveLog(MoveLog moveLog) {
+        this.moveLog = moveLog;
+    }
+
+    public boolean isReplayMovesInProgress() {
+        return replayMovesInProgress;
+    }
+
+    public void setReplayMovesInProgress(boolean replayMovesInProgress) {
+        this.replayMovesInProgress = replayMovesInProgress;
+    }
+
+    public boolean isBoard1() {
+        return isBoard1;
+    }
+
+    public void setBoard1(boolean isBoard1) {
+        this.isBoard1 = isBoard1;
     }
 
     public void setGameBoard(final Board chessBoard) {
@@ -864,10 +535,6 @@ public class GameFrame extends Observable {
         if (GameFrame.get().getGameConfiguration().isAIPlayer(chessBoard.getCurrentPlayer())) {
             moveMadeUpdate(PlayerType.HUMAN);
         }
-    }
-
-    public void setMoveLog(MoveLog moveLog) {
-        this.moveLog = moveLog;
     }
 
     public void setVisible(boolean b) {
