@@ -48,29 +48,41 @@ public class GameFrame extends Observable {
 
     public GameFrame() {
         this.gameFrame = new JFrame("Jungle Chess (斗兽棋) - Game");
-        this.gameFrame.setLayout(new BorderLayout());
-        this.gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        final JMenuBar gameFrameMenuBar = createGameFrameMenuBar();
-        this.gameFrame.setJMenuBar(gameFrameMenuBar);
-        this.gameFrame.setSize(OUTER_FRAME_DIMENSION);
-        this.chessBoard = Board.constructStandardBoard();
-        this.gameFrame.setLocationRelativeTo(null);
+        setBasicGameFrameAttributes();
+        initGameState();
         this.leftPanel = new LeftPanel();
         this.rightPanel = new RightPanel();
         this.playerPanel = new PlayerPanel();
         this.capturedPiecesPanel = new CapturedPiecesPanel();
         this.boardPanel = new BoardPanel();
-        this.moveLog = new MoveLog();
-        this.addObserver(new AIGameObserver());
+        setMenuBarAndPanels();
         this.gameConfiguration = new GameConfiguration(this.gameFrame, true);
-        this.boardDirection = MenuBar.BoardDirection.NORMAL;
+    }
+
+    private void setBasicGameFrameAttributes() {
+        this.gameFrame.setLayout(new BorderLayout());
+        this.gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.gameFrame.setSize(OUTER_FRAME_DIMENSION);
+        this.gameFrame.setLocationRelativeTo(null);
+        this.gameFrame.setIconImage(logo.getImage());
+        this.gameFrame.setResizable(false);
+    }
+
+    private void setMenuBarAndPanels() {
+        final JMenuBar gameFrameMenuBar = createGameFrameMenuBar();
+        this.gameFrame.setJMenuBar(gameFrameMenuBar);
         this.gameFrame.add(this.leftPanel, BorderLayout.WEST);
         this.gameFrame.add(this.rightPanel, BorderLayout.EAST);
         this.gameFrame.add(this.playerPanel, BorderLayout.NORTH);
         this.gameFrame.add(this.capturedPiecesPanel, BorderLayout.SOUTH);
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
-        this.gameFrame.setIconImage(logo.getImage());
-        this.gameFrame.setResizable(false);
+    }
+
+    private void initGameState() {
+        this.chessBoard = Board.constructStandardBoard();
+        this.moveLog = new MoveLog();
+        this.addObserver(new AIGameObserver());
+        this.boardDirection = MenuBar.BoardDirection.NORMAL;
     }
 
      class BoardPanel extends JPanel {
@@ -439,18 +451,6 @@ public class GameFrame extends Observable {
         System.out.println("Game Restarted");
     }
 
-    public void setLoadBoard(Board loadBoard, MoveLog loadMoveLog, int roundNumber) {
-        this.chessBoard = loadBoard;
-        this.moveLog = loadMoveLog;
-        boardPanel.drawBoard(chessBoard);
-        boardPanel.removeAllBorders();
-        capturedPiecesPanel.redo(moveLog);
-        playerPanel.setRoundNumber(roundNumber);
-        playerPanel.setCurrentPlayer(chessBoard.getCurrentPlayer().toString());
-        playerPanel.repaint();
-        System.out.println("Game Loaded");
-    }
-
     public void checkWin() {
         if (GameFrame.get().getChessBoard().getCurrentPlayer().isDenPenetrated()) {
             GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
@@ -470,6 +470,18 @@ public class GameFrame extends Observable {
             GameFrame.get().restartGame();
             System.out.println("Game Restarted");
         }
+    }
+
+    public void setLoadBoard(Board loadBoard, MoveLog loadMoveLog, int roundNumber) {
+        this.chessBoard = loadBoard;
+        this.moveLog = loadMoveLog;
+        boardPanel.drawBoard(chessBoard);
+        boardPanel.removeAllBorders();
+        capturedPiecesPanel.redo(moveLog);
+        playerPanel.setRoundNumber(roundNumber);
+        playerPanel.setCurrentPlayer(chessBoard.getCurrentPlayer().toString());
+        playerPanel.repaint();
+        System.out.println("Game Loaded");
     }
 
     public GameConfiguration getGameConfiguration() {
