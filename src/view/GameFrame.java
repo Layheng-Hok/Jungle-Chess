@@ -190,7 +190,7 @@ public class GameFrame extends Observable {
                         if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
                             return;
                         }
-                        AudioPlayer.SinglePlayer.playClickEffect();
+                        AudioPlayer.SinglePlayer.playSoundEffect("click.wav");
                         if (sourceTerrain == null) {
                             sourceTerrain = chessBoard.getPiece(terrainCoordinate);
                             if (sourceTerrain != null && sourceTerrain.getPieceColor() != chessBoard.getCurrentPlayer().getAllyColor()) {

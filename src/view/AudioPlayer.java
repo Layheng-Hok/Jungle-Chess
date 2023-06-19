@@ -6,13 +6,16 @@ import javax.sound.sampled.*;
 import java.io.File;
 
 public class AudioPlayer {
+    private static String defaultAudioPath = "resource/audio/";
+
     private static class LoopPlayer {
         private static Clip clip;
         private static Thread thread;
+        private static boolean isMenuBGMPlaying = false;
 
         public static void playAudio(String path) {
             try {
-                File soundPath = new File(path);
+                File soundPath = new File(defaultAudioPath + path);
                 if (soundPath.exists()) {
                     AudioInputStream audioInput = AudioSystem.getAudioInputStream(soundPath);
                     clip = AudioSystem.getClip();
@@ -23,8 +26,7 @@ public class AudioPlayer {
                             while (true) {
                                 Thread.sleep(100);
                             }
-                        } catch (InterruptedException e) {
-                           // e.printStackTrace();
+                        } catch (InterruptedException ignored) {
                         }
                     });
                     thread.start();
@@ -45,24 +47,34 @@ public class AudioPlayer {
     }
 
     public static void playMenuBGM() {
-        LoopPlayer.stopAudio();
-        LoopPlayer.playAudio("resource/audio/menubgm.wav");
+        if (!LoopPlayer.isMenuBGMPlaying) {
+            LoopPlayer.stopAudio();
+            LoopPlayer.playAudio("menubgm.wav");
+            LoopPlayer.isMenuBGMPlaying = true;
+        }
     }
 
     public static void playGameBGM() {
         LoopPlayer.stopAudio();
-        LoopPlayer.playAudio("resource/audio/gamebgm.wav");
+        LoopPlayer.playAudio("gamebgm.wav");
+        LoopPlayer.isMenuBGMPlaying = false;
+    }
+
+    public static void stopBGM() {
+        LoopPlayer.stopAudio();
     }
 
     public static class SinglePlayer {
+        private static Clip clip;
+
         public static void playAnimalSoundEffect(Piece piece) {
             String animalName = piece.getPieceType().toString().toLowerCase();
-            String path = "resource/audio/" + animalName + ".wav";
+            String path = defaultAudioPath + animalName + ".wav";
             try {
                 File soundPath = new File(path);
                 if (soundPath.exists()) {
                     AudioInputStream audioInput = AudioSystem.getAudioInputStream(soundPath);
-                    Clip clip = AudioSystem.getClip();
+                    clip = AudioSystem.getClip();
                     clip.open(audioInput);
                     clip.start();
                 }
@@ -71,12 +83,12 @@ public class AudioPlayer {
             }
         }
 
-        public static void playClickEffect() {
+        public static void playSoundEffect(String path) {
             try {
-                File soundPath = new File("resource/audio/click.wav");
+                File soundPath = new File(defaultAudioPath + path);
                 if (soundPath.exists()) {
                     AudioInputStream audioInput = AudioSystem.getAudioInputStream(soundPath);
-                    Clip clip = AudioSystem.getClip();
+                    clip = AudioSystem.getClip();
                     clip.open(audioInput);
                     clip.start();
                 }
