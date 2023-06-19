@@ -85,7 +85,7 @@ public class GameFrame extends Observable {
         this.boardDirection = MenuBar.BoardDirection.NORMAL;
     }
 
-     class BoardPanel extends JPanel {
+    class BoardPanel extends JPanel {
         final List<TerrainPanel> boardTerrains;
         private Image boardImage;
 
@@ -451,22 +451,50 @@ public class GameFrame extends Observable {
         System.out.println("Game Restarted");
     }
 
-    public void checkWin() {
+    void checkWin() {
         if (GameFrame.get().getChessBoard().getCurrentPlayer().isDenPenetrated()) {
+            if (GameFrame.get().getGameConfiguration().getBluePlayerType() == GameFrame.get().gameConfiguration.getRedPlayerType()
+                    || GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
+                AudioPlayer.SinglePlayer.playSoundEffect("winning.wav");
+            } else {
+                AudioPlayer.SinglePlayer.playSoundEffect("losing.wav");
+            }
             GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+            ImageIcon gameOverIcon = new ImageIcon(defaultImagesPath + "gameover.png");
+            Image resizedImage = gameOverIcon.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT);
+            Icon resizedIcon = new ImageIcon(resizedImage);
             JOptionPane.showMessageDialog(null,
-                    "Game Over: Player " + GameFrame.get().getChessBoard().getCurrentPlayer() + "'s den is penetrated by the enemy!", "Game Over",
-                    JOptionPane.INFORMATION_MESSAGE);
-            System.out.println("Game Over: Player " + GameFrame.get().getChessBoard().getCurrentPlayer() + "'s den is penetrated by the enemy!");
+                    "Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
+                            + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + "'s den is penetrated by the enemy!",
+                    "Game Over",
+                    JOptionPane.INFORMATION_MESSAGE,
+                    resizedIcon);
+
+            System.out.println("Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
+                    + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + "'s den is penetrated by the enemy!");
             GameFrame.get().restartGame();
             System.out.println("Game Restarted");
         }
         if (GameFrame.get().getChessBoard().getCurrentPlayer().getActivePieces().isEmpty()) {
+            if (GameFrame.get().getGameConfiguration().getBluePlayerType() == GameFrame.get().gameConfiguration.getRedPlayerType()
+                    || GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
+                AudioPlayer.SinglePlayer.playSoundEffect("winning.wav");
+            } else {
+                AudioPlayer.SinglePlayer.playSoundEffect("losing.wav");
+            }
             GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+            ImageIcon gameOverIcon = new ImageIcon(defaultImagesPath + "gameover.png");
+            Image resizedImage = gameOverIcon.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT);
+            Icon resizedIcon = new ImageIcon(resizedImage);
             JOptionPane.showMessageDialog(null,
-                    "Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player has no more pieces!", "Game Over",
-                    JOptionPane.INFORMATION_MESSAGE);
-            System.out.println("Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player has no more pieces!");
+                    "Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
+                            + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + " has no more pieces!",
+                    "Game Over",
+                    JOptionPane.INFORMATION_MESSAGE,
+                    resizedIcon);
+
+            System.out.println("Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
+                    + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + " has no more pieces!");
             GameFrame.get().restartGame();
             System.out.println("Game Restarted");
         }

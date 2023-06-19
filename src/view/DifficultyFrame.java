@@ -12,13 +12,13 @@ class DifficultyFrame extends JFrame {
     private JButton hard;
     private JButton back;
     private JLabel background;
-    private String iconsFolder = "resource/images" + File.separator;
+    private final String iconsFolder = "resource/images" + File.separator;
     private final ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
-    private String backgroundIcon = iconsFolder + "background.png";
-    private String easyIcon = iconsFolder + "easy.png";
-    private String mediumIcon = iconsFolder + "medium.png";
-    private String hardIcon = iconsFolder + "hard.png";
-    private String backIcon = iconsFolder + "back.png";
+    private final String backgroundIcon = iconsFolder + "background.png";
+    private final String easyIcon = iconsFolder + "easy.png";
+    private final String mediumIcon = iconsFolder + "medium.png";
+    private final String hardIcon = iconsFolder + "hard.png";
+    private final String backIcon = iconsFolder + "back.png";
     private static Difficulty difficulty = null;
 
     DifficultyFrame() {

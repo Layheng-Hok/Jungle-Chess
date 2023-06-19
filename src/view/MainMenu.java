@@ -20,20 +20,14 @@ import java.util.Arrays;
 import static view.GameFrame.defaultImagesPath;
 
 public class MainMenu extends JFrame {
-    private JLabel background;
-    private JLabel logo;
-    private JButton onePlayer;
-    private JButton twoPlayer;
-    private JButton loadGame;
-    private JButton exit;
-    private String iconsFolder = defaultImagesPath + File.separator;
+    private final String iconsFolder = defaultImagesPath + File.separator;
     private final ImageIcon logoImage = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
-    private String jChessIcon = iconsFolder + "logo.png";
-    private String backgroundIcon = iconsFolder + "background.png";
-    private String onePlayerIcon = iconsFolder + "oneplayer.png";
-    private String twoPlayerIcon = iconsFolder + "twoplayer.png";
-    private String loadGameIcon = iconsFolder + "loadgame.png";
-    private String exitIcon = iconsFolder + "exit.png";
+    private final String jChessIcon = iconsFolder + "logo.png";
+    private final String backgroundIcon = iconsFolder + "background.png";
+    private final String onePlayerIcon = iconsFolder + "oneplayer.png";
+    private final String twoPlayerIcon = iconsFolder + "twoplayer.png";
+    private final String loadGameIcon = iconsFolder + "loadgame.png";
+    private final String exitIcon = iconsFolder + "exit.png";
 
     public MainMenu() {
         setTitle("Jungle Chess (斗兽棋) - Main Menu");
@@ -55,13 +49,13 @@ public class MainMenu extends JFrame {
     private void setBackground() {
         ImageIcon jChessI = new ImageIcon(new ImageIcon(jChessIcon).getImage().getScaledInstance
                 (390, 390, Image.SCALE_DEFAULT));
-        logo = new JLabel(jChessI);
+        JLabel logo = new JLabel(jChessI);
         logo.setBounds(70, 0, 400, 300);
         this.add(logo);
 
         ImageIcon backgroundI = new ImageIcon(new ImageIcon(backgroundIcon).getImage().getScaledInstance
                 (530, 850, Image.SCALE_DEFAULT));
-        background = new JLabel(backgroundI);
+        JLabel background = new JLabel(backgroundI);
         background.setBounds(0, 0, 530, 850);
         this.add(background);
     }
@@ -69,7 +63,7 @@ public class MainMenu extends JFrame {
     private void createOnePlayerButton() {
         ImageIcon onePlayerI = new ImageIcon(new ImageIcon(onePlayerIcon).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
-        onePlayer = new JButton(onePlayerI);
+        JButton onePlayer = new JButton(onePlayerI);
         onePlayer.setBounds(170, 350, 180, 80);
         this.add(onePlayer);
         onePlayer.setIcon(onePlayerI);
@@ -86,7 +80,7 @@ public class MainMenu extends JFrame {
     private void createTwoPlayerButton(){
         ImageIcon twoPlayerI = new ImageIcon(new ImageIcon(twoPlayerIcon).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
-        twoPlayer = new JButton(twoPlayerI);
+        JButton twoPlayer = new JButton(twoPlayerI);
         twoPlayer.setBounds(170, 450, 180, 80);
         this.add(twoPlayer);
         twoPlayer.setIcon(twoPlayerI);
@@ -105,7 +99,7 @@ public class MainMenu extends JFrame {
     private void createLoadGameButton(){
         ImageIcon loadGameI = new ImageIcon(new ImageIcon(loadGameIcon).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
-        loadGame = new JButton(loadGameI);
+        JButton loadGame = new JButton(loadGameI);
         loadGame.setBounds(170, 550, 180, 80);
         this.add(loadGame);
         loadGame.setIcon(loadGameI);
@@ -281,7 +275,7 @@ public class MainMenu extends JFrame {
     private void createExitButton(){
         ImageIcon exitI = new ImageIcon(new ImageIcon(exitIcon).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
-        exit = new JButton(exitI);
+        JButton exit = new JButton(exitI);
         exit.setBounds(170, 650, 180, 80);
         this.add(exit);
         exit.setIcon(exitI);
