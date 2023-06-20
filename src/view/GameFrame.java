@@ -151,6 +151,10 @@ public class GameFrame extends Observable {
             super.paintComponent(g);
             g.drawImage(boardImage, 0, 0, getWidth(), getHeight(), this);
         }
+
+         List<TerrainPanel> getBoardTerrains() {
+            return boardTerrains;
+        }
     }
 
     private class LeftPanel extends JPanel {
@@ -191,6 +195,8 @@ public class GameFrame extends Observable {
         private final Border mouseEnteredBorder = BorderFactory.createLineBorder(new Color(195, 80, 170), 3);
         private final Border selectedBorder = BorderFactory.createLineBorder(new Color(12, 211, 28), 3);
         private final Border capturedPieceBorder = BorderFactory.createLineBorder(new Color(180, 23, 23), 3);
+        private final Border currentAIPositionBorder = BorderFactory.createLineBorder(new Color(14, 74, 17), 3);
+        private final Border destinationAIPositionBorder = BorderFactory.createLineBorder(new Color(0, 255, 25), 3);
 
         TerrainPanel(final BoardPanel boardPanel, final int terrainCoordinate) {
             super(new GridBagLayout());
@@ -260,7 +266,10 @@ public class GameFrame extends Observable {
                 @Override
                 public void mouseEntered(final MouseEvent e) {
                     Border border = getBorder();
-                    if (border == null || !(border.equals(selectedBorder) || border.equals(capturedPieceBorder))) {
+                    if (border == null || !(border.equals(selectedBorder)
+                            || border.equals(capturedPieceBorder)
+                            || border.equals(currentAIPositionBorder)
+                            || border.equals(destinationAIPositionBorder) )) {
                         setBorder(mouseEnteredBorder);
                     }
                 }
@@ -341,11 +350,11 @@ public class GameFrame extends Observable {
         private void highlightAIMoves() {
             if (computerMove != null) {
                 if (this.terrainCoordinate == computerMove.getCurrentCoordinate()) {
-                    setBorder(BorderFactory.createLineBorder(new Color(14, 74, 17), 3));
+                    setBorder(currentAIPositionBorder);
                     setBackground(new Color(12, 211, 28, 90));
                     setOpaque(true);
                 } else if (this.terrainCoordinate == computerMove.getDestinationCoordinate()) {
-                    setBorder(BorderFactory.createLineBorder(new Color(12, 211, 28), 3));
+                    setBorder(destinationAIPositionBorder);
                     setBackground(new Color(12, 211, 28, 90));
                     setOpaque(true);
                 }
@@ -503,6 +512,7 @@ public class GameFrame extends Observable {
         playerPanel.reset();
         capturedPiecesPanel.reset();
         moveLog.clear();
+        GameFrame.get().getGameConfiguration().setReady(false);
         setChanged();
         notifyObservers();
         System.out.println("Game Restarted");

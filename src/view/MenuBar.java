@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class MenuBar {
-     static JMenuBar createGameFrameMenuBar() {
+    static JMenuBar createGameFrameMenuBar() {
         final JMenuBar gameFrameMenuBar = new JMenuBar();
         gameFrameMenuBar.add(createSettingMenu());
         gameFrameMenuBar.add(createGameplayOptions());
@@ -52,6 +52,10 @@ public class MenuBar {
         backMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (GameFrame.get().isReplayMovesInProgress()) {
+                    JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
+                    return;
+                }
                 if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
                     JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
                     return;
@@ -169,6 +173,9 @@ public class MenuBar {
                     return;
                 }
                 GameFrame.get().setReplayMovesInProgress(true);
+                for (int i = 0; i < GameFrame.get().getBoardPanel().getBoardTerrains().size(); i++) {
+                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setOpaque(false);
+                }
                 GameFrame.get().getPlayerPanel().setRoundNumber(1);
                 GameFrame.get().getCapturedPiecesPanel().reset();
                 MoveLog seperateMoveLog = new MoveLog();

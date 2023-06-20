@@ -14,10 +14,10 @@ import java.awt.event.WindowEvent;
 class GameConfiguration extends JDialog {
     private PlayerType bluePlayerType;
     private PlayerType redPlayerType;
-
     private static final String HUMAN = "Human";
     private static final String COMPUTER = "Computer";
     private static final String defaultImagesPath = "resource/images/";
+    private boolean isReady = false;
 
     GameConfiguration(final JFrame frame, final boolean modal) {
         super(frame, modal);
@@ -78,8 +78,9 @@ class GameConfiguration extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 bluePlayerType = blueComputerButton.isSelected() ? PlayerType.AI : PlayerType.HUMAN;
                 redPlayerType = redComputerButton.isSelected() ? PlayerType.AI : PlayerType.HUMAN;
-                System.out.println("Set Up Game");
                 GameConfiguration.this.setVisible(false);
+                isReady = true;
+                System.out.println("Set Up Game");
             }
         });
 
@@ -90,13 +91,6 @@ class GameConfiguration extends JDialog {
         setResizable(false);
         setLocationRelativeTo(null);
         setVisible(false);
-
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                okButton.doClick();
-            }
-        });
     }
 
     void promptUser() {
@@ -131,4 +125,11 @@ class GameConfiguration extends JDialog {
         return 4;
     }
 
+    boolean isReady() {
+        return isReady;
+    }
+
+    void setReady(boolean isReady) {
+        this.isReady = isReady;
+    }
 }

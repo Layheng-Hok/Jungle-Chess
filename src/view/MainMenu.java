@@ -131,7 +131,6 @@ public class MainMenu extends JFrame {
 
                 Board loadedBoard = Board.constructStandardBoard();
                 MoveLog moveLog = new MoveLog();
-
                 ArrayList<String> playerTypeList;
                 int numMoves;
                 ArrayList<String> playerList = new ArrayList<>();

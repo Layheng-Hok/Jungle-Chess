@@ -63,11 +63,13 @@ class DifficultyFrame extends JFrame {
         easy.setBounds(170, 200, 180, 80);
         this.add(easy);
         easy.addActionListener((e) -> {
-            this.setVisible(false);
             setDifficulty(Difficulty.EASY);
-            GameFrame.get().show();
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
+            if (GameFrame.get().getGameConfiguration().isReady()) {
+                this.setVisible(false);
+                GameFrame.get().show();
+            }
         });
     }
 
@@ -78,11 +80,13 @@ class DifficultyFrame extends JFrame {
         medium.setBounds(170, 350, 180, 80);
         this.add(medium);
         medium.addActionListener((e) -> {
-            this.setVisible(false);
             setDifficulty(Difficulty.MEDIUM);
-            GameFrame.get().show();
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
+            if (GameFrame.get().getGameConfiguration().isReady()) {
+                this.setVisible(false);
+                GameFrame.get().show();
+            }
         });
     }
 
@@ -93,11 +97,13 @@ class DifficultyFrame extends JFrame {
         hard.setBounds(170, 500, 180, 80);
         this.add(hard);
         hard.addActionListener((e) -> {
-            this.setVisible(false);
             setDifficulty(Difficulty.HARD);
-            GameFrame.get().show();
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
+            if (GameFrame.get().getGameConfiguration().isReady()) {
+                this.setVisible(false);
+                GameFrame.get().show();
+            }
         });
     }
 
@@ -118,6 +124,10 @@ class DifficultyFrame extends JFrame {
         EASY,
         MEDIUM,
         HARD
+    }
+
+    DifficultyFrame getDifficultyFrame() {
+        return this;
     }
 
     static void setDifficulty(Difficulty difficulty) {
