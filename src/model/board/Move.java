@@ -195,8 +195,8 @@ public abstract class Move {
         }
     }
 
-    public static class MoveCreator {
-        private MoveCreator() {
+    public static class MoveFactory {
+        private MoveFactory() {
             throw new RuntimeException("You cannot instantiate an object of \"MoveFactory\".");
         }
 

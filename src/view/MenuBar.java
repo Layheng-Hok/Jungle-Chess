@@ -8,7 +8,6 @@ import model.player.PlayerType;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -219,6 +218,7 @@ public class MenuBar {
             @Override
             public void actionPerformed(ActionEvent e) {
                 GameFrame.get().setBoard1(!GameFrame.get().isBoard1());
+                GameFrame.get().defineBorderLayout();
                 String boardImageFileName = GameFrame.get().isBoard1() ? "chessboard1.png" : "chessboard2.png";
                 GameFrame.get().getBoardPanel().setBoardImage(boardImageFileName);
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());

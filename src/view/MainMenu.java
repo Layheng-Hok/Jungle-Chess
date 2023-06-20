@@ -168,7 +168,7 @@ public class MainMenu extends JFrame {
 
                 if (numMoves == currentCoordinateList.size() && numMoves == destinationCoordinateList.size() && numMoves == playerList.size()) {
                     for (int i = 0; i < currentCoordinateList.size(); i++) {
-                        Move move = Move.MoveCreator.createMove(loadedBoard, currentCoordinateList.get(i), destinationCoordinateList.get(i));
+                        Move move = Move.MoveFactory.createMove(loadedBoard, currentCoordinateList.get(i), destinationCoordinateList.get(i));
                         MoveTransition transition = loadedBoard.getCurrentPlayer().makeMove(move);
                         if (transition.getMoveStatus().isDone()) {
                             loadedBoard = transition.getTransitionBoard();

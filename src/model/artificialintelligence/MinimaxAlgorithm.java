@@ -21,7 +21,7 @@ public class MinimaxAlgorithm implements MoveStrategy {
     @Override
     public Move execute(Board board) {
         final double startTime = System.currentTimeMillis();
-        Move optimalMove = Move.MoveCreator.getNullMove();
+        Move optimalMove = Move.MoveFactory.getNullMove();
         int highestValue = Integer.MIN_VALUE;
         int lowestValue = Integer.MAX_VALUE;
         int currentValue;

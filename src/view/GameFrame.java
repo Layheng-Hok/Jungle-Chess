@@ -2,8 +2,8 @@ package view;
 
 import model.artificialintelligence.ConcreteBoardEvaluator;
 import model.artificialintelligence.MinimaxAlgorithm;
-import model.artificialintelligence.PoorBoardEvaluator;
 import model.artificialintelligence.MoveStrategy;
+import model.artificialintelligence.PoorBoardEvaluator;
 import model.board.*;
 import model.piece.Piece;
 import model.player.PlayerColor;
@@ -12,7 +12,8 @@ import model.player.PlayerType;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -60,12 +61,28 @@ public class GameFrame extends Observable {
     }
 
     private void setBasicGameFrameAttributes() {
-        this.gameFrame.setLayout(new BorderLayout());
+        this.gameFrame.setLayout(new BorderLayout(2,2));
+        this.gameFrame.getContentPane().setBackground(new Color(117, 137, 120));
         this.gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.gameFrame.setSize(OUTER_FRAME_DIMENSION);
         this.gameFrame.setLocationRelativeTo(null);
         this.gameFrame.setIconImage(logo.getImage());
         this.gameFrame.setResizable(false);
+    }
+
+    void defineBorderLayout() {
+        if (isBoard1) {
+            this.gameFrame.setLayout(new BorderLayout(2, 2));
+        } else {
+            this.gameFrame.setLayout(new BorderLayout());
+        }
+        this.gameFrame.add(this.leftPanel, BorderLayout.WEST);
+        this.gameFrame.add(this.rightPanel, BorderLayout.EAST);
+        this.gameFrame.add(this.playerPanel, BorderLayout.NORTH);
+        this.gameFrame.add(this.capturedPiecesPanel, BorderLayout.SOUTH);
+        this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
+        this.gameFrame.revalidate();
+        this.gameFrame.repaint();
     }
 
     private void setMenuBarAndPanels() {
@@ -200,7 +217,7 @@ public class GameFrame extends Observable {
                             }
                         } else {
                             computerMove = null;
-                            final Move move = Move.MoveCreator.createMove(chessBoard, sourceTerrain.getPieceCoordinate(), terrainCoordinate);
+                            final Move move = Move.MoveFactory.createMove(chessBoard, sourceTerrain.getPieceCoordinate(), terrainCoordinate);
                             if (move.isCaptureMove()) {
                                 AudioPlayer.SinglePlayer.playAnimalSoundEffect(move.getMovedPiece());
                             }

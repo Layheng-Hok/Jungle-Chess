@@ -25,36 +25,7 @@ class PlayerPanel extends JPanel {
         super(new BorderLayout());
         this.topPanelImage = new ImageIcon(defaultImagesPath + "toppanel.png").getImage();
         setPreferredSize(PLAYER_PANEL_DIMENSION);
-        timer = new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                timerSeconds--;
-                if (timerSeconds == 0) {
-                    Board chessBoard = GameFrame.get().getChessBoard();
-                    List<Move> validMoves = new ArrayList<>(chessBoard.getCurrentPlayer().getValidMoves());
-                    Move selectedMove = null;
-                    for (Move move : validMoves) {
-                        if (move.isCaptureMove()) {
-                            selectedMove = move;
-                            break;
-                        }
-                    }
-                    if (selectedMove == null && !validMoves.isEmpty()) {
-                        int randomIndex = (int) (Math.random() * validMoves.size());
-                        selectedMove = validMoves.get(randomIndex);
-                    }
-                    if (selectedMove != null) {
-                        chessBoard = selectedMove.execute();
-                        GameFrame.get().getMoveLog().addMove(selectedMove);
-                        GameFrame.get().setGameBoard(chessBoard);
-                    }
-                    timer.stop();
-                    update();
-                }
-                repaint();
-            }
-        });
-        timer.start();
+        initTimer();
     }
 
     @Override
@@ -106,6 +77,39 @@ class PlayerPanel extends JPanel {
         g.drawImage(rightImage, rightImageX, imageY, imageWidth, imageHeight, this);
 
         validate();
+    }
+
+    void initTimer() {
+        timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                timerSeconds--;
+                if (timerSeconds == 0) {
+                    Board chessBoard = GameFrame.get().getChessBoard();
+                    List<Move> validMoves = new ArrayList<>(chessBoard.getCurrentPlayer().getValidMoves());
+                    Move selectedMove = null;
+                    for (Move move : validMoves) {
+                        if (move.isCaptureMove()) {
+                            selectedMove = move;
+                            break;
+                        }
+                    }
+                    if (selectedMove == null && !validMoves.isEmpty()) {
+                        int randomIndex = (int) (Math.random() * validMoves.size());
+                        selectedMove = validMoves.get(randomIndex);
+                    }
+                    if (selectedMove != null) {
+                        chessBoard = selectedMove.execute();
+                        GameFrame.get().getMoveLog().addMove(selectedMove);
+                        GameFrame.get().setGameBoard(chessBoard);
+                    }
+                    timer.stop();
+                    update();
+                }
+                repaint();
+            }
+        });
+        timer.start();
     }
 
     public void update() {
