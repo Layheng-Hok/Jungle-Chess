@@ -11,6 +11,8 @@ import model.player.PlayerType;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -186,6 +188,9 @@ public class GameFrame extends Observable {
 
     class TerrainPanel extends JPanel {
         private final int terrainCoordinate;
+        private final Border mouseEnteredBorder = BorderFactory.createLineBorder(new Color(195, 80, 170), 3);
+        private final Border selectedBorder = BorderFactory.createLineBorder(new Color(12, 211, 28), 3);
+        private final Border capturedPieceBorder = BorderFactory.createLineBorder(new Color(180, 23, 23), 3);
 
         TerrainPanel(final BoardPanel boardPanel, final int terrainCoordinate) {
             super(new GridBagLayout());
@@ -254,16 +259,42 @@ public class GameFrame extends Observable {
 
                 @Override
                 public void mouseEntered(final MouseEvent e) {
-                   // setBorder(BorderFactory.createLineBorder(new Color(195, 80, 170), 3));
+                    Border border = getBorder();
+                    if (border == null || !(border.equals(selectedBorder) || border.equals(capturedPieceBorder))) {
+                        setBorder(mouseEnteredBorder);
+                    }
                 }
 
                 @Override
                 public void mouseExited(final MouseEvent e) {
-                    // setBorder(BorderFactory.createEmptyBorder());
+                    Border border = getBorder();
+                    if (border != null && border.equals(mouseEnteredBorder)) {
+                        setBorder(null);
+                    }
                 }
             });
-
             validate();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+            TerrainPanel other = (TerrainPanel) obj;
+            Border thisBorder = getBorder();
+            Border otherBorder = other.getBorder();
+            if (thisBorder instanceof LineBorder && otherBorder instanceof LineBorder) {
+                Color thisBorderColor = ((LineBorder) thisBorder).getLineColor();
+                Color otherBorderColor = ((LineBorder) otherBorder).getLineColor();
+                int thisBorderThickness = ((LineBorder) thisBorder).getThickness();
+                int otherBorderThickness = ((LineBorder) otherBorder).getThickness();
+                return thisBorderColor.equals(otherBorderColor) && thisBorderThickness == otherBorderThickness;
+            }
+            return thisBorder == null && otherBorder == null;
         }
 
         public void drawTerrain(final Board board) {
@@ -280,7 +311,7 @@ public class GameFrame extends Observable {
             if (humanMovedPiece != null
                     && humanMovedPiece.getPieceColor() == chessBoard.getCurrentPlayer().getAllyColor()
                     && humanMovedPiece.getPieceCoordinate() == this.terrainCoordinate) {
-                setBorder(BorderFactory.createLineBorder(new Color(12, 211, 28), 3));
+                setBorder(selectedBorder);
                 setBackground(new Color(12, 211, 28, 50));
                 setOpaque(true);
             } else {
@@ -300,7 +331,7 @@ public class GameFrame extends Observable {
                         e.printStackTrace();
                     }
                 } else if (move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
-                    setBorder(BorderFactory.createLineBorder(new Color(180, 23, 23), 3));
+                    setBorder(capturedPieceBorder);
                     setBackground(new Color(180, 23, 23, 90));
                     setOpaque(true);
                 }
@@ -311,8 +342,12 @@ public class GameFrame extends Observable {
             if (computerMove != null) {
                 if (this.terrainCoordinate == computerMove.getCurrentCoordinate()) {
                     setBorder(BorderFactory.createLineBorder(new Color(14, 74, 17), 3));
+                    setBackground(new Color(12, 211, 28, 90));
+                    setOpaque(true);
                 } else if (this.terrainCoordinate == computerMove.getDestinationCoordinate()) {
                     setBorder(BorderFactory.createLineBorder(new Color(12, 211, 28), 3));
+                    setBackground(new Color(12, 211, 28, 90));
+                    setOpaque(true);
                 }
             }
         }
@@ -393,9 +428,6 @@ public class GameFrame extends Observable {
 
     public static class IntelligenceHub extends SwingWorker<Move, String> {
         boolean isMinimaxRunning = false;
-
-        private IntelligenceHub() {
-        }
 
         @Override
         protected Move doInBackground() throws Exception {
