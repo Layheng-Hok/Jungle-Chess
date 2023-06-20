@@ -61,7 +61,7 @@ public class GameFrame extends Observable {
     }
 
     private void setBasicGameFrameAttributes() {
-        this.gameFrame.setLayout(new BorderLayout(2,2));
+        this.gameFrame.setLayout(new BorderLayout(2, 2));
         this.gameFrame.getContentPane().setBackground(new Color(117, 137, 120));
         this.gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.gameFrame.setSize(OUTER_FRAME_DIMENSION);
@@ -254,12 +254,12 @@ public class GameFrame extends Observable {
 
                 @Override
                 public void mouseEntered(final MouseEvent e) {
-                    setBorder(BorderFactory.createLineBorder(new Color(195, 80, 170), 2));
+                   // setBorder(BorderFactory.createLineBorder(new Color(195, 80, 170), 3));
                 }
 
                 @Override
                 public void mouseExited(final MouseEvent e) {
-                    setBorder(BorderFactory.createEmptyBorder());
+                    // setBorder(BorderFactory.createEmptyBorder());
                 }
             });
 
@@ -280,7 +280,9 @@ public class GameFrame extends Observable {
             if (humanMovedPiece != null
                     && humanMovedPiece.getPieceColor() == chessBoard.getCurrentPlayer().getAllyColor()
                     && humanMovedPiece.getPieceCoordinate() == this.terrainCoordinate) {
-                setBorder(BorderFactory.createLineBorder(Color.GREEN, 2));
+                setBorder(BorderFactory.createLineBorder(new Color(12, 211, 28), 3));
+                setBackground(new Color(12, 211, 28, 50));
+                setOpaque(true);
             } else {
                 setBorder(BorderFactory.createEmptyBorder());
             }
@@ -288,7 +290,7 @@ public class GameFrame extends Observable {
 
         private void highlightValidMoves(final Board board) {
             for (final Move move : pieceValidMoves(board)) {
-                if (move.getDestinationCoordinate() == this.terrainCoordinate) {
+                if (!move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
                     try {
                         String dotColor = GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor() == PlayerColor.BLUE ? "blue" : "red";
                         ImageIcon dotIcon = new ImageIcon(ImageIO.read(new File(defaultImagesPath + dotColor + "dot.png")));
@@ -297,6 +299,10 @@ public class GameFrame extends Observable {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                } else if (move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
+                    setBorder(BorderFactory.createLineBorder(new Color(180, 23, 23), 3));
+                    setBackground(new Color(180, 23, 23, 90));
+                    setOpaque(true);
                 }
             }
         }
@@ -304,9 +310,9 @@ public class GameFrame extends Observable {
         private void highlightAIMoves() {
             if (computerMove != null) {
                 if (this.terrainCoordinate == computerMove.getCurrentCoordinate()) {
-                    setBorder(BorderFactory.createLineBorder(new Color(14, 74, 17), 2));
+                    setBorder(BorderFactory.createLineBorder(new Color(14, 74, 17), 3));
                 } else if (this.terrainCoordinate == computerMove.getDestinationCoordinate()) {
-                    setBorder(BorderFactory.createLineBorder(Color.GREEN, 2));
+                    setBorder(BorderFactory.createLineBorder(new Color(12, 211, 28), 3));
                 }
             }
         }
@@ -340,17 +346,17 @@ public class GameFrame extends Observable {
 
         private void assignTerrainColor(final int coordinate) {
             if (BoardUtilities.isLand(coordinate)) {
-                setBackground(new Color(0x28B463));
+                setBackground(new Color(40, 180, 99));
             } else if (BoardUtilities.isRiver(coordinate)) {
-                setBackground(new Color(0x63B8FF));
+                setBackground(new Color(99, 184, 255));
             } else if (BoardUtilities.isEnemyTrap(coordinate, PlayerColor.BLUE)) {
-                setBackground(new Color(0xE67E22));
+                setBackground(new Color(230, 126, 34));
             } else if (BoardUtilities.isEnemyTrap(coordinate, PlayerColor.RED)) {
-                setBackground(new Color(0xE67E22));
+                setBackground(new Color(230, 126, 34));
             } else if (BoardUtilities.isDen(coordinate, PlayerColor.BLUE)) {
-                setBackground(new Color(0x3498DB));
+                setBackground(new Color(52, 152, 219));
             } else if (BoardUtilities.isDen(coordinate, PlayerColor.RED)) {
-                setBackground(new Color(0xEC7063));
+                setBackground(new Color(236, 112, 99));
             }
             setOpaque(false);
         }
