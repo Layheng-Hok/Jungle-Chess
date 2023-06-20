@@ -290,8 +290,10 @@ public class GameFrame extends Observable {
             for (final Move move : pieceValidMoves(board)) {
                 if (move.getDestinationCoordinate() == this.terrainCoordinate) {
                     try {
-                        String dotColor = isBoard1 ? "yellow" : "green";
-                        add(new JLabel(new ImageIcon(ImageIO.read(new File(defaultImagesPath + dotColor + "dot.png")))));
+                        String dotColor = GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor() == PlayerColor.BLUE ? "blue" : "red";
+                        ImageIcon dotIcon = new ImageIcon(ImageIO.read(new File(defaultImagesPath + dotColor + "dot.png")));
+                        Image resizedImage = dotIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+                        add(new JLabel(new ImageIcon(resizedImage)));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
