@@ -96,5 +96,4 @@ public class MenuBar {
 
         return gameplayOptionsMenu;
     }
-
 }
