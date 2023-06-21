@@ -124,7 +124,9 @@ public class Controller {
             JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
             return;
         }
-        GameFrame.get().restartGame();
+        for (int i = 0; i < 2; i++) {
+            GameFrame.get().restartGame();
+        }
         System.out.println("Game Restarted");
     }
 
@@ -295,10 +297,29 @@ public class Controller {
         System.out.println("Board Changed");
     }
 
-    public static void flipBoard() {
+    public static void switchSide() {
+        if (GameFrame.get().boardDirection == BoardDirection.FLIPPED) {
+            GameFrame.get().setReversedBlueSide(false);
+            GameFrame.get().setReversedRedSide(true);
+        } else if (GameFrame.get().boardDirection == BoardDirection.NORMAL) {
+            GameFrame.get().setReversedBlueSide(true);
+            GameFrame.get().setReversedRedSide(false);
+        }
         GameFrame.get().boardDirection = GameFrame.get().boardDirection.opposite();
         GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-        System.out.println("Board Rotated");
+        System.out.println("Side Switched");
+    }
+
+
+    public static void flipPiecesIcon() {
+        if (GameFrame.get().boardDirection == BoardDirection.NORMAL) {
+            GameFrame.get().setReversedRedSide(!GameFrame.get().isReversedRedSide());
+            GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+        } else if (GameFrame.get().boardDirection == BoardDirection.FLIPPED) {
+            GameFrame.get().setReversedBlueSide(!GameFrame.get().isReversedBlueSide());
+            GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+        }
+        System.out.println("Piece Icons Flipped");
     }
 
     public enum BoardDirection {
@@ -332,9 +353,4 @@ public class Controller {
         public abstract BoardDirection opposite();
     }
 
-    public static void flipRedSide() {
-        GameFrame.get().setReversedRedSide(!GameFrame.get().isReversedRedSide());
-        GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-        System.out.println("Red Side Flipped");
-    }
 }

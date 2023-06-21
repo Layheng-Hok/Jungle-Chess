@@ -45,6 +45,7 @@ public class GameFrame extends Observable {
     private boolean isBoard1 = true;
     private boolean replayMovesInProgress = false;
     private boolean reversedRedSide = true;
+    private boolean reversedBlueSide = false;
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(500, 650);
     private static final Dimension TERRAIN_PANEL_DIMENSION = new Dimension(10, 10);
@@ -378,48 +379,46 @@ public class GameFrame extends Observable {
         }
 
         private void assignTerrainPieceIcon(final Board board) {
-            if (reversedRedSide) {
-                this.removeAll();
-                if (board.getPiece(this.terrainCoordinate) != null) {
-                    try {
-                        final BufferedImage image = ImageIO.read(new File(defaultImagesPath
+            this.removeAll();
+            if (board.getPiece(this.terrainCoordinate) != null) {
+                try {
+                    final BufferedImage image;
+                    String imagePath = null;
+                    if (!reversedBlueSide && reversedRedSide) {
+                        imagePath = defaultImagesPath
                                 + board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().toLowerCase()
-                                + board.getTerrain(this.terrainCoordinate).getPiece().toString().toLowerCase() + ".png"));
-                        ImageIcon icon = new ImageIcon(image);
-                        int labelWidth = 65;
-                        int labelHeight = 65;
-                        Image scaledImage = icon.getImage().getScaledInstance(labelWidth, labelHeight, Image.SCALE_SMOOTH);
-                        icon = new ImageIcon(scaledImage);
-                        JLabel label = new JLabel(icon);
-                        add(label);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } else {
-                this.removeAll();
-                if (board.getPiece(this.terrainCoordinate) != null) {
-                    try {
-                        final BufferedImage image;
+                                + board.getTerrain(this.terrainCoordinate).getPiece().toString().toLowerCase() + ".png";
+                    } else if (!reversedBlueSide && !reversedRedSide) {
                         if (board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor() == PlayerColor.BLUE) {
-                            image = ImageIO.read(new File(defaultImagesPath
+                            imagePath = defaultImagesPath
                                     + board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().toLowerCase()
-                                    + board.getTerrain(this.terrainCoordinate).getPiece().toString().toLowerCase() + ".png"));
+                                    + board.getTerrain(this.terrainCoordinate).getPiece().toString().toLowerCase() + ".png";
                         } else {
-                            image = ImageIO.read(new File(defaultImagesPath + "unreversed"
+                            imagePath =defaultImagesPath + "unreversed"
                                     + board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().toLowerCase()
-                                    + board.getTerrain(this.terrainCoordinate).getPiece().toString().toLowerCase() + ".png"));
+                                    + board.getTerrain(this.terrainCoordinate).getPiece().toString().toLowerCase() + ".png";
                         }
-                        ImageIcon icon = new ImageIcon(image);
-                        int labelWidth = 65;
-                        int labelHeight = 65;
-                        Image scaledImage = icon.getImage().getScaledInstance(labelWidth, labelHeight, Image.SCALE_SMOOTH);
-                        icon = new ImageIcon(scaledImage);
-                        JLabel label = new JLabel(icon);
-                        add(label);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } else if (reversedBlueSide && !reversedRedSide) {
+                        if (board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor() == PlayerColor.BLUE) {
+                            imagePath = defaultImagesPath + "reversed"
+                                    + board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().toLowerCase()
+                                    + board.getTerrain(this.terrainCoordinate).getPiece().toString().toLowerCase() + ".png";
+                        } else {
+                            imagePath = defaultImagesPath + "unreversed"
+                                    + board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().toLowerCase()
+                                    + board.getTerrain(this.terrainCoordinate).getPiece().toString().toLowerCase() + ".png";
+                        }
                     }
+                    image = ImageIO.read(new File(imagePath));
+                    ImageIcon icon = new ImageIcon(image);
+                    int labelWidth = 65;
+                    int labelHeight = 65;
+                    Image scaledImage = icon.getImage().getScaledInstance(labelWidth, labelHeight, Image.SCALE_SMOOTH);
+                    icon = new ImageIcon(scaledImage);
+                    JLabel label = new JLabel(icon);
+                    add(label);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -694,5 +693,13 @@ public class GameFrame extends Observable {
 
     public void setReversedRedSide(boolean reversedRedSide) {
         this.reversedRedSide = reversedRedSide;
+    }
+
+    public boolean isReversedBlueSide() {
+        return reversedBlueSide;
+    }
+
+    public void setReversedBlueSide(boolean reversedBlueSide) {
+        this.reversedBlueSide = reversedBlueSide;
     }
 }

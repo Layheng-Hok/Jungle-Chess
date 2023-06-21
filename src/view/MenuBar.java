@@ -85,23 +85,23 @@ public class MenuBar {
         });
         gameplayOptionsMenu.add(changeBoardMenuItem);
 
-        final JMenuItem flipBoard = new JMenuItem("⇅   Flip Board");
-        flipBoard.addActionListener(new ActionListener() {
+        final JMenuItem switchSide = new JMenuItem("⇅   Switch Side");
+        switchSide.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Controller.flipBoard();
+                Controller.switchSide();
             }
         });
-        gameplayOptionsMenu.add(flipBoard);
+        gameplayOptionsMenu.add(switchSide);
 
-        final JMenuItem flipRedSide = new JMenuItem(" ↕️\uFE0F   Flip Red Side");
-        flipRedSide.addActionListener(new ActionListener() {
+        final JMenuItem flipPieceIcons = new JMenuItem(" ↕️\uFE0F   Flip Piece Icons");
+        flipPieceIcons.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Controller.flipRedSide();
+                Controller.flipPiecesIcon();
             }
         });
-        gameplayOptionsMenu.add(flipRedSide);
+        gameplayOptionsMenu.add(flipPieceIcons);
 
         return gameplayOptionsMenu;
     }
