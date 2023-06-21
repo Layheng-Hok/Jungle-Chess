@@ -1,5 +1,6 @@
 package view;
 
+import model.Controller;
 import model.artificialintelligence.ConcreteBoardEvaluator;
 import model.artificialintelligence.MinimaxAlgorithm;
 import model.artificialintelligence.MoveStrategy;
@@ -39,7 +40,7 @@ public class GameFrame extends Observable {
     private Move computerMove;
     private Piece sourceTerrain;
     private Piece humanMovedPiece;
-    MenuBar.BoardDirection boardDirection;
+    public Controller.BoardDirection boardDirection;
     private boolean isBoard1 = true;
     private boolean replayMovesInProgress = false;
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
@@ -72,7 +73,7 @@ public class GameFrame extends Observable {
         this.gameFrame.setResizable(false);
     }
 
-    void defineBorderLayout() {
+    public void defineBorderLayout() {
         if (isBoard1) {
             this.gameFrame.setLayout(new BorderLayout(2, 2));
         } else {
@@ -101,10 +102,10 @@ public class GameFrame extends Observable {
         this.chessBoard = Board.constructStandardBoard();
         this.moveLog = new MoveLog();
         this.addObserver(new AIGameObserver());
-        this.boardDirection = MenuBar.BoardDirection.NORMAL;
+        this.boardDirection = Controller.BoardDirection.NORMAL;
     }
 
-    class BoardPanel extends JPanel {
+    public class BoardPanel extends JPanel {
         final List<TerrainPanel> boardTerrains;
         private Image boardImage;
 
@@ -152,7 +153,7 @@ public class GameFrame extends Observable {
             g.drawImage(boardImage, 0, 0, getWidth(), getHeight(), this);
         }
 
-        List<TerrainPanel> getBoardTerrains() {
+        public List<TerrainPanel> getBoardTerrains() {
             return boardTerrains;
         }
     }
@@ -190,7 +191,7 @@ public class GameFrame extends Observable {
         }
     }
 
-    class TerrainPanel extends JPanel {
+    public class TerrainPanel extends JPanel {
         private final int terrainCoordinate;
         private final Border mouseEnteredBorder = BorderFactory.createLineBorder(new Color(195, 80, 170), 3);
         private final Border selectedBorder = BorderFactory.createLineBorder(new Color(12, 211, 28), 3);
@@ -411,7 +412,7 @@ public class GameFrame extends Observable {
         notifyObservers(AIGameConfiguration);
     }
 
-    void moveMadeUpdate(final PlayerType playerType) {
+    public void moveMadeUpdate(final PlayerType playerType) {
         setChanged();
         notifyObservers(playerType);
     }

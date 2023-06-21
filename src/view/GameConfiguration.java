@@ -98,7 +98,7 @@ public class GameConfiguration extends JDialog {
         repaint();
     }
 
-    boolean isAIPlayer(final Player player) {
+    public boolean isAIPlayer(final Player player) {
         if (player.getAllyColor() == PlayerColor.BLUE) {
             return getBluePlayerType() == PlayerType.AI;
         }

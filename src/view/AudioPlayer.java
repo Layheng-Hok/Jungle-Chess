@@ -6,7 +6,7 @@ import javax.sound.sampled.*;
 import java.io.File;
 
 public class AudioPlayer {
-    private static String defaultAudioPath = "resource/audio/";
+    private static final String defaultAudioPath = "resource/audio/";
 
     private static class LoopPlayer {
         private static Clip clip;

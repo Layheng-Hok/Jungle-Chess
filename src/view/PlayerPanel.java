@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 import static view.GameFrame.defaultImagesPath;
 
-class PlayerPanel extends JPanel {
+public class PlayerPanel extends JPanel {
     private static final Dimension PLAYER_PANEL_DIMENSION = new Dimension(530, 100);
     private final Image topPanelImage;
     private int roundNumber = 1;
