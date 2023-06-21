@@ -332,5 +332,9 @@ public class Controller {
         public abstract BoardDirection opposite();
     }
 
-
+    public static void flipRedSide() {
+        GameFrame.get().setReversedRedSide(!GameFrame.get().isReversedRedSide());
+        GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+        System.out.println("Red Side Flipped");
+    }
 }

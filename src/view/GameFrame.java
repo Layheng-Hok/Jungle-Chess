@@ -44,6 +44,7 @@ public class GameFrame extends Observable {
     public Controller.BoardDirection boardDirection;
     private boolean isBoard1 = true;
     private boolean replayMovesInProgress = false;
+    private boolean reversedRedSide = true;
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(500, 650);
     private static final Dimension TERRAIN_PANEL_DIMENSION = new Dimension(10, 10);
@@ -377,21 +378,48 @@ public class GameFrame extends Observable {
         }
 
         private void assignTerrainPieceIcon(final Board board) {
-            this.removeAll();
-            if (board.getPiece(this.terrainCoordinate) != null) {
-                try {
-                    final BufferedImage image = ImageIO.read(new File(defaultImagesPath
-                            + board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().toLowerCase()
-                            + board.getTerrain(this.terrainCoordinate).getPiece().toString().toLowerCase() + ".png"));
-                    ImageIcon icon = new ImageIcon(image);
-                    int labelWidth = 65;
-                    int labelHeight = 65;
-                    Image scaledImage = icon.getImage().getScaledInstance(labelWidth, labelHeight, Image.SCALE_SMOOTH);
-                    icon = new ImageIcon(scaledImage);
-                    JLabel label = new JLabel(icon);
-                    add(label);
-                } catch (IOException e) {
-                    e.printStackTrace();
+            if (reversedRedSide) {
+                this.removeAll();
+                if (board.getPiece(this.terrainCoordinate) != null) {
+                    try {
+                        final BufferedImage image = ImageIO.read(new File(defaultImagesPath
+                                + board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().toLowerCase()
+                                + board.getTerrain(this.terrainCoordinate).getPiece().toString().toLowerCase() + ".png"));
+                        ImageIcon icon = new ImageIcon(image);
+                        int labelWidth = 65;
+                        int labelHeight = 65;
+                        Image scaledImage = icon.getImage().getScaledInstance(labelWidth, labelHeight, Image.SCALE_SMOOTH);
+                        icon = new ImageIcon(scaledImage);
+                        JLabel label = new JLabel(icon);
+                        add(label);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                this.removeAll();
+                if (board.getPiece(this.terrainCoordinate) != null) {
+                    try {
+                        final BufferedImage image;
+                        if (board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor() == PlayerColor.BLUE) {
+                            image = ImageIO.read(new File(defaultImagesPath
+                                    + board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().toLowerCase()
+                                    + board.getTerrain(this.terrainCoordinate).getPiece().toString().toLowerCase() + ".png"));
+                        } else {
+                            image = ImageIO.read(new File(defaultImagesPath + "unreversed"
+                                    + board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().toLowerCase()
+                                    + board.getTerrain(this.terrainCoordinate).getPiece().toString().toLowerCase() + ".png"));
+                        }
+                        ImageIcon icon = new ImageIcon(image);
+                        int labelWidth = 65;
+                        int labelHeight = 65;
+                        Image scaledImage = icon.getImage().getScaledInstance(labelWidth, labelHeight, Image.SCALE_SMOOTH);
+                        icon = new ImageIcon(scaledImage);
+                        JLabel label = new JLabel(icon);
+                        add(label);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -587,6 +615,23 @@ public class GameFrame extends Observable {
         System.out.println("Game Loaded");
     }
 
+    public void setGameBoard(final Board chessBoard) {
+        this.chessBoard = chessBoard;
+        boardPanel.drawBoard(chessBoard);
+        capturedPiecesPanel.redo(moveLog);
+        if (GameFrame.get().getGameConfiguration().isAIPlayer(chessBoard.getCurrentPlayer())) {
+            moveMadeUpdate(PlayerType.HUMAN);
+        }
+    }
+
+    public void setVisible(boolean b) {
+        this.gameFrame.setVisible(b);
+    }
+
+    public void dispose() {
+        gameFrame.dispose();
+    }
+
     public GameConfiguration getGameConfiguration() {
         return this.gameConfiguration;
     }
@@ -643,20 +688,11 @@ public class GameFrame extends Observable {
         this.isBoard1 = isBoard1;
     }
 
-    public void setGameBoard(final Board chessBoard) {
-        this.chessBoard = chessBoard;
-        boardPanel.drawBoard(chessBoard);
-        capturedPiecesPanel.redo(moveLog);
-        if (GameFrame.get().getGameConfiguration().isAIPlayer(chessBoard.getCurrentPlayer())) {
-            moveMadeUpdate(PlayerType.HUMAN);
-        }
+    public boolean isReversedRedSide() {
+        return reversedRedSide;
     }
 
-    public void setVisible(boolean b) {
-        this.gameFrame.setVisible(b);
-    }
-
-    public void dispose() {
-        gameFrame.dispose();
+    public void setReversedRedSide(boolean reversedRedSide) {
+        this.reversedRedSide = reversedRedSide;
     }
 }
