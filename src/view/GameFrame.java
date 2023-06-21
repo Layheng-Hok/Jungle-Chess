@@ -230,6 +230,7 @@ public class GameFrame extends Observable {
                         } else {
                             computerMove = null;
                             final Move move = Move.MoveFactory.createMove(chessBoard, sourceTerrain.getPieceCoordinate(), terrainCoordinate);
+                            computerMove = move;
                             if (move.isCaptureMove()) {
                                 AudioPlayer.SinglePlayer.playAnimalSoundEffect(move.getMovedPiece());
                             }
