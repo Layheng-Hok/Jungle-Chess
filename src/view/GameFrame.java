@@ -152,7 +152,7 @@ public class GameFrame extends Observable {
             g.drawImage(boardImage, 0, 0, getWidth(), getHeight(), this);
         }
 
-         List<TerrainPanel> getBoardTerrains() {
+        List<TerrainPanel> getBoardTerrains() {
             return boardTerrains;
         }
     }
@@ -212,7 +212,7 @@ public class GameFrame extends Observable {
                         humanMovedPiece = null;
                     } else if (isLeftMouseButton(e)) {
                         if (replayMovesInProgress) {
-                            JOptionPane.showMessageDialog(null, "Replay is already in progress. Please wait for the next replay.");
+                            JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
                             return;
                         }
                         if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
@@ -269,7 +269,7 @@ public class GameFrame extends Observable {
                     if (border == null || !(border.equals(selectedBorder)
                             || border.equals(capturedPieceBorder)
                             || border.equals(currentAIPositionBorder)
-                            || border.equals(destinationAIPositionBorder) )) {
+                            || border.equals(destinationAIPositionBorder))) {
                         setBorder(mouseEnteredBorder);
                     }
                 }

@@ -6,7 +6,7 @@ import java.io.File;
 
 import static view.GameFrame.defaultImagesPath;
 
-class DifficultyFrame extends JFrame {
+public class DifficultyFrame extends JFrame {
     private JButton easy;
     private JButton medium;
     private JButton hard;
@@ -120,7 +120,7 @@ class DifficultyFrame extends JFrame {
         });
     }
 
-    enum Difficulty {
+    public enum Difficulty {
         EASY,
         MEDIUM,
         HARD
@@ -134,7 +134,7 @@ class DifficultyFrame extends JFrame {
         DifficultyFrame.difficulty = difficulty;
     }
 
-    static Difficulty getDifficulty() {
+    public static Difficulty getDifficulty() {
         return difficulty;
     }
 }

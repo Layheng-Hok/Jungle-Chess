@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-class GameConfiguration extends JDialog {
+public class GameConfiguration extends JDialog {
     private PlayerType bluePlayerType;
     private PlayerType redPlayerType;
     private static final String HUMAN = "Human";
@@ -105,19 +105,19 @@ class GameConfiguration extends JDialog {
         return getRedPlayerType() == PlayerType.AI;
     }
 
-    PlayerType getBluePlayerType() {
+    public PlayerType getBluePlayerType() {
         return this.bluePlayerType;
     }
 
-    void setBluePlayerType(PlayerType bluePlayerType) {
+    public void setBluePlayerType(PlayerType bluePlayerType) {
         this.bluePlayerType = bluePlayerType;
     }
 
-    PlayerType getRedPlayerType() {
+    public PlayerType getRedPlayerType() {
         return this.redPlayerType;
     }
 
-    void setRedPlayerType(PlayerType redPlayerType) {
+    public void setRedPlayerType(PlayerType redPlayerType) {
         this.redPlayerType = redPlayerType;
     }
 

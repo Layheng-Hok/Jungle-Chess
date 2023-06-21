@@ -9,31 +9,37 @@ import java.util.List;
 import static view.GameFrame.defaultImagesPath;
 
 public class ProgressFrame extends JFrame {
-    private Thread thread;
-    private final int WIDTH;
-    private final int HEIGHT;
-    private int process;
+    private int process = 0;
     private JLabel label;
-    private ProgressFrame frame;
+    private final ProgressFrame frame;
     private JProgressBar progressBar;
     private String loadingText;
-    private List<ProgressListener> progressListeners = new ArrayList<>();
+    private final List<ProgressListener> progressListeners = new ArrayList<>();
     private final ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
 
     public ProgressFrame() {
-        thread = new Thread();
-        WIDTH = 300;
-        HEIGHT = 150;
-        process = 0;
         frame = this;
-        loadingText = "Progress";
+        setBasicProgressFrameAttributes();
+        setLoadingTextAndProgressBar();
+        setProgressBarUI();
+        setVisible(true);
+        startProgress();
+    }
 
-        setTitle("In Progress");
+    private void setBasicProgressFrameAttributes() {
+        int WIDTH = 300;
+        int HEIGHT = 150;
+        setTitle("Progress Frame");
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null);
         setLayout(null);
         setIconImage(logo.getImage());
+        setResizable(false);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    }
 
+    private void setLoadingTextAndProgressBar() {
+        loadingText = "Progress";
         label = new JLabel(loadingText);
         label.setLocation(100, 20);
         label.setSize(100, 40);
@@ -49,7 +55,9 @@ public class ProgressFrame extends JFrame {
         progressBar.setForeground(new Color(8, 237, 237));
         progressBar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         progressBar.setFont(new Font("Consolas", Font.BOLD, 12));
+    }
 
+    private void setProgressBarUI() {
         BasicProgressBarUI progressBarUI = new BasicProgressBarUI() {
             @Override
             protected Color getSelectionForeground() {
@@ -61,56 +69,45 @@ public class ProgressFrame extends JFrame {
                 return Color.BLACK;
             }
         };
-
         progressBar.setUI(progressBarUI);
-
         progressBar.setStringPainted(true);
         add(progressBar);
+    }
 
-        setVisible(true);
-
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (process <= 100) {
-                    try {
-                        Thread.sleep(250);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    int numDots = process / 20;
-                    StringBuilder dots = new StringBuilder();
-                    dots.append(".".repeat(Math.max(0, numDots)));
-                    loadingText = "Progress" + dots;
-
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            label.setText(loadingText);
-                            repaint();
-                        }
-                    });
-
-                    progressBar.setValue(process);
-
-                    process += 20;
-                }
-
+    private void startProgress() {
+        Thread thread = new Thread(() -> {
+            while (process <= 100) {
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(250);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        frame.dispose();
-                        notifyProgressComplete();
-                    }
+                int numDots = process / 20;
+                StringBuilder dots = new StringBuilder();
+                dots.append(".".repeat(Math.max(0, numDots)));
+                loadingText = "Progress" + dots;
+
+                SwingUtilities.invokeLater(() -> {
+                    label.setText(loadingText);
+                    repaint();
                 });
+
+                progressBar.setValue(process);
+
+                process += 20;
             }
+
+            try {
+                Thread.sleep(500);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            SwingUtilities.invokeLater(() -> {
+                frame.dispose();
+                notifyProgressComplete();
+            });
         });
         thread.start();
     }
