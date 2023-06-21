@@ -100,6 +100,7 @@ public class PlayerPanel extends JPanel {
                     }
                     if (selectedMove != null) {
                         chessBoard = selectedMove.execute();
+                        GameFrame.get().setComputerMove(selectedMove);
                         GameFrame.get().getMoveLog().addMove(selectedMove);
                         GameFrame.get().setGameBoard(chessBoard);
                     }

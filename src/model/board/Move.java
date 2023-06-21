@@ -7,7 +7,6 @@ public abstract class Move {
     protected final Piece movedPiece;
     protected int destinationCoordinate;
     protected final boolean isFirstMove;
-
     public static final Move NULL_MOVE = new NullMove();
 
     private Move(final Board board, final Piece movedPiece, final int destinationCoordinate) {

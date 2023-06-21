@@ -228,9 +228,10 @@ public class GameFrame extends Observable {
                                 humanMovedPiece = sourceTerrain;
                             }
                         } else {
-                            computerMove = null;
                             final Move move = Move.MoveFactory.createMove(chessBoard, sourceTerrain.getPieceCoordinate(), terrainCoordinate);
-                            computerMove = move;
+                            if (move != Move.NULL_MOVE) {
+                                computerMove = move;
+                            }
                             if (move.isCaptureMove()) {
                                 AudioPlayer.SinglePlayer.playAnimalSoundEffect(move.getMovedPiece());
                             }
