@@ -25,6 +25,7 @@ import java.util.*;
 
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
+import static model.board.Move.NULL_MOVE;
 import static view.MenuBar.createGameFrameMenuBar;
 
 public class GameFrame extends Observable {
@@ -37,7 +38,7 @@ public class GameFrame extends Observable {
     private final GameConfiguration gameConfiguration;
     private MoveLog moveLog;
     private Board chessBoard;
-    private Move computerMove;
+    private Move lastMove;
     private Piece sourceTerrain;
     private Piece humanMovedPiece;
     public Controller.BoardDirection boardDirection;
@@ -194,10 +195,9 @@ public class GameFrame extends Observable {
     public class TerrainPanel extends JPanel {
         private final int terrainCoordinate;
         private final Border mouseEnteredBorder = BorderFactory.createLineBorder(new Color(195, 80, 170), 3);
-        private final Border selectedBorder = BorderFactory.createLineBorder(new Color(12, 211, 28), 3);
-        private final Border capturedPieceBorder = BorderFactory.createLineBorder(new Color(180, 23, 23), 3);
-        private final Border currentAIPositionBorder = BorderFactory.createLineBorder(new Color(14, 74, 17), 3);
-        private final Border destinationAIPositionBorder = BorderFactory.createLineBorder(new Color(0, 255, 25), 3);
+        private final Border blueSelectedBorder = BorderFactory.createLineBorder(new Color(1, 41, 161), 3);
+        private final Border redSelectedBorder = BorderFactory.createLineBorder(new Color(180, 23, 23), 3);
+        private final Border capturedPieceBorder = BorderFactory.createLineBorder(new Color(14, 74, 17), 5);
 
         TerrainPanel(final BoardPanel boardPanel, final int terrainCoordinate) {
             super(new GridBagLayout());
@@ -229,8 +229,8 @@ public class GameFrame extends Observable {
                             }
                         } else {
                             final Move move = Move.MoveFactory.createMove(chessBoard, sourceTerrain.getPieceCoordinate(), terrainCoordinate);
-                            if (move != Move.NULL_MOVE) {
-                                computerMove = move;
+                            if (!(move.equals(NULL_MOVE))) {
+                                lastMove = move;
                             }
                             if (move.isCaptureMove()) {
                                 AudioPlayer.SinglePlayer.playAnimalSoundEffect(move.getMovedPiece());
@@ -269,10 +269,9 @@ public class GameFrame extends Observable {
                 @Override
                 public void mouseEntered(final MouseEvent e) {
                     Border border = getBorder();
-                    if (border == null || !(border.equals(selectedBorder)
-                            || border.equals(capturedPieceBorder)
-                            || border.equals(currentAIPositionBorder)
-                            || border.equals(destinationAIPositionBorder))) {
+                    if (border == null || !(border.equals(blueSelectedBorder)
+                            || border.equals(redSelectedBorder)
+                            || border.equals(capturedPieceBorder))) {
                         setBorder(mouseEnteredBorder);
                     }
                 }
@@ -312,19 +311,24 @@ public class GameFrame extends Observable {
         public void drawTerrain(final Board board) {
             assignTerrainColor(terrainCoordinate);
             assignTerrainPieceIcon(board);
-            drawTerrainBorder();
+            drawSelectedBorder();
             highlightValidMoves(board);
-            highlightAIMoves();
+            highlightLastMove();
             validate();
             repaint();
         }
 
-        private void drawTerrainBorder() {
+        private void drawSelectedBorder() {
             if (humanMovedPiece != null
                     && humanMovedPiece.getPieceColor() == chessBoard.getCurrentPlayer().getAllyColor()
                     && humanMovedPiece.getPieceCoordinate() == this.terrainCoordinate) {
-                setBorder(selectedBorder);
-                setBackground(new Color(12, 211, 28, 50));
+                if (chessBoard.getCurrentPlayer().getAllyColor() == PlayerColor.BLUE) {
+                    setBorder(blueSelectedBorder);
+                    setBackground(new Color(0, 71, 210, 90));
+                } else {
+                    setBorder(redSelectedBorder);
+                    setBackground(new Color(180, 23, 23, 90));
+                }
                 setOpaque(true);
             } else {
                 setBorder(BorderFactory.createEmptyBorder());
@@ -344,21 +348,22 @@ public class GameFrame extends Observable {
                     }
                 } else if (move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
                     setBorder(capturedPieceBorder);
-                    setBackground(new Color(180, 23, 23, 90));
+                    setBackground(new Color(12, 211, 28, 90));
                     setOpaque(true);
                 }
             }
         }
 
-        private void highlightAIMoves() {
-            if (computerMove != null) {
-                if (this.terrainCoordinate == computerMove.getCurrentCoordinate()) {
-                    setBorder(currentAIPositionBorder);
-                    setBackground(new Color(12, 211, 28, 90));
-                    setOpaque(true);
-                } else if (this.terrainCoordinate == computerMove.getDestinationCoordinate()) {
-                    setBorder(destinationAIPositionBorder);
-                    setBackground(new Color(12, 211, 28, 90));
+        private void highlightLastMove() {
+            if (lastMove != null) {
+                if (this.terrainCoordinate == lastMove.getCurrentCoordinate() || this.terrainCoordinate == lastMove.getDestinationCoordinate()) {
+                    if (chessBoard.getCurrentPlayer().getAllyColor() == PlayerColor.RED) {
+                        setBorder(blueSelectedBorder);
+                        setBackground(new Color(0, 71, 210, 90));
+                    } else {
+                        setBorder(redSelectedBorder);
+                        setBackground(new Color(180, 23, 23, 90));
+                    }
                     setOpaque(true);
                 }
             }
@@ -424,7 +429,7 @@ public class GameFrame extends Observable {
     }
 
     private void updateComputerMove(final Move move) {
-        this.computerMove = move;
+        this.lastMove = move;
     }
 
     public static class AIGameObserver implements Observer {
@@ -511,7 +516,7 @@ public class GameFrame extends Observable {
         chessBoard = Board.constructStandardBoard();
         boardPanel.drawBoard(chessBoard);
         boardPanel.removeAllBorders();
-        computerMove = null;
+        lastMove = null;
         playerPanel.reset();
         capturedPiecesPanel.reset();
         moveLog.clear();
@@ -606,12 +611,12 @@ public class GameFrame extends Observable {
         this.chessBoard = chessBoard;
     }
 
-    public Move getComputerMove() {
-        return computerMove;
+    public Move getLastMove() {
+        return lastMove;
     }
 
-    public void setComputerMove(Move computerMove) {
-        this.computerMove = computerMove;
+    public void setLastMove(Move lastMove) {
+        this.lastMove = lastMove;
     }
 
     public MoveLog getMoveLog() {

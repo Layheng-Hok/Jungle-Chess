@@ -142,10 +142,10 @@ public class Controller {
             if (GameFrame.get().getMoveLog().size() > 0) {
                 Move lastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
                 GameFrame.get().setChessBoard(lastMove.undo());
-                if (lastMove.equals(GameFrame.get().getComputerMove()) && GameFrame.get().getMoveLog().size() > 0) {
+                if (lastMove.equals(GameFrame.get().getLastMove()) && GameFrame.get().getMoveLog().size() > 0) {
                     Move secondLastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
                     GameFrame.get().setChessBoard(secondLastMove.undo());
-                    GameFrame.get().setComputerMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
+                    GameFrame.get().setLastMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
                 } else {
                     GameFrame.get().restartGame();
                     return;
@@ -160,13 +160,13 @@ public class Controller {
             if (GameFrame.get().getMoveLog().size() > 0) {
                 Move lastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
                 GameFrame.get().setChessBoard(lastMove.undo());
-                if (lastMove.equals(GameFrame.get().getComputerMove())) {
+                if (lastMove.equals(GameFrame.get().getLastMove())) {
                     Move secondLastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
                     GameFrame.get().setChessBoard(secondLastMove.undo());
                     if (GameFrame.get().getMoveLog().size() > 0) {
-                        GameFrame.get().setComputerMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
+                        GameFrame.get().setLastMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
                     } else {
-                        GameFrame.get().setComputerMove(null);
+                        GameFrame.get().setLastMove(null);
                     }
                 }
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
@@ -193,7 +193,7 @@ public class Controller {
             JOptionPane.showMessageDialog(null, "No moves to replay.");
             return;
         }
-        GameFrame.get().setComputerMove(null);
+        GameFrame.get().setLastMove(null);
         GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
         List<Color> colorList = new ArrayList<>();
         for (int i = 0; i < BoardUtilities.NUM_TERRAINS / 2 + 1; i++) {
@@ -259,7 +259,7 @@ public class Controller {
                     GameFrame.get().setChessBoard(move.execute());
                     System.out.println(move);
                     seperateMoveLog.addMove(move);
-                    GameFrame.get().setComputerMove(move);
+                    GameFrame.get().setLastMove(move);
                     publish();
                     Thread.sleep(1000);
                 }
