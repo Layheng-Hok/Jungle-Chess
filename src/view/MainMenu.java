@@ -10,6 +10,8 @@ import java.awt.image.BufferedImage;
 import static view.GameFrame.defaultImagesPath;
 
 public class MainMenu extends JFrame {
+    JButton bgmButton;
+    JButton soundEffectButton;
     private static boolean isGrayScaleSoundEffectButton = false;
     private static boolean isGrayScaleBGMButton = false;
     private static final MainMenu INSTANCE = new MainMenu();
@@ -116,7 +118,7 @@ public class MainMenu extends JFrame {
                 (107, 48, Image.SCALE_DEFAULT));
         final Image graySoundEffectImage = toGrayScale(soundEffectIcon.getImage());
         final ImageIcon graySoundEffectIcon = new ImageIcon(graySoundEffectImage);
-        JButton soundEffectButton = new JButton(soundEffectIcon);
+        soundEffectButton = new JButton(soundEffectIcon);
         soundEffectButton.setBounds(25, 745, 107, 48);
         this.add(soundEffectButton);
         soundEffectButton.setIcon(soundEffectIcon);
@@ -139,7 +141,7 @@ public class MainMenu extends JFrame {
                 (107, 48, Image.SCALE_DEFAULT));
         final Image grayBGMImage = toGrayScale(bgmIcon.getImage());
         final ImageIcon grayBGMIcon = new ImageIcon(grayBGMImage);
-        JButton bgmButton = new JButton(bgmIcon);
+        bgmButton = new JButton(bgmIcon);
         bgmButton.setBounds(385, 745, 107, 48);
         this.add(bgmButton);
         bgmButton.setIcon(bgmIcon);

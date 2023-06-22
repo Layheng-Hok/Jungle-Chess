@@ -43,6 +43,27 @@ public class MenuBar {
         });
         settingMenu.add(saveMenuItem);
 
+        final JMenuItem bgmAudioControlMenuItem = new JMenuItem("\uD83C\uDFB5  Mute/Unmute BGM");
+        bgmAudioControlMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainMenu.get().bgmButton.doClick();
+                if (!MainMenu.get().isGrayScaleBGMButton()) {
+                    AudioPlayer.LoopPlayer.playGameBGM();
+                }
+            }
+        });
+        settingMenu.add(bgmAudioControlMenuItem);
+
+        final JMenuItem soundEffectAudioControlMenuItem = new JMenuItem("\uD83D\uDD0A  Mute/Unmute Sound Effect");
+        soundEffectAudioControlMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MainMenu.get().soundEffectButton.doClick();
+            }
+        });
+        settingMenu.add(soundEffectAudioControlMenuItem);
+
         final JMenuItem backMenuItem = new JMenuItem("\uD83D\uDD19  Back To Main Menu");
         backMenuItem.addActionListener(new ActionListener() {
             @Override
