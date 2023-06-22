@@ -1,27 +1,17 @@
 package view;
 
 import model.Controller;
-import model.board.Board;
-import model.board.Move;
-import model.board.MoveLog;
-import model.board.MoveTransition;
 import model.player.PlayerType;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import static view.GameFrame.defaultImagesPath;
 
 public class MainMenu extends JFrame {
-    private boolean isGrayScaleSoundEffectsButton = false;
-    private boolean isGrayScaleBGMButton = false;
+    private static boolean isGrayScaleSoundEffectsButton = false;
+    private static boolean isGrayScaleBGMButton = false;
     private static final MainMenu INSTANCE = new MainMenu();
 
     public MainMenu() {
@@ -38,7 +28,7 @@ public class MainMenu extends JFrame {
         createSoundEffectsButton();
         createBackgroundMusicButton();
         setBackground();
-        AudioPlayer.playMenuBGM();
+        AudioPlayer.LoopPlayer.playMenuBGM();
         this.setLocationRelativeTo(null);
         this.setResizable(false);
     }
@@ -140,7 +130,6 @@ public class MainMenu extends JFrame {
         });
     }
 
-
     private void createBackgroundMusicButton() {
         final String bgmIconPath = defaultImagesPath + "exit.png";
         final ImageIcon bgmIcon = new ImageIcon(new ImageIcon(bgmIconPath).getImage().getScaledInstance
@@ -155,9 +144,12 @@ public class MainMenu extends JFrame {
             isGrayScaleBGMButton = !isGrayScaleBGMButton;
             if (isGrayScaleBGMButton) {
                 bgmButton.setIcon(grayBGMIcon);
+                AudioPlayer.LoopPlayer.setMenuBGMPlaying(false);
+                AudioPlayer.LoopPlayer.stopLoopAudio();
                 System.out.println("BGM is muted");
             } else {
                 bgmButton.setIcon(bgmIcon);
+                AudioPlayer.LoopPlayer.playMenuBGM();
                 System.out.println("BGM is on");
             }
         });
@@ -178,16 +170,8 @@ public class MainMenu extends JFrame {
         return isGrayScaleSoundEffectsButton;
     }
 
-    public void setGrayScaleSoundEffectsButton(boolean grayScaleSoundEffectsButton) {
-        isGrayScaleSoundEffectsButton = grayScaleSoundEffectsButton;
-    }
-
     public boolean isGrayScaleBGMButton() {
         return isGrayScaleBGMButton;
-    }
-
-    public void setGrayScaleBGMButton(boolean grayScaleBGMButton) {
-        isGrayScaleBGMButton = grayScaleBGMButton;
     }
 
     public static MainMenu get() {

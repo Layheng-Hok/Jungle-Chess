@@ -528,7 +528,9 @@ public class GameFrame extends Observable {
         GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
         GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
         GameFrame.get().getBoardPanel().removeAllBorders();
-        AudioPlayer.playGameBGM();
+        if (!MainMenu.get().isGrayScaleBGMButton()) {
+            AudioPlayer.LoopPlayer.playGameBGM();
+        }
         GameFrame.get().setVisible(true);
     }
 

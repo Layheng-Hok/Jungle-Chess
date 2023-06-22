@@ -236,7 +236,9 @@ public class Controller {
             progressFrame.addProgressListener(() -> {
                 MainMenu.get().setVisible(false);
                 GameFrame.get().setVisible(true);
-                AudioPlayer.playGameBGM();
+                if (!MainMenu.get().isGrayScaleBGMButton()) {
+                    AudioPlayer.LoopPlayer.playGameBGM();
+                }
                 GameFrame.get().getPlayerPanel().setTimerSeconds(30);
                 System.out.println("Load a Saved Game");
             });
@@ -257,6 +259,9 @@ public class Controller {
         GameFrame.get().restartGame();
         GameFrame.get().dispose();
         MainMenu.get().setVisible(true);
+        if (!MainMenu.get().isGrayScaleBGMButton()) {
+            AudioPlayer.LoopPlayer.playMenuBGM();
+        }
         System.out.println("Back To Main Menu");
     }
 
