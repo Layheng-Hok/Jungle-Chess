@@ -49,7 +49,7 @@ public class GameFrame extends Observable {
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(500, 650);
     private static final Dimension TERRAIN_PANEL_DIMENSION = new Dimension(10, 10);
-    private final ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
+    final ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
     static final String defaultImagesPath = "resource/images/";
     private static final GameFrame INSTANCE = new GameFrame();
 
@@ -246,16 +246,13 @@ public class GameFrame extends Observable {
                             sourceTerrain = null;
                             humanMovedPiece = null;
                         }
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                capturedPiecesPanel.redo(moveLog);
-                                if (gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
-                                    GameFrame.get().moveMadeUpdate(PlayerType.HUMAN);
-                                }
-                                boardPanel.drawBoard(chessBoard);
-                                checkWin();
+                        SwingUtilities.invokeLater(() -> {
+                            capturedPiecesPanel.redo(moveLog);
+                            if (gameConfiguration.isAIPlayer(chessBoard.getCurrentPlayer())) {
+                                GameFrame.get().moveMadeUpdate(PlayerType.HUMAN);
                             }
+                            boardPanel.drawBoard(chessBoard);
+                            checkWin();
                         });
                     }
                 }
@@ -394,7 +391,7 @@ public class GameFrame extends Observable {
                                     + board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().toLowerCase()
                                     + board.getTerrain(this.terrainCoordinate).getPiece().toString().toLowerCase() + ".png";
                         } else {
-                            imagePath =defaultImagesPath + "unreversed"
+                            imagePath = defaultImagesPath + "unreversed"
                                     + board.getTerrain(this.terrainCoordinate).getPiece().getPieceColor().toString().toLowerCase()
                                     + board.getTerrain(this.terrainCoordinate).getPiece().toString().toLowerCase() + ".png";
                         }
@@ -523,10 +520,6 @@ public class GameFrame extends Observable {
             }
             isMinimaxRunning = false;
         }
-    }
-
-    public static GameFrame get() {
-        return INSTANCE;
     }
 
     public void show() {
@@ -701,5 +694,9 @@ public class GameFrame extends Observable {
 
     public void setReversedBlueSide(boolean reversedBlueSide) {
         this.reversedBlueSide = reversedBlueSide;
+    }
+
+    public static GameFrame get() {
+        return INSTANCE;
     }
 }

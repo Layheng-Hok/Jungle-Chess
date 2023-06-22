@@ -1,5 +1,6 @@
 package view;
 
+import model.Controller;
 import model.board.Board;
 import model.board.Move;
 import model.board.MoveLog;
@@ -8,8 +9,7 @@ import model.player.PlayerType;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -20,26 +20,23 @@ import java.util.Arrays;
 import static view.GameFrame.defaultImagesPath;
 
 public class MainMenu extends JFrame {
-    private final String iconsFolder = defaultImagesPath + File.separator;
-    private final ImageIcon logoImage = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
-    private final String jChessIcon = iconsFolder + "logo.png";
-    private final String backgroundIcon = iconsFolder + "background.png";
-    private final String onePlayerIcon = iconsFolder + "oneplayer.png";
-    private final String twoPlayerIcon = iconsFolder + "twoplayer.png";
-    private final String loadGameIcon = iconsFolder + "loadgame.png";
-    private final String exitIcon = iconsFolder + "exit.png";
+    private boolean isGrayScaleSoundEffectsButton = false;
+    private boolean isGrayScaleBGMButton = false;
+    private static final MainMenu INSTANCE = new MainMenu();
 
     public MainMenu() {
         setTitle("Jungle Chess (斗兽棋) - Main Menu");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(null);
         this.setBounds(630, 180, 530, 850);
-        this.setIconImage(logoImage.getImage());
+        this.setIconImage(GameFrame.get().logo.getImage());
         this.getContentPane().setBackground(Color.GRAY);
         createOnePlayerButton();
         createTwoPlayerButton();
-        createLoadGameButton();
-        createExitButton();
+        createSavedGamesButton();
+        createGoOnlineButton();
+        createSoundEffectsButton();
+        createBackgroundMusicButton();
         setBackground();
         AudioPlayer.playMenuBGM();
         this.setLocationRelativeTo(null);
@@ -47,240 +44,153 @@ public class MainMenu extends JFrame {
     }
 
     private void setBackground() {
-        ImageIcon jChessI = new ImageIcon(new ImageIcon(jChessIcon).getImage().getScaledInstance
+        final String jungleChessIconPath = defaultImagesPath + "logo.png";
+        ImageIcon jungleChessIcon = new ImageIcon(new ImageIcon(jungleChessIconPath).getImage().getScaledInstance
                 (390, 390, Image.SCALE_DEFAULT));
-        JLabel logo = new JLabel(jChessI);
+        JLabel logo = new JLabel(jungleChessIcon);
         logo.setBounds(70, 0, 400, 300);
         this.add(logo);
 
-        ImageIcon backgroundI = new ImageIcon(new ImageIcon(backgroundIcon).getImage().getScaledInstance
+        String backgroundIconPath = defaultImagesPath + "background.png";
+        ImageIcon backgroundIcon = new ImageIcon(new ImageIcon(backgroundIconPath).getImage().getScaledInstance
                 (530, 850, Image.SCALE_DEFAULT));
-        JLabel background = new JLabel(backgroundI);
+        JLabel background = new JLabel(backgroundIcon);
         background.setBounds(0, 0, 530, 850);
         this.add(background);
     }
 
     private void createOnePlayerButton() {
-        ImageIcon onePlayerI = new ImageIcon(new ImageIcon(onePlayerIcon).getImage().getScaledInstance
+        final String onePlayerIconPath = defaultImagesPath + "oneplayer.png";
+        final ImageIcon onePlayerIcon = new ImageIcon(new ImageIcon(onePlayerIconPath).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
-        JButton onePlayer = new JButton(onePlayerI);
-        onePlayer.setBounds(170, 350, 180, 80);
-        this.add(onePlayer);
-        onePlayer.setIcon(onePlayerI);
-        onePlayer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-                new DifficultyFrame().setVisible(true);
-                System.out.println("Load Difficulty Frame");
-            }
+        final JButton onePlayerButton = new JButton(onePlayerIcon);
+        onePlayerButton.setBounds(170, 340, 180, 80);
+        this.add(onePlayerButton);
+        onePlayerButton.setIcon(onePlayerIcon);
+        onePlayerButton.addActionListener(e -> {
+            this.setVisible(false);
+            DifficultyFrame.get().setVisible(true);
+            System.out.println("Load Difficulty Frame");
         });
     }
 
-    private void createTwoPlayerButton(){
-        ImageIcon twoPlayerI = new ImageIcon(new ImageIcon(twoPlayerIcon).getImage().getScaledInstance
+    private void createTwoPlayerButton() {
+        final String twoPlayersIconPath = defaultImagesPath + "twoplayer.png";
+        final ImageIcon twoPlayersIcon = new ImageIcon(new ImageIcon(twoPlayersIconPath).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
-        JButton twoPlayer = new JButton(twoPlayerI);
-        twoPlayer.setBounds(170, 450, 180, 80);
-        this.add(twoPlayer);
-        twoPlayer.setIcon(twoPlayerI);
-        twoPlayer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-                GameFrame.get().show();
-                GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
-                GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
-                System.out.println("Load a Two-Player Game");
-            }
+        final JButton twoPlayersButton = new JButton(twoPlayersIcon);
+        twoPlayersButton.setBounds(170, 440, 180, 80);
+        this.add(twoPlayersButton);
+        twoPlayersButton.setIcon(twoPlayersIcon);
+        twoPlayersButton.addActionListener(e -> {
+            this.setVisible(false);
+            GameFrame.get().show();
+            GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
+            GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
+            System.out.println("Load a Two-Player Game");
         });
     }
 
-    private void createLoadGameButton(){
-        ImageIcon loadGameI = new ImageIcon(new ImageIcon(loadGameIcon).getImage().getScaledInstance
+    private void createSavedGamesButton() {
+        final String savedGameIconPath = defaultImagesPath + "loadgame.png";
+        final ImageIcon savedGameIcon = new ImageIcon(new ImageIcon(savedGameIconPath).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
-        JButton loadGame = new JButton(loadGameI);
-        loadGame.setBounds(170, 550, 180, 80);
-        this.add(loadGame);
-        loadGame.setIcon(loadGameI);
-        loadGame.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setCurrentDirectory(new File("database"));
-                fileChooser.showOpenDialog(null);
-                File file = fileChooser.getSelectedFile();
-
-                if (!file.getName().endsWith(".txt")) {
-                    JOptionPane.showMessageDialog(null, "The file extension is either missing or not supported.",
-                            "File Load Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                ArrayList<String> readList = new ArrayList<>();
-                try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        readList.add(line);
-                    }
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(null, "Error reading file.",
-                            "File Read Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                Board loadedBoard = Board.constructStandardBoard();
-                MoveLog moveLog = new MoveLog();
-                ArrayList<String> playerTypeList;
-                int numMoves;
-                ArrayList<String> playerList = new ArrayList<>();
-                ArrayList<Integer> currentCoordinateList = new ArrayList<>();
-                ArrayList<Integer> destinationCoordinateList = new ArrayList<>();
-                String playerTypeLine = readList.remove(0);
-                try {
-                    playerTypeList = new ArrayList<>(Arrays.asList(playerTypeLine.split(" "))); }
-                catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "The file is corrupted.",
-                            "File Load Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                numMoves = Integer.parseInt(readList.remove(0));
-
-                for (int i = 0; i < numMoves; i++) {
-                    String moveLine = readList.remove(0);
-                    String[] moveTokens = moveLine.split(" ");
-                    try {
-                        if (moveTokens.length != 3) {
-                            JOptionPane.showMessageDialog(null, "The file is corrupted.",
-                                    "File Load Error", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-                        playerList.add(moveTokens[0]);
-                        currentCoordinateList.add(Integer.parseInt(moveTokens[1]));
-                        destinationCoordinateList.add(Integer.parseInt(moveTokens[2]));
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(null, "The file is corrupted.",
-                                "File Load Error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                }
-
-                if (numMoves == currentCoordinateList.size() && numMoves == destinationCoordinateList.size() && numMoves == playerList.size()) {
-                    for (int i = 0; i < currentCoordinateList.size(); i++) {
-                        Move move = Move.MoveFactory.createMove(loadedBoard, currentCoordinateList.get(i), destinationCoordinateList.get(i));
-                        MoveTransition transition = loadedBoard.getCurrentPlayer().makeMove(move);
-                        if (transition.getMoveStatus().isDone()) {
-                            loadedBoard = transition.getTransitionBoard();
-                            moveLog.addMove(move);
-                        }
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "The file is corrupted.",
-                            "File Load Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                String lastTurn = readList.get(0);
-                readList.remove(0);
-                playerList.add(lastTurn);
-                for (int i = 0; i < playerList.size(); i++) {
-                    if (i % 2 == 0) {
-                        if (!playerList.get(i).equals("bl")) {
-                            JOptionPane.showMessageDialog(null, "The file is corrupted.",
-                                    "File Load Error", JOptionPane.ERROR_MESSAGE);
-                            System.out.println("Wrong player turns.");
-                            return;
-                        }
-                    } else {
-                        if (!playerList.get(i).equals("re")) {
-                            JOptionPane.showMessageDialog(null, "The file is corrupted.",
-                                    "File Load Error", JOptionPane.ERROR_MESSAGE);
-                            System.out.println("Wrong player turns.");
-                            return;
-                        }
-                    }
-                }
-                int roundNumber = playerList.size() % 2 == 0 ? playerList.size() / 2 : playerList.size() / 2 + 1;
-                GameFrame.get().setLoadBoard(loadedBoard, moveLog, roundNumber);
-                GameFrame.get().setMoveLog(moveLog);
-
-                if (playerTypeList.get(0).equals("ai") && playerTypeList.get(1).equals("hu")) {
-                    GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.AI);
-                    GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
-                    switch (playerTypeList.get(2)) {
-                        case "ea" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.EASY);
-                        case "me" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.MEDIUM);
-                        case "ha" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.HARD);
-                    }
-                } else if (playerTypeList.get(0).equals("hu") && playerTypeList.get(1).equals("ai")) {
-                    GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
-                    GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.AI);
-                    switch (playerTypeList.get(2)) {
-                        case "ea" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.EASY);
-                        case "me" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.MEDIUM);
-                        case "ha" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.HARD);
-                    }
-                } else if (playerTypeList.get(0).equals("hu") && playerTypeList.get(1).equals("hu")) {
-                    GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
-                    GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
-                } else {
-                    JOptionPane.showMessageDialog(null, "The file is corrupted.",
-                            "File Load Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                ArrayList<String> animalList = new ArrayList<>();
-                ArrayList<Integer> coordinateList = new ArrayList<>();
-
-                int position = 0;
-                for (String line : readList) {
-                    String[] tokens = line.split("\\s+");
-                    for (String token : tokens) {
-                        if (token.length() == 2 && Character.isLetter(token.charAt(0)) && Character.isLetter(token.charAt(1))) {
-                            animalList.add(token);
-                            coordinateList.add(position);
-                        } else if (token.length() == 2 && Character.isDigit(token.charAt(0)) && Character.isDigit(token.charAt(1))) {
-                            position = Integer.parseInt(token);
-                        }
-                        position++;
-                    }
-                }
-
-                Board expectedBoard = Board.constructSpecificBoard(animalList, coordinateList, lastTurn);
-                System.out.println(loadedBoard);
-                System.out.println(expectedBoard);
-                if (!expectedBoard.equals(loadedBoard)) {
-                    System.out.println("Board is incorrect");
-                    JOptionPane.showMessageDialog(null, "The file is corrupted.",
-                            "File Load Error", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    System.out.println("Board is correct");
-                    ProgressFrame progressFrame = new ProgressFrame();
-                    progressFrame.addProgressListener(new ProgressFrame.ProgressListener() {
-                        @Override
-                        public void onProgressComplete() {
-                            setVisible(false);
-                            GameFrame.get().setVisible(true);
-                            AudioPlayer.playGameBGM();
-                            GameFrame.get().getPlayerPanel().setTimerSeconds(30);
-                            System.out.println("Load a Saved Game");
-                        }
-                    });
-                }
-            }
+        final JButton savedGamesButton = new JButton(savedGameIcon);
+        savedGamesButton.setBounds(170, 540, 180, 80);
+        this.add(savedGamesButton);
+        savedGamesButton.setIcon(savedGameIcon);
+        savedGamesButton.addActionListener(e -> {
+            Controller.loadSavedGame();
         });
     }
 
-    private void createExitButton(){
-        ImageIcon exitI = new ImageIcon(new ImageIcon(exitIcon).getImage().getScaledInstance
+    private void createGoOnlineButton() {
+        final String goOnlineImagePath = defaultImagesPath + "exit.png";
+        final ImageIcon goOnlineImage = new ImageIcon(new ImageIcon(goOnlineImagePath).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
-        JButton exit = new JButton(exitI);
-        exit.setBounds(170, 650, 180, 80);
-        this.add(exit);
-        exit.setIcon(exitI);
-        exit.addActionListener(e -> {
+        final JButton goOnlineButton = new JButton(goOnlineImage);
+        goOnlineButton.setBounds(170, 640, 180, 80);
+        this.add(goOnlineButton);
+        goOnlineButton.setIcon(goOnlineImage);
+        goOnlineButton.addActionListener(e -> {
             System.out.println("Exit");
             System.exit(0);
         });
+    }
+
+    private void createSoundEffectsButton() {
+        final String soundEffectsImagePath = defaultImagesPath + "exit.png";
+        final ImageIcon soundEffectsIcon = new ImageIcon(new ImageIcon(soundEffectsImagePath).getImage().getScaledInstance
+                (107, 48, Image.SCALE_DEFAULT));
+        final Image graySoundEffectsImage = toGrayScale(soundEffectsIcon.getImage());
+        final ImageIcon graySoundEffectsIcon = new ImageIcon(graySoundEffectsImage);
+        JButton soundEffectsButton = new JButton(soundEffectsIcon);
+        soundEffectsButton.setBounds(25, 745, 107, 48);
+        this.add(soundEffectsButton);
+        soundEffectsButton.setIcon(soundEffectsIcon);
+        soundEffectsButton.addActionListener(e -> {
+            isGrayScaleSoundEffectsButton = !isGrayScaleSoundEffectsButton;
+            if (isGrayScaleSoundEffectsButton) {
+                soundEffectsButton.setIcon(graySoundEffectsIcon);
+                System.out.println("Sound Effects is muted");
+            } else {
+                soundEffectsButton.setIcon(soundEffectsIcon);
+                System.out.println("Sound Effects is on");
+            }
+        });
+    }
+
+
+    private void createBackgroundMusicButton() {
+        final String bgmIconPath = defaultImagesPath + "exit.png";
+        final ImageIcon bgmIcon = new ImageIcon(new ImageIcon(bgmIconPath).getImage().getScaledInstance
+                (107, 48, Image.SCALE_DEFAULT));
+        final Image grayBGMImage = toGrayScale(bgmIcon.getImage());
+        final ImageIcon grayBGMIcon = new ImageIcon(grayBGMImage);
+        JButton bgmButton = new JButton(bgmIcon);
+        bgmButton.setBounds(385, 745, 107, 48);
+        this.add(bgmButton);
+        bgmButton.setIcon(bgmIcon);
+        bgmButton.addActionListener(e -> {
+            isGrayScaleBGMButton = !isGrayScaleBGMButton;
+            if (isGrayScaleBGMButton) {
+                bgmButton.setIcon(grayBGMIcon);
+                System.out.println("BGM is muted");
+            } else {
+                bgmButton.setIcon(bgmIcon);
+                System.out.println("BGM is on");
+            }
+        });
+    }
+
+    private Image toGrayScale(Image image) {
+        BufferedImage grayScaleImage = new BufferedImage(
+                image.getWidth(null),
+                image.getHeight(null),
+                BufferedImage.TYPE_BYTE_GRAY);
+        Graphics2D g2d = grayScaleImage.createGraphics();
+        g2d.drawImage(image, 0, 0, null);
+        g2d.dispose();
+        return grayScaleImage;
+    }
+
+    public boolean isGrayScaleSoundEffectsButton() {
+        return isGrayScaleSoundEffectsButton;
+    }
+
+    public void setGrayScaleSoundEffectsButton(boolean grayScaleSoundEffectsButton) {
+        isGrayScaleSoundEffectsButton = grayScaleSoundEffectsButton;
+    }
+
+    public boolean isGrayScaleBGMButton() {
+        return isGrayScaleBGMButton;
+    }
+
+    public void setGrayScaleBGMButton(boolean grayScaleBGMButton) {
+        isGrayScaleBGMButton = grayScaleBGMButton;
+    }
+
+    public static MainMenu get() {
+        return INSTANCE;
     }
 }

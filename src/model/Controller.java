@@ -1,24 +1,14 @@
 package model;
 
-import model.board.Board;
-import model.board.BoardUtilities;
-import model.board.Move;
-import model.board.MoveLog;
+import model.board.*;
 import model.player.PlayerType;
-import view.DifficultyFrame;
-import view.GameFrame;
-import view.MainMenu;
-import view.ProgressFrame;
+import view.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.io.*;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
 
 public class Controller {
     public static void saveGame() {
@@ -92,6 +82,167 @@ public class Controller {
         }
     }
 
+    public static void loadSavedGame() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File("database"));
+        fileChooser.showOpenDialog(null);
+        File file = fileChooser.getSelectedFile();
+
+        if (!file.getName().endsWith(".txt")) {
+            JOptionPane.showMessageDialog(null, "The file extension is either missing or not supported.",
+                    "File Load Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        ArrayList<String> readList = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                readList.add(line);
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Error reading file.",
+                    "File Read Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Board loadedBoard = Board.constructStandardBoard();
+        MoveLog moveLog = new MoveLog();
+        ArrayList<String> playerTypeList;
+        int numMoves;
+        ArrayList<String> playerList = new ArrayList<>();
+        ArrayList<Integer> currentCoordinateList = new ArrayList<>();
+        ArrayList<Integer> destinationCoordinateList = new ArrayList<>();
+        String playerTypeLine = readList.remove(0);
+        try {
+            playerTypeList = new ArrayList<>(Arrays.asList(playerTypeLine.split(" ")));
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                    "File Load Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        numMoves = Integer.parseInt(readList.remove(0));
+
+        for (int i = 0; i < numMoves; i++) {
+            String moveLine = readList.remove(0);
+            String[] moveTokens = moveLine.split(" ");
+            try {
+                if (moveTokens.length != 3) {
+                    JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                            "File Load Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                playerList.add(moveTokens[0]);
+                currentCoordinateList.add(Integer.parseInt(moveTokens[1]));
+                destinationCoordinateList.add(Integer.parseInt(moveTokens[2]));
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                        "File Load Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+
+        if (numMoves == currentCoordinateList.size() && numMoves == destinationCoordinateList.size() && numMoves == playerList.size()) {
+            for (int i = 0; i < currentCoordinateList.size(); i++) {
+                Move move = Move.MoveFactory.createMove(loadedBoard, currentCoordinateList.get(i), destinationCoordinateList.get(i));
+                MoveTransition transition = loadedBoard.getCurrentPlayer().makeMove(move);
+                if (transition.getMoveStatus().isDone()) {
+                    loadedBoard = transition.getTransitionBoard();
+                    moveLog.addMove(move);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                    "File Load Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String lastTurn = readList.get(0);
+        readList.remove(0);
+        playerList.add(lastTurn);
+        for (int i = 0; i < playerList.size(); i++) {
+            if (i % 2 == 0) {
+                if (!playerList.get(i).equals("bl")) {
+                    JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                            "File Load Error", JOptionPane.ERROR_MESSAGE);
+                    System.out.println("Wrong player turns.");
+                    return;
+                }
+            } else {
+                if (!playerList.get(i).equals("re")) {
+                    JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                            "File Load Error", JOptionPane.ERROR_MESSAGE);
+                    System.out.println("Wrong player turns.");
+                    return;
+                }
+            }
+        }
+        int roundNumber = playerList.size() % 2 == 0 ? playerList.size() / 2 : playerList.size() / 2 + 1;
+        GameFrame.get().setLoadBoard(loadedBoard, moveLog, roundNumber);
+        GameFrame.get().setMoveLog(moveLog);
+
+        if (playerTypeList.get(0).equals("ai") && playerTypeList.get(1).equals("hu")) {
+            GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.AI);
+            GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
+            switch (playerTypeList.get(2)) {
+                case "ea" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.EASY);
+                case "me" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.MEDIUM);
+                case "ha" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.HARD);
+            }
+        } else if (playerTypeList.get(0).equals("hu") && playerTypeList.get(1).equals("ai")) {
+            GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
+            GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.AI);
+            switch (playerTypeList.get(2)) {
+                case "ea" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.EASY);
+                case "me" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.MEDIUM);
+                case "ha" -> DifficultyFrame.setDifficulty(DifficultyFrame.Difficulty.HARD);
+            }
+        } else if (playerTypeList.get(0).equals("hu") && playerTypeList.get(1).equals("hu")) {
+            GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
+            GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
+        } else {
+            JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                    "File Load Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        ArrayList<String> animalList = new ArrayList<>();
+        ArrayList<Integer> coordinateList = new ArrayList<>();
+
+        int position = 0;
+        for (String line : readList) {
+            String[] tokens = line.split("\\s+");
+            for (String token : tokens) {
+                if (token.length() == 2 && Character.isLetter(token.charAt(0)) && Character.isLetter(token.charAt(1))) {
+                    animalList.add(token);
+                    coordinateList.add(position);
+                } else if (token.length() == 2 && Character.isDigit(token.charAt(0)) && Character.isDigit(token.charAt(1))) {
+                    position = Integer.parseInt(token);
+                }
+                position++;
+            }
+        }
+
+        Board expectedBoard = Board.constructSpecificBoard(animalList, coordinateList, lastTurn);
+        System.out.println(loadedBoard);
+        System.out.println(expectedBoard);
+        if (!expectedBoard.equals(loadedBoard)) {
+            System.out.println("Board is incorrect");
+            JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                    "File Load Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            System.out.println("Board is correct");
+            ProgressFrame progressFrame = new ProgressFrame();
+            progressFrame.addProgressListener(() -> {
+                MainMenu.get().setVisible(false);
+                GameFrame.get().setVisible(true);
+                AudioPlayer.playGameBGM();
+                GameFrame.get().getPlayerPanel().setTimerSeconds(30);
+                System.out.println("Load a Saved Game");
+            });
+        }
+    }
+
     public static void backToMainMenu() {
         if (GameFrame.get().isReplayMovesInProgress()) {
             JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
@@ -105,7 +256,7 @@ public class Controller {
         GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
         GameFrame.get().restartGame();
         GameFrame.get().dispose();
-        new MainMenu().setVisible(true);
+        MainMenu.get().setVisible(true);
         System.out.println("Back To Main Menu");
     }
 
@@ -352,5 +503,4 @@ public class Controller {
 
         public abstract BoardDirection opposite();
     }
-
 }
