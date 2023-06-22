@@ -506,6 +506,8 @@ public class GameFrame extends Observable {
                 final Move optimalMove = get();
                 if (optimalMove.isCaptureMove()) {
                     AudioPlayer.SinglePlayer.playAnimalSoundEffect(optimalMove.getMovedPiece());
+                } else {
+                    AudioPlayer.SinglePlayer.playSoundEffect("click.wav");
                 }
                 GameFrame.get().updateComputerMove(optimalMove);
                 GameFrame.get().updateGameBoard(GameFrame.get().getChessBoard().getCurrentPlayer().makeMove(optimalMove).getTransitionBoard());

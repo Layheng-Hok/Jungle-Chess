@@ -99,6 +99,7 @@ public class PlayerPanel extends JPanel {
                         selectedMove = validMoves.get(randomIndex);
                     }
                     if (selectedMove != null) {
+                        AudioPlayer.SinglePlayer.playSoundEffect("click.wav");
                         chessBoard = selectedMove.execute();
                         GameFrame.get().setLastMove(selectedMove);
                         GameFrame.get().getMoveLog().addMove(selectedMove);

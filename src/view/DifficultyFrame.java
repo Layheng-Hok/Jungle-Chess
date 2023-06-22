@@ -55,6 +55,7 @@ public class DifficultyFrame extends JFrame {
         easyButton.setBounds(170, 200, 180, 80);
         this.add(easyButton);
         easyButton.addActionListener((e) -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
             setDifficulty(Difficulty.EASY);
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
@@ -73,6 +74,7 @@ public class DifficultyFrame extends JFrame {
         mediumButton.setBounds(170, 350, 180, 80);
         this.add(mediumButton);
         mediumButton.addActionListener((e) -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
             setDifficulty(Difficulty.MEDIUM);
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
@@ -91,6 +93,7 @@ public class DifficultyFrame extends JFrame {
         hardButton.setBounds(170, 500, 180, 80);
         this.add(hardButton);
         hardButton.addActionListener((e) -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
             setDifficulty(Difficulty.HARD);
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
@@ -109,6 +112,7 @@ public class DifficultyFrame extends JFrame {
         backButton.setBounds(50, 650, 128, 57);
         this.add(backButton);
         backButton.addActionListener((e) -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
             this.setVisible(false);
             MainMenu.get().setVisible(true);
             System.out.println("Back To Main Menu");

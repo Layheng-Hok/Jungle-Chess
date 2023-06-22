@@ -295,6 +295,10 @@ public class Controller {
             JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
             return;
         }
+        if (GameFrame.get().getMoveLog().size() == 0) {
+            JOptionPane.showMessageDialog(null, "No moves to undo.");
+            return;
+        }
         if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.AI &&
                 GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
             if (GameFrame.get().getMoveLog().size() > 0) {
@@ -376,7 +380,6 @@ public class Controller {
                     @Override
                     public void run() {
                         for (int i = 0; i < BoardUtilities.NUM_TERRAINS / 2 + 1; i++) {
-
                             GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setOpaque(true);
                             GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setBackground(colorList.get(i));
                             try {
@@ -414,6 +417,7 @@ public class Controller {
                 Thread.sleep(1000);
                 for (int i = 0; i < GameFrame.get().getMoveLog().size(); i++) {
                     Move move = GameFrame.get().getMoveLog().getMove(i);
+                    AudioPlayer.SinglePlayer.playSoundEffect("click.wav");
                     GameFrame.get().setChessBoard(move.execute());
                     System.out.println(move);
                     seperateMoveLog.addMove(move);

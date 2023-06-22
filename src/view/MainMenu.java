@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 import static view.GameFrame.defaultImagesPath;
 
 public class MainMenu extends JFrame {
-    private static boolean isGrayScaleSoundEffectsButton = false;
+    private static boolean isGrayScaleSoundEffectButton = false;
     private static boolean isGrayScaleBGMButton = false;
     private static final MainMenu INSTANCE = new MainMenu();
 
@@ -25,7 +25,7 @@ public class MainMenu extends JFrame {
         createTwoPlayerButton();
         createSavedGamesButton();
         createGoOnlineButton();
-        createSoundEffectsButton();
+        createSoundEffectButton();
         createBackgroundMusicButton();
         setBackground();
         AudioPlayer.LoopPlayer.playMenuBGM();
@@ -58,6 +58,7 @@ public class MainMenu extends JFrame {
         this.add(onePlayerButton);
         onePlayerButton.setIcon(onePlayerIcon);
         onePlayerButton.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
             this.setVisible(false);
             DifficultyFrame.get().setVisible(true);
             System.out.println("Load Difficulty Frame");
@@ -65,7 +66,7 @@ public class MainMenu extends JFrame {
     }
 
     private void createTwoPlayerButton() {
-        final String twoPlayersIconPath = defaultImagesPath + "twoplayer.png";
+        final String twoPlayersIconPath = defaultImagesPath + "twoplayers.png";
         final ImageIcon twoPlayersIcon = new ImageIcon(new ImageIcon(twoPlayersIconPath).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
         final JButton twoPlayersButton = new JButton(twoPlayersIcon);
@@ -73,6 +74,7 @@ public class MainMenu extends JFrame {
         this.add(twoPlayersButton);
         twoPlayersButton.setIcon(twoPlayersIcon);
         twoPlayersButton.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
             this.setVisible(false);
             GameFrame.get().show();
             GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
@@ -82,7 +84,7 @@ public class MainMenu extends JFrame {
     }
 
     private void createSavedGamesButton() {
-        final String savedGameIconPath = defaultImagesPath + "loadgame.png";
+        final String savedGameIconPath = defaultImagesPath + "savedgames.png";
         final ImageIcon savedGameIcon = new ImageIcon(new ImageIcon(savedGameIconPath).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
         final JButton savedGamesButton = new JButton(savedGameIcon);
@@ -90,12 +92,13 @@ public class MainMenu extends JFrame {
         this.add(savedGamesButton);
         savedGamesButton.setIcon(savedGameIcon);
         savedGamesButton.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
             Controller.loadSavedGame();
         });
     }
 
     private void createGoOnlineButton() {
-        final String goOnlineImagePath = defaultImagesPath + "exit.png";
+        final String goOnlineImagePath = defaultImagesPath + "goonline.png";
         final ImageIcon goOnlineImage = new ImageIcon(new ImageIcon(goOnlineImagePath).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
         final JButton goOnlineButton = new JButton(goOnlineImage);
@@ -103,35 +106,35 @@ public class MainMenu extends JFrame {
         this.add(goOnlineButton);
         goOnlineButton.setIcon(goOnlineImage);
         goOnlineButton.addActionListener(e -> {
-            System.out.println("Exit");
-            System.exit(0);
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
         });
     }
 
-    private void createSoundEffectsButton() {
-        final String soundEffectsImagePath = defaultImagesPath + "exit.png";
-        final ImageIcon soundEffectsIcon = new ImageIcon(new ImageIcon(soundEffectsImagePath).getImage().getScaledInstance
+    private void createSoundEffectButton() {
+        final String soundEffectImagePath = defaultImagesPath + "soundeffect.png";
+        final ImageIcon soundEffectIcon = new ImageIcon(new ImageIcon(soundEffectImagePath).getImage().getScaledInstance
                 (107, 48, Image.SCALE_DEFAULT));
-        final Image graySoundEffectsImage = toGrayScale(soundEffectsIcon.getImage());
-        final ImageIcon graySoundEffectsIcon = new ImageIcon(graySoundEffectsImage);
-        JButton soundEffectsButton = new JButton(soundEffectsIcon);
-        soundEffectsButton.setBounds(25, 745, 107, 48);
-        this.add(soundEffectsButton);
-        soundEffectsButton.setIcon(soundEffectsIcon);
-        soundEffectsButton.addActionListener(e -> {
-            isGrayScaleSoundEffectsButton = !isGrayScaleSoundEffectsButton;
-            if (isGrayScaleSoundEffectsButton) {
-                soundEffectsButton.setIcon(graySoundEffectsIcon);
+        final Image graySoundEffectImage = toGrayScale(soundEffectIcon.getImage());
+        final ImageIcon graySoundEffectIcon = new ImageIcon(graySoundEffectImage);
+        JButton soundEffectButton = new JButton(soundEffectIcon);
+        soundEffectButton.setBounds(25, 745, 107, 48);
+        this.add(soundEffectButton);
+        soundEffectButton.setIcon(soundEffectIcon);
+        soundEffectButton.addActionListener(e -> {
+            isGrayScaleSoundEffectButton = !isGrayScaleSoundEffectButton;
+            if (isGrayScaleSoundEffectButton) {
+                soundEffectButton.setIcon(graySoundEffectIcon);
                 System.out.println("Sound Effects is muted");
             } else {
-                soundEffectsButton.setIcon(soundEffectsIcon);
+                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+                soundEffectButton.setIcon(soundEffectIcon);
                 System.out.println("Sound Effects is on");
             }
         });
     }
 
     private void createBackgroundMusicButton() {
-        final String bgmIconPath = defaultImagesPath + "exit.png";
+        final String bgmIconPath = defaultImagesPath + "music.png";
         final ImageIcon bgmIcon = new ImageIcon(new ImageIcon(bgmIconPath).getImage().getScaledInstance
                 (107, 48, Image.SCALE_DEFAULT));
         final Image grayBGMImage = toGrayScale(bgmIcon.getImage());
@@ -141,6 +144,7 @@ public class MainMenu extends JFrame {
         this.add(bgmButton);
         bgmButton.setIcon(bgmIcon);
         bgmButton.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
             isGrayScaleBGMButton = !isGrayScaleBGMButton;
             if (isGrayScaleBGMButton) {
                 bgmButton.setIcon(grayBGMIcon);
@@ -166,8 +170,8 @@ public class MainMenu extends JFrame {
         return grayScaleImage;
     }
 
-    public boolean isGrayScaleSoundEffectsButton() {
-        return isGrayScaleSoundEffectsButton;
+    public boolean isGrayScaleSoundEffectButton() {
+        return isGrayScaleSoundEffectButton;
     }
 
     public boolean isGrayScaleBGMButton() {

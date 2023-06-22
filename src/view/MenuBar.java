@@ -3,6 +3,8 @@ package view;
 import model.Controller;
 
 import javax.swing.*;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -16,12 +18,27 @@ public class MenuBar {
 
     private static JMenu createSettingMenu() {
         final JMenu settingMenu = new JMenu("⚙\uFE0F  Game Setting");
+        settingMenu.addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent e) {
+                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            }
+
+            @Override
+            public void menuDeselected(MenuEvent e) {
+            }
+
+            @Override
+            public void menuCanceled(MenuEvent e) {
+            }
+        });
 
         final JMenuItem saveMenuItem = new JMenuItem("\uD83D\uDCBE  Save Game");
         saveMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-              Controller.saveGame();
+                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+                Controller.saveGame();
             }
         });
         settingMenu.add(saveMenuItem);
@@ -30,6 +47,7 @@ public class MenuBar {
         backMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
                 Controller.backToMainMenu();
             }
         });
@@ -39,6 +57,7 @@ public class MenuBar {
         exitMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
                 Controller.exitGame();
             }
         });
@@ -48,11 +67,26 @@ public class MenuBar {
 
     private static JMenu createGameplayOptions() {
         final JMenu gameplayOptionsMenu = new JMenu("\uD83C\uDFAE  Gameplay Options");
+        gameplayOptionsMenu.addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent e) {
+                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            }
+
+            @Override
+            public void menuDeselected(MenuEvent e) {
+            }
+
+            @Override
+            public void menuCanceled(MenuEvent e) {
+            }
+        });
 
         final JMenuItem restartMenuItem = new JMenuItem("\uD83D\uDD04  Restart");
         restartMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
                 Controller.restartGame();
             }
         });
@@ -62,6 +96,7 @@ public class MenuBar {
         undoMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
                 Controller.undoMove();
             }
         });
@@ -71,6 +106,7 @@ public class MenuBar {
         replayAllMovesMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
                 Controller.replayMoves();
             }
         });
@@ -80,6 +116,7 @@ public class MenuBar {
         changeBoardMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
                 Controller.changeBoard();
             }
         });
@@ -89,6 +126,7 @@ public class MenuBar {
         switchSide.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
                 Controller.switchSide();
             }
         });
@@ -98,6 +136,7 @@ public class MenuBar {
         flipPieceIcons.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
                 Controller.flipPiecesIcon();
             }
         });
