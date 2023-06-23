@@ -137,9 +137,9 @@ public class PlayerPanel extends JPanel {
     public void undo() {
         if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor() == PlayerColor.BLUE) {
             currentPlayer = "Blue";
+            setRoundNumber(getRoundNumber() - 1);
         } else if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor() == PlayerColor.RED){
             currentPlayer = "Red";
-
         }
         timerSeconds = 30;
         timer.restart();

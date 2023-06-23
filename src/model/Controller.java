@@ -280,10 +280,20 @@ public class Controller {
             JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
             return;
         }
-        for (int i = 0; i < 2; i++) {
-            GameFrame.get().restartGame();
-        }
-        System.out.println("Game Restarted");
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                coloringTerrainsAnimationThread();
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                GameFrame.get().restartGame();
+                System.out.println("Game Restarted");
+            }
+        };
+        worker.execute();
     }
 
     public static void undoMove() {
@@ -301,43 +311,60 @@ public class Controller {
         }
         if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.AI &&
                 GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
-            if (GameFrame.get().getMoveLog().size() > 0) {
+            System.out.println(GameFrame.get().getMoveLog().size());
+            for (int i = 0; i < GameFrame.get().getMoveLog().size(); i++) {
+                System.out.println(GameFrame.get().getMoveLog().getMove(i));
+            }
+            if (GameFrame.get().getMoveLog().size() > 1) {
                 Move lastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
                 GameFrame.get().setChessBoard(lastMove.undo());
-                if (lastMove.equals(GameFrame.get().getLastMove()) && GameFrame.get().getMoveLog().size() > 0) {
+                if (lastMove.equals(GameFrame.get().getComputerMove()) && GameFrame.get().getMoveLog().size() > 0) {
                     Move secondLastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
                     GameFrame.get().setChessBoard(secondLastMove.undo());
                     GameFrame.get().setLastMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
-                } else {
-                    GameFrame.get().restartGame();
-                    return;
+                    GameFrame.get().setComputerMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
                 }
                 GameFrame.get().getPlayerPanel().undoAIBlue();
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
-                System.out.println("Undo");
+            } else {
+                GameFrame.get().restartGame();
             }
-        } else if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.AI
-                || GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
+            System.out.println(GameFrame.get().getMoveLog().size());
+            System.out.println("Undo");
+        } else if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.AI) {
             if (GameFrame.get().getMoveLog().size() > 0) {
                 Move lastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
                 GameFrame.get().setChessBoard(lastMove.undo());
-                if (lastMove.equals(GameFrame.get().getLastMove())) {
+                if (lastMove.equals(GameFrame.get().getComputerMove())) {
                     Move secondLastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
                     GameFrame.get().setChessBoard(secondLastMove.undo());
                     if (GameFrame.get().getMoveLog().size() > 0) {
                         GameFrame.get().setLastMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
+                        GameFrame.get().setComputerMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
                     } else {
                         GameFrame.get().setLastMove(null);
+                        GameFrame.get().setComputerMove(null);
                     }
                 }
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.AI) {
                     GameFrame.get().getPlayerPanel().undoAIRed();
                 }
+                GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
+                System.out.println("Undo");
+            }
+        } else if (  GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
+            if (GameFrame.get().getMoveLog().size() > 1) {
+                Move lastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
+                GameFrame.get().setLastMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
+                GameFrame.get().setChessBoard(lastMove.undo());
+                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 GameFrame.get().getPlayerPanel().undo();
                 GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
                 System.out.println("Undo");
+            } else if (GameFrame.get().getMoveLog().size() == 1) {
+                GameFrame.get().restartGame();
             }
         }
     }
@@ -357,18 +384,6 @@ public class Controller {
         }
         GameFrame.get().setLastMove(null);
         GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-        List<Color> colorList = new ArrayList<>();
-        for (int i = 0; i < BoardUtilities.NUM_TERRAINS / 2 + 1; i++) {
-            Random random = new Random();
-            int red = random.nextInt(256);
-            int green = random.nextInt(256);
-            int blue = random.nextInt(256);
-            Color randomColor = new Color(red, green, blue);
-            colorList.add(randomColor);
-        }
-        List<Color> reversedColorList = new ArrayList<>(colorList);
-        Collections.reverse(reversedColorList);
-        System.out.println(reversedColorList.size());
         GameFrame.get().setReplayMovesInProgress(true);
         GameFrame.get().getPlayerPanel().setRoundNumber(1);
         GameFrame.get().getCapturedPiecesPanel().reset();
@@ -376,48 +391,14 @@ public class Controller {
         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
-                Thread thread1 = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (int i = 0; i < BoardUtilities.NUM_TERRAINS / 2 + 1; i++) {
-                            GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setOpaque(true);
-                            GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setBackground(colorList.get(i));
-                            try {
-                                Thread.sleep(30);
-                            } catch (InterruptedException ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-                    }
-                });
-                Thread thread2 = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (int i = BoardUtilities.NUM_TERRAINS - 1, colorIndex = BoardUtilities.NUM_TERRAINS / 2; i > BoardUtilities.NUM_TERRAINS / 2; i--, colorIndex--) {
-                            GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setOpaque(true);
-                            GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setBackground(reversedColorList.get(colorIndex));
-                            try {
-                                Thread.sleep(30);
-                            } catch (InterruptedException ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-                    }
-                });
-                thread1.start();
-                thread2.start();
-                try {
-                    Thread.sleep(1350);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
+                coloringTerrainsAnimationThread();
                 GameFrame.get().setChessBoard(Board.constructStandardBoard());
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 GameFrame.get().getBoardPanel().removeAllBorders();
+                GameFrame.get().getPlayerPanel().reset();
                 Thread.sleep(1000);
                 for (int i = 0; i < GameFrame.get().getMoveLog().size(); i++) {
                     Move move = GameFrame.get().getMoveLog().getMove(i);
-                    AudioPlayer.SinglePlayer.playSoundEffect("click.wav");
                     GameFrame.get().setChessBoard(move.execute());
                     System.out.println(move);
                     seperateMoveLog.addMove(move);
@@ -430,6 +411,7 @@ public class Controller {
 
             @Override
             protected void process(List<Void> chunks) {
+                AudioPlayer.SinglePlayer.playSoundEffect("click.wav");
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 GameFrame.get().getPlayerPanel().redo(GameFrame.get().getChessBoard());
                 GameFrame.get().getCapturedPiecesPanel().redo(seperateMoveLog);
@@ -511,5 +493,54 @@ public class Controller {
         public abstract List<GameFrame.TerrainPanel> traverse(final List<GameFrame.TerrainPanel> boardTiles);
 
         public abstract BoardDirection opposite();
+    }
+
+    public static void coloringTerrainsAnimationThread() {
+        List<Color> colorList = new ArrayList<>();
+        for (int i = 0; i < BoardUtilities.NUM_TERRAINS / 2 + 1; i++) {
+            Random random = new Random();
+            int red = random.nextInt(256);
+            int green = random.nextInt(256);
+            int blue = random.nextInt(256);
+            Color randomColor = new Color(red, green, blue);
+            colorList.add(randomColor);
+        }
+        List<Color> reversedColorList = new ArrayList<>(colorList);
+        Collections.reverse(reversedColorList);
+        Thread thread1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < BoardUtilities.NUM_TERRAINS / 2 + 1; i++) {
+                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setOpaque(true);
+                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setBackground(colorList.get(i));
+                    try {
+                        Thread.sleep(30);
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+        Thread thread2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = BoardUtilities.NUM_TERRAINS - 1, colorIndex = BoardUtilities.NUM_TERRAINS / 2; i > BoardUtilities.NUM_TERRAINS / 2; i--, colorIndex--) {
+                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setOpaque(true);
+                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setBackground(reversedColorList.get(colorIndex));
+                    try {
+                        Thread.sleep(30);
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+        thread1.start();
+        thread2.start();
+        try {
+            Thread.sleep(1350);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
     }
 }

@@ -39,6 +39,7 @@ public class GameFrame extends Observable {
     private MoveLog moveLog;
     private Board chessBoard;
     private Move lastMove;
+    private Move computerMove;
     private Piece sourceTerrain;
     private Piece humanMovedPiece;
     public Controller.BoardDirection boardDirection;
@@ -454,6 +455,7 @@ public class GameFrame extends Observable {
 
     private void updateComputerMove(final Move move) {
         this.lastMove = move;
+        this.computerMove = move;
     }
 
     public static class AIGameObserver implements Observer {
@@ -474,16 +476,9 @@ public class GameFrame extends Observable {
         protected Move doInBackground() throws Exception {
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.EASY) {
                 isMinimaxRunning = true;
-                final List<Move> validMoves = new ArrayList<>(GameFrame.get().getChessBoard().getCurrentPlayer().getValidMoves());
-                for (Move move : validMoves) {
-                    if (move.isCaptureMove()) {
-                        return move;
-                    }
-                }
-                if (validMoves.size() == 0) {
-                    return null;
-                }
-                return validMoves.get(new Random().nextInt(validMoves.size()));
+                final MoveStrategy minimax = new MinimaxAlgorithm(3, PoorBoardEvaluator.get());
+                System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
+                return minimax.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.MEDIUM) {
                 isMinimaxRunning = true;
@@ -537,17 +532,19 @@ public class GameFrame extends Observable {
     }
 
     public void restartGame() {
-        chessBoard = Board.constructStandardBoard();
-        boardPanel.drawBoard(chessBoard);
-        boardPanel.removeAllBorders();
-        lastMove = null;
-        playerPanel.reset();
-        capturedPiecesPanel.reset();
-        moveLog.clear();
+        for (int i = 0; i < 2; i++) {
+            chessBoard = Board.constructStandardBoard();
+            boardPanel.drawBoard(chessBoard);
+            boardPanel.removeAllBorders();
+            lastMove = null;
+            computerMove = null;
+            playerPanel.reset();
+            capturedPiecesPanel.reset();
+            moveLog.clear();
+        }
         GameFrame.get().getGameConfiguration().setReady(false);
         setChanged();
         notifyObservers();
-        System.out.println("Game Restarted");
     }
 
     void checkWin() {
@@ -658,6 +655,14 @@ public class GameFrame extends Observable {
 
     public void setLastMove(Move lastMove) {
         this.lastMove = lastMove;
+    }
+
+    public Move getComputerMove() {
+        return computerMove;
+    }
+
+    public void setComputerMove(Move computerMove) {
+        this.computerMove = computerMove;
     }
 
     public MoveLog getMoveLog() {
