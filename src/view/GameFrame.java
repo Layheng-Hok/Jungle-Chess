@@ -473,7 +473,7 @@ public class GameFrame extends Observable {
         boolean isMinimaxRunning = false;
 
         @Override
-        protected Move doInBackground() throws Exception {
+        protected Move doInBackground() {
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.EASY) {
                 isMinimaxRunning = true;
                 final MoveStrategy minimax = new MinimaxAlgorithm(3, PoorBoardEvaluator.get());
@@ -647,10 +647,6 @@ public class GameFrame extends Observable {
 
     public void setChessBoard(Board chessBoard) {
         this.chessBoard = chessBoard;
-    }
-
-    public Move getLastMove() {
-        return lastMove;
     }
 
     public void setLastMove(Move lastMove) {

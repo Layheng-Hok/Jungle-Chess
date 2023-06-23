@@ -54,7 +54,7 @@ public class Controller {
             fileWriter.write(GameFrame.get().getGameConfiguration().getBluePlayerType().toString().toLowerCase().substring(0, 2) + " "
                     + GameFrame.get().getGameConfiguration().getRedPlayerType().toString().toLowerCase().substring(0, 2) + " "
                     + difficulty + "\n");
-            fileWriter.write(String.valueOf(GameFrame.get().getMoveLog().size()) + "\n");
+            fileWriter.write(GameFrame.get().getMoveLog().size() + "\n");
             for (int i = 0; i < GameFrame.get().getMoveLog().size(); i++) {
                 fileWriter.write(GameFrame.get().getMoveLog().getMove(i).toString() + "\n");
             }
@@ -62,18 +62,15 @@ public class Controller {
             fileWriter.write(GameFrame.get().getChessBoard().toString());
             fileWriter.close();
             ProgressFrame progressFrame = new ProgressFrame();
-            progressFrame.addProgressListener(new ProgressFrame.ProgressListener() {
-                @Override
-                public void onProgressComplete() {
-                    int continueResponse = JOptionPane.showOptionDialog(null, "Game saved successfully.\nWould you want to continue playing or go back to the main menu?", "Game Saved", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Continue", "Back"}, "Continue");
-                    if (continueResponse == JOptionPane.NO_OPTION) {
-                        GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
-                        GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
-                        GameFrame.get().restartGame();
-                        GameFrame.get().dispose();
-                        new MainMenu().setVisible(true);
-                        System.out.println("Back To Main Menu");
-                    }
+            progressFrame.addProgressListener(() -> {
+                int continueResponse = JOptionPane.showOptionDialog(null, "Game saved successfully.\nWould you want to continue playing or go back to the main menu?", "Game Saved", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Continue", "Back"}, "Continue");
+                if (continueResponse == JOptionPane.NO_OPTION) {
+                    GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
+                    GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
+                    GameFrame.get().restartGame();
+                    GameFrame.get().dispose();
+                    new MainMenu().setVisible(true);
+                    System.out.println("Back To Main Menu");
                 }
             });
             System.out.println("Game Saved");
@@ -280,9 +277,9 @@ public class Controller {
             JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
             return;
         }
-        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
-            protected Void doInBackground() throws Exception {
+            protected Void doInBackground() {
                 coloringTerrainsAnimationThread();
                 return null;
             }
@@ -388,7 +385,7 @@ public class Controller {
         GameFrame.get().getPlayerPanel().setRoundNumber(1);
         GameFrame.get().getCapturedPiecesPanel().reset();
         MoveLog seperateMoveLog = new MoveLog();
-        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
                 coloringTerrainsAnimationThread();
@@ -507,31 +504,25 @@ public class Controller {
         }
         List<Color> reversedColorList = new ArrayList<>(colorList);
         Collections.reverse(reversedColorList);
-        Thread thread1 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < BoardUtilities.NUM_TERRAINS / 2 + 1; i++) {
-                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setOpaque(true);
-                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setBackground(colorList.get(i));
-                    try {
-                        Thread.sleep(30);
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
+        Thread thread1 = new Thread(() -> {
+            for (int i = 0; i < BoardUtilities.NUM_TERRAINS / 2 + 1; i++) {
+                GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setOpaque(true);
+                GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setBackground(colorList.get(i));
+                try {
+                    Thread.sleep(30);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
-        Thread thread2 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = BoardUtilities.NUM_TERRAINS - 1, colorIndex = BoardUtilities.NUM_TERRAINS / 2; i > BoardUtilities.NUM_TERRAINS / 2; i--, colorIndex--) {
-                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setOpaque(true);
-                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setBackground(reversedColorList.get(colorIndex));
-                    try {
-                        Thread.sleep(30);
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
+        Thread thread2 = new Thread(() -> {
+            for (int i = BoardUtilities.NUM_TERRAINS - 1, colorIndex = BoardUtilities.NUM_TERRAINS / 2; i > BoardUtilities.NUM_TERRAINS / 2; i--, colorIndex--) {
+                GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setOpaque(true);
+                GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setBackground(reversedColorList.get(colorIndex));
+                try {
+                    Thread.sleep(30);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
