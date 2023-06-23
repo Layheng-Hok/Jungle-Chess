@@ -69,7 +69,7 @@ public class Controller {
                     GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
                     GameFrame.get().restartGame();
                     GameFrame.get().dispose();
-                    new MainMenu().setVisible(true);
+                    MainMenu.get().setVisible(true);
                     System.out.println("Back To Main Menu");
                 }
             });
