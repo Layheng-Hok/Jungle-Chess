@@ -449,10 +449,11 @@ public class GameFrame extends Observable {
                                     + board.getTerrain(this.terrainCoordinate).getPiece().toString().toLowerCase() + ".png";
                         }
                     }
+                    assert imagePath != null;
                     image = ImageIO.read(new File(imagePath));
                     ImageIcon icon = new ImageIcon(image);
-                    int labelWidth = 65;
-                    int labelHeight = 65;
+                    int labelWidth = 60;
+                    int labelHeight = 60;
                     Image scaledImage = icon.getImage().getScaledInstance(labelWidth, labelHeight, Image.SCALE_SMOOTH);
                     icon = new ImageIcon(scaledImage);
                     JLabel label = new JLabel(icon);
