@@ -70,7 +70,7 @@ public class GameFrame extends Observable {
     }
 
     private void setBasicGameFrameAttributes() {
-        this.gameFrame.setLayout(new BorderLayout(2, 2));
+        this.gameFrame.setLayout(new BorderLayout());
         this.gameFrame.getContentPane().setBackground(new Color(117, 137, 120));
         this.gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.gameFrame.setSize(OUTER_FRAME_DIMENSION);
@@ -81,7 +81,7 @@ public class GameFrame extends Observable {
 
     public void defineBorderLayout() {
         if (isBoard1) {
-            this.gameFrame.setLayout(new BorderLayout(2, 2));
+            this.gameFrame.setLayout(new BorderLayout());
         } else {
             this.gameFrame.setLayout(new BorderLayout());
         }
