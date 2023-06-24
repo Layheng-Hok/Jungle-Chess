@@ -5,6 +5,7 @@ import model.Controller;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -63,6 +64,44 @@ public class MenuBar {
             }
         });
         settingMenu.add(soundEffectAudioControlMenuItem);
+
+        final JMenu glitchEffectMenuItem = new JMenu("\u3299  Secret Dev Mode");
+        final JMenuItem question1 = new JMenuItem("Are");
+        final JMenuItem question2 = new JMenuItem("you");
+        final JMenuItem question3 = new JMenuItem("sure");
+        final JMenuItem question4 = new JMenuItem("you");
+        final JMenuItem question5 = new JMenuItem("want");
+        final JMenuItem question6 = new JMenuItem("to");
+        final JMenuItem question7 = new JMenuItem("check");
+        final JMenu question8 = new JMenu("this?");
+        final JMenuItem i1 = new JMenuItem("You");
+        final JMenuItem i2 = new JMenuItem("have");
+        final JMenuItem i3 = new JMenuItem("to");
+        final JMenuItem i4 = new JMenuItem("figure");
+        final JMenuItem i5 = new JMenuItem("it");
+        final JMenuItem i6 = new JMenuItem("out");
+        final JMenuItem i7 = new JMenuItem("yourself");
+        final JMenu i8 = new JMenu("...");
+        final JCheckBoxMenuItem glitchEffectCheckBoxMenuItem = new JCheckBoxMenuItem("Glitch in the Matrix");
+        glitchEffectCheckBoxMenuItem.addActionListener(e -> GameFrame.get().setGlitchMode(glitchEffectCheckBoxMenuItem.isSelected()));
+        settingMenu.add(glitchEffectMenuItem);
+        glitchEffectMenuItem.add(question1);
+        glitchEffectMenuItem.add(question2);
+        glitchEffectMenuItem.add(question3);
+        glitchEffectMenuItem.add(question4);
+        glitchEffectMenuItem.add(question5);
+        glitchEffectMenuItem.add(question6);
+        glitchEffectMenuItem.add(question7);
+        glitchEffectMenuItem.add(question8);
+        question8.add(i1);
+        question8.add(i2);
+        question8.add(i3);
+        question8.add(i4);
+        question8.add(i5);
+        question8.add(i6);
+        question8.add(i7);
+        question8.add(i8);
+        i8.add(glitchEffectCheckBoxMenuItem);
 
         final JMenuItem backMenuItem = new JMenuItem("\uD83D\uDD19  Back To Main Menu");
         backMenuItem.addActionListener(new ActionListener() {

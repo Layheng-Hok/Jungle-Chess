@@ -308,10 +308,6 @@ public class Controller {
         }
         if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.AI &&
                 GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
-            System.out.println(GameFrame.get().getMoveLog().size());
-            for (int i = 0; i < GameFrame.get().getMoveLog().size(); i++) {
-                System.out.println(GameFrame.get().getMoveLog().getMove(i));
-            }
             if (GameFrame.get().getMoveLog().size() > 1) {
                 Move lastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
                 GameFrame.get().setChessBoard(lastMove.undo());

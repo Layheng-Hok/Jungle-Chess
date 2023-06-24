@@ -47,6 +47,7 @@ public class GameFrame extends Observable {
     private boolean replayMovesInProgress = false;
     private boolean reversedRedSide = true;
     private boolean reversedBlueSide = false;
+    private boolean glitchMode = false;
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(500, 650);
     private static final Dimension TERRAIN_PANEL_DIMENSION = new Dimension(10, 10);
@@ -347,9 +348,25 @@ public class GameFrame extends Observable {
                         e.printStackTrace();
                     }
                 } else if (move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
-                    setBorder(capturedPieceBorder);
-                    setBackground(new Color(12, 211, 28, 90));
-                    setOpaque(true);
+                    SwingWorker<Void, Void> worker = new SwingWorker<>() {
+                        @Override
+                        protected Void doInBackground() {
+                            setBorder(null);
+                            setBackground(null);
+                            if (glitchMode) {
+                                    GameFrame.get().getBoardPanel().drawBoard(chessBoard);
+                            }
+                            return null;
+                        }
+
+                        @Override
+                        protected void done() {
+                            setBorder(capturedPieceBorder);
+                            setBackground(new Color(5, 138, 15));
+                            setOpaque(true);
+                        }
+                    };
+                    worker.execute();
                 }
             }
         }
@@ -699,6 +716,10 @@ public class GameFrame extends Observable {
 
     public void setReversedBlueSide(boolean reversedBlueSide) {
         this.reversedBlueSide = reversedBlueSide;
+    }
+
+    public void setGlitchMode(boolean glitchMode) {
+        this.glitchMode = glitchMode;
     }
 
     public static GameFrame get() {
