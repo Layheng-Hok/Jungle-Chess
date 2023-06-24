@@ -253,7 +253,7 @@ public class GameFrame extends Observable {
                             final MoveTransition transition = chessBoard.getCurrentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
                                 chessBoard = transition.getTransitionBoard();
-                                playerPanel.update();
+                                playerPanel.redo(chessBoard);
                                 moveLog.addMove(move);
                             }
                             sourceTerrain = null;
@@ -554,7 +554,6 @@ public class GameFrame extends Observable {
                 GameFrame.get().updateComputerMove(optimalMove);
                 GameFrame.get().updateGameBoard(GameFrame.get().getChessBoard().getCurrentPlayer().makeMove(optimalMove).getTransitionBoard());
                 GameFrame.get().getMoveLog().addMove(optimalMove);
-                GameFrame.get().getPlayerPanel().setCurrentPlayer(GameFrame.get().getChessBoard().getCurrentPlayer().toString());
                 GameFrame.get().getPlayerPanel().redo(GameFrame.get().chessBoard);
                 GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
@@ -649,7 +648,6 @@ public class GameFrame extends Observable {
         boardPanel.removeAllBorders();
         capturedPiecesPanel.redo(moveLog);
         playerPanel.setRoundNumber(roundNumber);
-        playerPanel.setCurrentPlayer(chessBoard.getCurrentPlayer().toString());
         playerPanel.repaint();
         System.out.println("Game Loaded");
     }

@@ -3,6 +3,7 @@ package view;
 import model.board.Board;
 import model.board.Move;
 import model.player.PlayerColor;
+import model.player.PlayerType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +18,6 @@ public class PlayerPanel extends JPanel {
     private static final Dimension PLAYER_PANEL_DIMENSION = new Dimension(530, 100);
     private final Image topPanelImage;
     private int roundNumber = 1;
-    private String currentPlayer = "Blue";
     private Timer timer;
     private int timerSeconds = 30;
 
@@ -35,7 +35,7 @@ public class PlayerPanel extends JPanel {
 
         g.setColor(Color.BLACK);
         g.setFont(new Font("Consolas", Font.BOLD, 20));
-        String text = "Round " + roundNumber + ": " + currentPlayer.toUpperCase();
+        String text = "Round " + roundNumber + ": " + GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().toString().toUpperCase();
         int x = (getWidth() - g.getFontMetrics().stringWidth(text)) / 2;
         int y = 33;
         g.drawString(text, x, y);
@@ -57,7 +57,7 @@ public class PlayerPanel extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(new Color(0, 0, 0, 127));
         g2d.fillRect(leftImageX - 5, imageY - 5, imageWidth + 10, imageHeight + 10);
-        if (currentPlayer.equals("Blue")) {
+        if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue()) {
             g2d.setStroke(new BasicStroke(3));
             g2d.setColor(new Color(0x00FF00));
         }
@@ -68,7 +68,7 @@ public class PlayerPanel extends JPanel {
 
         g2d.setColor(new Color(0, 0, 0, 127));
         g2d.fillRect(rightImageX - 5, imageY - 5, imageWidth + 10, imageHeight + 10);
-        if (currentPlayer.equals("Red")) {
+        if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isRed()) {
             g2d.setStroke(new BasicStroke(3));
             g2d.setColor(new Color(0x00FF00));
         }
@@ -106,7 +106,7 @@ public class PlayerPanel extends JPanel {
                         GameFrame.get().setGameBoard(chessBoard);
                     }
                     timer.stop();
-                    update();
+                    redo(GameFrame.get().getChessBoard());
                 }
                 repaint();
             }
@@ -114,49 +114,23 @@ public class PlayerPanel extends JPanel {
         timer.start();
     }
 
-    public void update() {
-        if (currentPlayer.equals("Blue")) {
-            currentPlayer = "Red";
-        } else {
-            currentPlayer = "Blue";
-            setRoundNumber(getRoundNumber() + 1);
-        }
-        timerSeconds = 30;
-        timer.restart();
-        repaint();
-    }
-
     public void reset() {
         roundNumber = 1;
-        currentPlayer = "Blue";
         timerSeconds = 30;
         timer.restart();
         repaint();
     }
 
     public void undo() {
-        if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor() == PlayerColor.BLUE) {
-            currentPlayer = "Blue";
+        if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.AI
+                || GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.AI) {
             setRoundNumber(getRoundNumber() - 1);
-        } else if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor() == PlayerColor.RED){
-            currentPlayer = "Red";
         }
-        timerSeconds = 30;
-        timer.restart();
-        repaint();
-    }
-
-    public void undoAIBlue() {
-        currentPlayer = "Red";
-        setRoundNumber(getRoundNumber() - 1);
-        timerSeconds = 30;
-        timer.restart();
-        repaint();
-    }
-
-    public void undoAIRed() {
-        currentPlayer = "Blue";
-        setRoundNumber(getRoundNumber() - 1);
+        if ((GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN
+                && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN)
+                && GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isRed()) {
+            setRoundNumber(getRoundNumber() - 1);
+        }
         timerSeconds = 30;
         timer.restart();
         repaint();
@@ -164,10 +138,7 @@ public class PlayerPanel extends JPanel {
 
     public void redo(Board chessBoard) {
         if (chessBoard.getCurrentPlayer().getAllyColor().isBlue()) {
-            currentPlayer = "Blue";
             setRoundNumber(getRoundNumber() + 1);
-        } else {
-            currentPlayer = "Red";
         }
         timerSeconds = 30;
         timer.restart();
@@ -180,10 +151,6 @@ public class PlayerPanel extends JPanel {
 
     public void setRoundNumber(int roundNumber) {
         this.roundNumber = roundNumber;
-    }
-
-    public void setCurrentPlayer(String currentPlayer) {
-        this.currentPlayer = currentPlayer;
     }
 
     public void setTimerSeconds(int timerSeconds) {

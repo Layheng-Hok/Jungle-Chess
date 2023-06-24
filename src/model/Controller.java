@@ -309,16 +309,16 @@ public class Controller {
     }
 
     public static void undoMove() {
+        if (GameFrame.get().getMoveLog().size() == 0) {
+            JOptionPane.showMessageDialog(null, "No moves to undo.");
+            return;
+        }
         if (GameFrame.get().isReplayMovesInProgress()) {
             JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
             return;
         }
         if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
             JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
-            return;
-        }
-        if (GameFrame.get().getMoveLog().size() == 0) {
-            JOptionPane.showMessageDialog(null, "No moves to undo.");
             return;
         }
         if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.AI &&
@@ -332,10 +332,15 @@ public class Controller {
                     GameFrame.get().setLastMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
                     GameFrame.get().setComputerMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
                 }
-                GameFrame.get().getPlayerPanel().undoAIBlue();
+                GameFrame.get().getPlayerPanel().undo();
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
-            } else {
+            } else if (GameFrame.get().getMoveLog().size() == 1) {
+                for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
+                }
+                GameFrame.get().setLastMove(null);
+                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 GameFrame.get().restartGame();
             }
             System.out.println(GameFrame.get().getMoveLog().size());
@@ -357,7 +362,7 @@ public class Controller {
                 }
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.AI) {
-                    GameFrame.get().getPlayerPanel().undoAIRed();
+                    GameFrame.get().getPlayerPanel().undo();
                 }
                 GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
                 System.out.println("Undo");
@@ -372,6 +377,11 @@ public class Controller {
                 GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
                 System.out.println("Undo");
             } else if (GameFrame.get().getMoveLog().size() == 1) {
+                for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
+                }
+                GameFrame.get().setLastMove(null);
+                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 GameFrame.get().restartGame();
             }
         }
