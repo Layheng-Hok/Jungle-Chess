@@ -53,7 +53,7 @@ public class GameFrame extends Observable {
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(500, 650);
     private static final Dimension TERRAIN_PANEL_DIMENSION = new Dimension(10, 10);
     final ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
-    static final String defaultImagesPath = "resource/images/";
+    static final String defaultImagesPath = "resources/images/";
     private static final GameFrame INSTANCE = new GameFrame();
 
     public GameFrame() {
