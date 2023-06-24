@@ -277,9 +277,23 @@ public class Controller {
             JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
             return;
         }
+        if (GameFrame.get().getMoveLog().size() == 0) {
+            for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
+            }
+            GameFrame.get().restartGame();
+            System.out.println("Game Restarted");
+            return;
+        }
+        GameFrame.get().setAnimationInProgress(true);
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() {
+                for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
+                }
+                GameFrame.get().setLastMove(null);
+                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 coloringTerrainsAnimationThread();
                 return null;
             }
@@ -287,6 +301,7 @@ public class Controller {
             @Override
             protected void done() {
                 GameFrame.get().restartGame();
+                GameFrame.get().setAnimationInProgress(false);
                 System.out.println("Game Restarted");
             }
         };
@@ -347,7 +362,7 @@ public class Controller {
                 GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
                 System.out.println("Undo");
             }
-        } else if (  GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
+        } else if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
             if (GameFrame.get().getMoveLog().size() > 1) {
                 Move lastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
                 GameFrame.get().setLastMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
@@ -384,6 +399,11 @@ public class Controller {
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
+                for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
+                }
+                GameFrame.get().setLastMove(null);
+                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 coloringTerrainsAnimationThread();
                 GameFrame.get().setChessBoard(Board.constructStandardBoard());
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());

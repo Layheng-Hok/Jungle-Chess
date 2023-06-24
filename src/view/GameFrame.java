@@ -45,6 +45,7 @@ public class GameFrame extends Observable {
     public Controller.BoardDirection boardDirection;
     private boolean isBoard1 = true;
     private boolean replayMovesInProgress = false;
+    private boolean animationInProgress = false;
     private boolean reversedRedSide = true;
     private boolean reversedBlueSide = false;
     private boolean glitchMode = false;
@@ -152,6 +153,12 @@ public class GameFrame extends Observable {
             }
         }
 
+        public void removeAllBackgrounds() {
+            for (final TerrainPanel terrainPanel : boardTerrains) {
+                terrainPanel.setBackground(null);
+            }
+        }
+
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -163,7 +170,7 @@ public class GameFrame extends Observable {
         }
     }
 
-    private class LeftPanel extends JPanel {
+    private static class LeftPanel extends JPanel {
         private final Image leftPanelImage;
 
         LeftPanel() {
@@ -179,7 +186,7 @@ public class GameFrame extends Observable {
         }
     }
 
-    private class RightPanel extends JPanel {
+    private static class RightPanel extends JPanel {
         private final Image rightPanelImage;
 
         RightPanel() {
@@ -198,10 +205,14 @@ public class GameFrame extends Observable {
 
     public class TerrainPanel extends JPanel {
         private final int terrainCoordinate;
-        private final Border mouseEnteredBorder = BorderFactory.createLineBorder(new Color(195, 80, 170), 3);
         private final Border blueSelectedBorder = BorderFactory.createLineBorder(new Color(1, 41, 161), 3);
         private final Border redSelectedBorder = BorderFactory.createLineBorder(new Color(180, 23, 23), 3);
+        private final Border blueHoveringBorder = BorderFactory.createLineBorder(new Color(1, 41, 161), 3);
+        private final Border redHoveringBorder = BorderFactory.createLineBorder(new Color(180, 23, 23), 3);
         private final Border capturedPieceBorder = BorderFactory.createLineBorder(new Color(14, 74, 17), 5);
+        private final Color blueBackground = new Color(0, 71, 210, 90);
+        private final Color redBackground = new Color(180, 23, 23, 90);
+        private final Color greenBackground = new Color(5, 138, 15);
 
         TerrainPanel(final BoardPanel boardPanel, final int terrainCoordinate) {
             super(new GridBagLayout());
@@ -270,17 +281,30 @@ public class GameFrame extends Observable {
                 @Override
                 public void mouseEntered(final MouseEvent e) {
                     Border border = getBorder();
-                    if (border == null || !(border.equals(blueSelectedBorder)
+                    if (!animationInProgress && !replayMovesInProgress && (border == null || !(border.equals(blueSelectedBorder)
                             || border.equals(redSelectedBorder)
-                            || border.equals(capturedPieceBorder))) {
-                        setBorder(mouseEnteredBorder);
+                            || border.equals(capturedPieceBorder)))) {
+                        if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN
+                                && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
+                            if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue()) {
+                                setBorder(blueHoveringBorder);
+                            } else if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isRed()) {
+                                setBorder(redHoveringBorder);
+                            }
+                        } else if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN
+                                && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.AI) {
+                            setBorder(blueHoveringBorder);
+                        } else if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.AI
+                                && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
+                            setBorder(redHoveringBorder);
+                        }
                     }
                 }
 
                 @Override
                 public void mouseExited(final MouseEvent e) {
                     Border border = getBorder();
-                    if (border != null && border.equals(mouseEnteredBorder)) {
+                    if (border != null && border == blueHoveringBorder || border == redHoveringBorder) {
                         setBorder(null);
                     }
                 }
@@ -323,12 +347,12 @@ public class GameFrame extends Observable {
             if (humanMovedPiece != null
                     && humanMovedPiece.getPieceColor() == chessBoard.getCurrentPlayer().getAllyColor()
                     && humanMovedPiece.getPieceCoordinate() == this.terrainCoordinate) {
-                if (chessBoard.getCurrentPlayer().getAllyColor() == PlayerColor.BLUE) {
+                if (chessBoard.getCurrentPlayer().getAllyColor().isBlue()) {
                     setBorder(blueSelectedBorder);
-                    setBackground(new Color(0, 71, 210, 90));
-                } else {
+                    setBackground(blueBackground);
+                } else if (chessBoard.getCurrentPlayer().getAllyColor().isRed()) {
                     setBorder(redSelectedBorder);
-                    setBackground(new Color(180, 23, 23, 90));
+                    setBackground(redBackground);
                 }
                 setOpaque(true);
             } else {
@@ -340,7 +364,7 @@ public class GameFrame extends Observable {
             for (final Move move : pieceValidMoves(board)) {
                 if (!move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
                     try {
-                        String dotColor = GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor() == PlayerColor.BLUE ? "blue" : "red";
+                        String dotColor = GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue() ? "blue" : "red";
                         ImageIcon dotIcon = new ImageIcon(ImageIO.read(new File(defaultImagesPath + dotColor + "dot.png")));
                         Image resizedImage = dotIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
                         add(new JLabel(new ImageIcon(resizedImage)));
@@ -351,10 +375,10 @@ public class GameFrame extends Observable {
                     SwingWorker<Void, Void> worker = new SwingWorker<>() {
                         @Override
                         protected Void doInBackground() {
-                            setBorder(null);
-                            setBackground(null);
+//                            setBorder(null);
+//                            setBackground(null);
                             if (glitchMode) {
-                                    GameFrame.get().getBoardPanel().drawBoard(chessBoard);
+                                GameFrame.get().getBoardPanel().drawBoard(chessBoard);
                             }
                             return null;
                         }
@@ -362,10 +386,11 @@ public class GameFrame extends Observable {
                         @Override
                         protected void done() {
                             setBorder(capturedPieceBorder);
-                            setBackground(new Color(5, 138, 15));
+                            setBackground(greenBackground);
                             setOpaque(true);
                         }
                     };
+                    System.out.println("Capture move: " + move);
                     worker.execute();
                 }
             }
@@ -374,12 +399,12 @@ public class GameFrame extends Observable {
         private void highlightLastMove() {
             if (lastMove != null) {
                 if (this.terrainCoordinate == lastMove.getCurrentCoordinate() || this.terrainCoordinate == lastMove.getDestinationCoordinate()) {
-                    if (chessBoard.getCurrentPlayer().getAllyColor() == PlayerColor.RED) {
+                    if (chessBoard.getCurrentPlayer().getAllyColor().isRed()) {
                         setBorder(blueSelectedBorder);
-                        setBackground(new Color(0, 71, 210, 90));
-                    } else {
+                        setBackground(blueBackground);
+                    } else if (chessBoard.getCurrentPlayer().getAllyColor().isBlue()) {
                         setBorder(redSelectedBorder);
-                        setBackground(new Color(180, 23, 23, 90));
+                        setBackground(redBackground);
                     }
                     setOpaque(true);
                 }
@@ -453,6 +478,11 @@ public class GameFrame extends Observable {
                 setBackground(new Color(236, 112, 99));
             }
             setOpaque(false);
+        }
+
+        public void deselectLeftMouseButton() {
+            sourceTerrain = null;
+            humanMovedPiece = null;
         }
     }
 
@@ -549,16 +579,15 @@ public class GameFrame extends Observable {
     }
 
     public void restartGame() {
-        for (int i = 0; i < 2; i++) {
-            chessBoard = Board.constructStandardBoard();
-            boardPanel.drawBoard(chessBoard);
-            boardPanel.removeAllBorders();
-            lastMove = null;
-            computerMove = null;
-            playerPanel.reset();
-            capturedPiecesPanel.reset();
-            moveLog.clear();
-        }
+        chessBoard = Board.constructStandardBoard();
+        boardPanel.removeAllBorders();
+        boardPanel.removeAllBackgrounds();
+        boardPanel.drawBoard(chessBoard);
+        lastMove = null;
+        computerMove = null;
+        playerPanel.reset();
+        capturedPiecesPanel.reset();
+        moveLog.clear();
         GameFrame.get().getGameConfiguration().setReady(false);
         setChanged();
         notifyObservers();
@@ -692,6 +721,10 @@ public class GameFrame extends Observable {
 
     public void setReplayMovesInProgress(boolean replayMovesInProgress) {
         this.replayMovesInProgress = replayMovesInProgress;
+    }
+
+    public void setAnimationInProgress(boolean animationInProgress){
+        this.animationInProgress = animationInProgress;
     }
 
     public boolean isBoard1() {
