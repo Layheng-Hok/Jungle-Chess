@@ -79,21 +79,6 @@ public class GameFrame extends Observable {
         this.gameFrame.setResizable(false);
     }
 
-    public void defineBorderLayout() {
-        if (isBoard1) {
-            this.gameFrame.setLayout(new BorderLayout());
-        } else {
-            this.gameFrame.setLayout(new BorderLayout());
-        }
-        this.gameFrame.add(this.leftPanel, BorderLayout.WEST);
-        this.gameFrame.add(this.rightPanel, BorderLayout.EAST);
-        this.gameFrame.add(this.playerPanel, BorderLayout.NORTH);
-        this.gameFrame.add(this.capturedPiecesPanel, BorderLayout.SOUTH);
-        this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
-        this.gameFrame.revalidate();
-        this.gameFrame.repaint();
-    }
-
     private void setMenuBarAndPanels() {
         final JMenuBar gameFrameMenuBar = createGameFrameMenuBar();
         this.gameFrame.setJMenuBar(gameFrameMenuBar);
@@ -452,9 +437,8 @@ public class GameFrame extends Observable {
                     assert imagePath != null;
                     image = ImageIO.read(new File(imagePath));
                     ImageIcon icon = new ImageIcon(image);
-                    int labelWidth = 60;
-                    int labelHeight = 60;
-                    Image scaledImage = icon.getImage().getScaledInstance(labelWidth, labelHeight, Image.SCALE_SMOOTH);
+                    int labelWidthAndHeight = 65;
+                    Image scaledImage = icon.getImage().getScaledInstance(labelWidthAndHeight, labelWidthAndHeight, Image.SCALE_SMOOTH);
                     icon = new ImageIcon(scaledImage);
                     JLabel label = new JLabel(icon);
                     add(label);

@@ -455,7 +455,6 @@ public class Controller {
 
     public static void changeBoard() {
         GameFrame.get().setBoard1(!GameFrame.get().isBoard1());
-        GameFrame.get().defineBorderLayout();
         String boardImageFileName = GameFrame.get().isBoard1() ? "chessboard1.png" : "chessboard2.png";
         GameFrame.get().getBoardPanel().setBoardImage(boardImageFileName);
         GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());

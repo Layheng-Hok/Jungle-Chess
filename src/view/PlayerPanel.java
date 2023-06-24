@@ -2,15 +2,14 @@ package view;
 
 import model.board.Board;
 import model.board.Move;
-import model.player.PlayerColor;
 import model.player.PlayerType;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import static view.GameFrame.defaultImagesPath;
 
@@ -63,8 +62,11 @@ public class PlayerPanel extends JPanel {
         }
 
         g2d.drawRoundRect(leftImageX - 5, imageY - 5, imageWidth + 10, imageHeight + 10, 10, 10);
-        Image leftImage = new ImageIcon(defaultImagesPath + "player1.png").getImage();
-        g.drawImage(leftImage, leftImageX, imageY, imageWidth, imageHeight, this);
+        Image originalLeftImage = new ImageIcon(defaultImagesPath + "player1.png").getImage();
+        Image scaledLeftImage = originalLeftImage.getScaledInstance(imageWidth, imageHeight, Image.SCALE_SMOOTH);
+        ImageIcon leftImageIcon = new ImageIcon(scaledLeftImage);
+        g.drawImage(leftImageIcon.getImage(), leftImageX, imageY, imageWidth, imageHeight, this);
+
 
         g2d.setColor(new Color(0, 0, 0, 127));
         g2d.fillRect(rightImageX - 5, imageY - 5, imageWidth + 10, imageHeight + 10);
@@ -72,9 +74,13 @@ public class PlayerPanel extends JPanel {
             g2d.setStroke(new BasicStroke(3));
             g2d.setColor(new Color(0x00FF00));
         }
+
         g2d.drawRoundRect(rightImageX - 5, imageY - 5, imageWidth + 10, imageHeight + 10, 10, 10);
-        Image rightImage = new ImageIcon(defaultImagesPath + "player2.png").getImage();
-        g.drawImage(rightImage, rightImageX, imageY, imageWidth, imageHeight, this);
+        Image originalRightImage = new ImageIcon(defaultImagesPath + "player2.png").getImage();
+        Image scaledRightImage = originalRightImage.getScaledInstance(imageWidth, imageHeight, Image.SCALE_SMOOTH);
+        ImageIcon rightImageIcon = new ImageIcon(scaledRightImage);
+        g.drawImage(rightImageIcon.getImage(), rightImageX, imageY, imageWidth, imageHeight, this);
+
 
         validate();
     }
