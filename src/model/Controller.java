@@ -7,10 +7,16 @@ import view.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
+
+import static view.GameFrame.defaultImagesPath;
 
 public class Controller {
+    private Controller() {
+        throw new RuntimeException("You cannot instantiate an object of \"Controller\" class.");
+    }
+
     public static void saveGame() {
         if (GameFrame.get().isReplayMovesInProgress()) {
             JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
@@ -558,5 +564,54 @@ public class Controller {
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public static void handleWinningStateForDenPenetratedCondition() {
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws InterruptedException {
+                for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                    if (GameFrame.get().getChessBoard().getTerrain(i).isTerrainOccupied()
+                            && GameFrame.get().getChessBoard().getTerrain(i).getPiece().getPieceColor() == GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor()) {
+                        publish();
+                        Thread.sleep(500);
+                        GameFrame.get().getBoardPanel().getBoardTerrains().get(i).removeAll();
+                        GameFrame.get().getBoardPanel().getBoardTerrains().get(i).revalidate();
+                        GameFrame.get().getBoardPanel().getBoardTerrains().get(i).repaint();
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            protected void process(List<Void> chunks) {
+                AudioPlayer.SinglePlayer.playSoundEffect("popping.wav");
+            }
+
+            @Override
+            protected void done() {
+                if (GameFrame.get().getGameConfiguration().getBluePlayerType() == GameFrame.get().getGameConfiguration().getRedPlayerType()
+                        || GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
+                    AudioPlayer.SinglePlayer.playSoundEffect("winning.wav");
+                } else {
+                    AudioPlayer.SinglePlayer.playSoundEffect("losing.wav");
+                }
+                ImageIcon gameOverIcon = new ImageIcon(defaultImagesPath + "gameover.png");
+                Image resizedImage = gameOverIcon.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT);
+                Icon resizedIcon = new ImageIcon(resizedImage);
+                JOptionPane.showMessageDialog(null,
+                        "Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
+                                + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + "'s den is penetrated by the enemy!",
+                        "Game Over",
+                        JOptionPane.INFORMATION_MESSAGE,
+                        resizedIcon);
+
+                System.out.println("Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
+                        + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + "'s den is penetrated by the enemy!");
+                GameFrame.get().restartGame();
+                System.out.println("Game Restarted");
+            }
+        };
+        worker.execute();
     }
 }

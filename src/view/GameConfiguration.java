@@ -9,12 +9,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import static view.GameFrame.defaultImagesPath;
+
 public class GameConfiguration extends JDialog {
     private PlayerType bluePlayerType;
     private PlayerType redPlayerType;
     private static final String HUMAN = "Human";
     private static final String COMPUTER = "Computer";
-    private static final String defaultImagesPath = "resource/images/";
     private boolean isReady = false;
 
     GameConfiguration(final JFrame frame, final boolean modal) {

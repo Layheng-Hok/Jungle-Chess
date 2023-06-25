@@ -53,7 +53,7 @@ public class GameFrame extends Observable {
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(500, 650);
     private static final Dimension TERRAIN_PANEL_DIMENSION = new Dimension(10, 10);
     final ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
-    static final String defaultImagesPath = "resources/images/";
+    public static final String defaultImagesPath = "resources/images/";
     private static final GameFrame INSTANCE = new GameFrame();
 
     public GameFrame() {
@@ -564,14 +564,14 @@ public class GameFrame extends Observable {
 
     public void restartGame() {
         chessBoard = Board.constructStandardBoard();
+        moveLog.clear();
+        lastMove = null;
+        computerMove = null;
         boardPanel.removeAllBorders();
         boardPanel.removeAllBackgrounds();
         boardPanel.drawBoard(chessBoard);
-        lastMove = null;
-        computerMove = null;
         playerPanel.reset();
         capturedPiecesPanel.reset();
-        moveLog.clear();
         GameFrame.get().getGameConfiguration().setReady(false);
         setChanged();
         notifyObservers();
@@ -579,36 +579,20 @@ public class GameFrame extends Observable {
 
     void checkWin() {
         if (GameFrame.get().getChessBoard().getCurrentPlayer().isDenPenetrated()) {
-            if (GameFrame.get().getGameConfiguration().getBluePlayerType() == GameFrame.get().gameConfiguration.getRedPlayerType()
-                    || GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
-                AudioPlayer.SinglePlayer.playSoundEffect("winning.wav");
-            } else {
-                AudioPlayer.SinglePlayer.playSoundEffect("losing.wav");
-            }
-            GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-            ImageIcon gameOverIcon = new ImageIcon(defaultImagesPath + "gameover.png");
-            Image resizedImage = gameOverIcon.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT);
-            Icon resizedIcon = new ImageIcon(resizedImage);
-            JOptionPane.showMessageDialog(null,
-                    "Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
-                            + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + "'s den is penetrated by the enemy!",
-                    "Game Over",
-                    JOptionPane.INFORMATION_MESSAGE,
-                    resizedIcon);
-
-            System.out.println("Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
-                    + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + "'s den is penetrated by the enemy!");
-            GameFrame.get().restartGame();
-            System.out.println("Game Restarted");
+            Controller.handleWinningStateForDenPenetratedCondition();
         }
         if (GameFrame.get().getChessBoard().getCurrentPlayer().getActivePieces().isEmpty()) {
+            try{
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             if (GameFrame.get().getGameConfiguration().getBluePlayerType() == GameFrame.get().gameConfiguration.getRedPlayerType()
                     || GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
                 AudioPlayer.SinglePlayer.playSoundEffect("winning.wav");
             } else {
                 AudioPlayer.SinglePlayer.playSoundEffect("losing.wav");
             }
-            GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
             ImageIcon gameOverIcon = new ImageIcon(defaultImagesPath + "gameover.png");
             Image resizedImage = gameOverIcon.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT);
             Icon resizedIcon = new ImageIcon(resizedImage);
