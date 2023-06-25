@@ -126,11 +126,11 @@ public class MainMenu extends JFrame {
             isGrayScaleSoundEffectButton = !isGrayScaleSoundEffectButton;
             if (isGrayScaleSoundEffectButton) {
                 soundEffectButton.setIcon(graySoundEffectIcon);
-                System.out.println("Sound Effects is muted");
+                System.out.println("Sound Effect is muted");
             } else {
                 AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
                 soundEffectButton.setIcon(soundEffectIcon);
-                System.out.println("Sound Effects is on");
+                System.out.println("Sound Effect is on");
             }
         });
     }

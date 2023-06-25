@@ -308,99 +308,54 @@ public class GameFrame extends Observable {
             TerrainPanel other = (TerrainPanel) obj;
             Border thisBorder = getBorder();
             Border otherBorder = other.getBorder();
-            if (thisBorder instanceof LineBorder && otherBorder instanceof LineBorder) {
-                Color thisBorderColor = ((LineBorder) thisBorder).getLineColor();
-                Color otherBorderColor = ((LineBorder) otherBorder).getLineColor();
-                int thisBorderThickness = ((LineBorder) thisBorder).getThickness();
-                int otherBorderThickness = ((LineBorder) otherBorder).getThickness();
-                return thisBorderColor.equals(otherBorderColor) && thisBorderThickness == otherBorderThickness;
+            if (thisBorder == null && otherBorder == null) {
+                return true;
             }
-            return thisBorder == null && otherBorder == null;
+            if (thisBorder != null && otherBorder != null) {
+                if (thisBorder.equals(otherBorder)) {
+                    return true;
+                }
+                if (thisBorder instanceof LineBorder && otherBorder instanceof LineBorder) {
+                    Color thisBorderColor = ((LineBorder) thisBorder).getLineColor();
+                    Color otherBorderColor = ((LineBorder) otherBorder).getLineColor();
+                    int thisBorderThickness = ((LineBorder) thisBorder).getThickness();
+                    int otherBorderThickness = ((LineBorder) otherBorder).getThickness();
+                    return thisBorderColor.equals(otherBorderColor) && thisBorderThickness == otherBorderThickness;
+                }
+            }
+            return false;
         }
+
 
         public void drawTerrain(final Board board) {
             assignTerrainColor(terrainCoordinate);
             assignTerrainPieceIcon(board);
             drawSelectedBorder();
-            highlightValidMoves(board);
             highlightLastMove();
+            if (glitchMode) {
+                highlightValidMovesGlitchMode(board);
+            } else {
+                highlightValidMoves(board);
+            }
             validate();
             repaint();
         }
 
-        private void drawSelectedBorder() {
-            if (humanMovedPiece != null
-                    && humanMovedPiece.getPieceColor() == chessBoard.getCurrentPlayer().getAllyColor()
-                    && humanMovedPiece.getPieceCoordinate() == this.terrainCoordinate) {
-                if (chessBoard.getCurrentPlayer().getAllyColor().isBlue()) {
-                    setBorder(blueSelectedBorder);
-                    setBackground(blueBackground);
-                } else if (chessBoard.getCurrentPlayer().getAllyColor().isRed()) {
-                    setBorder(redSelectedBorder);
-                    setBackground(redBackground);
-                }
-                setOpaque(true);
-            } else {
-                setBorder(BorderFactory.createEmptyBorder());
+        private void assignTerrainColor(final int coordinate) {
+            if (BoardUtilities.isLand(coordinate)) {
+                setBackground(new Color(40, 180, 99));
+            } else if (BoardUtilities.isRiver(coordinate)) {
+                setBackground(new Color(99, 184, 255));
+            } else if (BoardUtilities.isEnemyTrap(coordinate, PlayerColor.BLUE)) {
+                setBackground(new Color(230, 126, 34));
+            } else if (BoardUtilities.isEnemyTrap(coordinate, PlayerColor.RED)) {
+                setBackground(new Color(230, 126, 34));
+            } else if (BoardUtilities.isDen(coordinate, PlayerColor.BLUE)) {
+                setBackground(new Color(52, 152, 219));
+            } else if (BoardUtilities.isDen(coordinate, PlayerColor.RED)) {
+                setBackground(new Color(236, 112, 99));
             }
-        }
-
-        private void highlightValidMoves(final Board board) {
-            for (final Move move : pieceValidMoves(board)) {
-                if (!move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
-                    try {
-                        String dotColor = GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue() ? "blue" : "red";
-                        ImageIcon dotIcon = new ImageIcon(ImageIO.read(new File(defaultImagesPath + dotColor + "dot.png")));
-                        Image resizedImage = dotIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-                        add(new JLabel(new ImageIcon(resizedImage)));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else if (move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
-                    SwingWorker<Void, Void> worker = new SwingWorker<>() {
-                        @Override
-                        protected Void doInBackground() {
-//                            setBorder(null);
-//                            setBackground(null);
-                            if (glitchMode) {
-                                GameFrame.get().getBoardPanel().drawBoard(chessBoard);
-                            }
-                            return null;
-                        }
-
-                        @Override
-                        protected void done() {
-                            setBorder(capturedPieceBorder);
-                            setBackground(greenBackground);
-                            setOpaque(true);
-                        }
-                    };
-                    System.out.println("Capture move: " + move);
-                    worker.execute();
-                }
-            }
-        }
-
-        private void highlightLastMove() {
-            if (lastMove != null) {
-                if (this.terrainCoordinate == lastMove.getCurrentCoordinate() || this.terrainCoordinate == lastMove.getDestinationCoordinate()) {
-                    if (chessBoard.getCurrentPlayer().getAllyColor().isRed()) {
-                        setBorder(blueSelectedBorder);
-                        setBackground(blueBackground);
-                    } else if (chessBoard.getCurrentPlayer().getAllyColor().isBlue()) {
-                        setBorder(redSelectedBorder);
-                        setBackground(redBackground);
-                    }
-                    setOpaque(true);
-                }
-            }
-        }
-
-        private Collection<Move> pieceValidMoves(final Board board) {
-            if (humanMovedPiece != null && humanMovedPiece.getPieceColor() == board.getCurrentPlayer().getAllyColor()) {
-                return humanMovedPiece.determineValidMoves(board);
-            }
-            return Collections.emptyList();
+            setOpaque(false);
         }
 
         private void assignTerrainPieceIcon(final Board board) {
@@ -448,21 +403,95 @@ public class GameFrame extends Observable {
             }
         }
 
-        private void assignTerrainColor(final int coordinate) {
-            if (BoardUtilities.isLand(coordinate)) {
-                setBackground(new Color(40, 180, 99));
-            } else if (BoardUtilities.isRiver(coordinate)) {
-                setBackground(new Color(99, 184, 255));
-            } else if (BoardUtilities.isEnemyTrap(coordinate, PlayerColor.BLUE)) {
-                setBackground(new Color(230, 126, 34));
-            } else if (BoardUtilities.isEnemyTrap(coordinate, PlayerColor.RED)) {
-                setBackground(new Color(230, 126, 34));
-            } else if (BoardUtilities.isDen(coordinate, PlayerColor.BLUE)) {
-                setBackground(new Color(52, 152, 219));
-            } else if (BoardUtilities.isDen(coordinate, PlayerColor.RED)) {
-                setBackground(new Color(236, 112, 99));
+        private void drawSelectedBorder() {
+            if (humanMovedPiece != null
+                    && humanMovedPiece.getPieceColor() == chessBoard.getCurrentPlayer().getAllyColor()
+                    && humanMovedPiece.getPieceCoordinate() == this.terrainCoordinate) {
+                if (chessBoard.getCurrentPlayer().getAllyColor().isBlue()) {
+                    setBorder(blueSelectedBorder);
+                    setBackground(blueBackground);
+                } else if (chessBoard.getCurrentPlayer().getAllyColor().isRed()) {
+                    setBorder(redSelectedBorder);
+                    setBackground(redBackground);
+                }
+                setOpaque(true);
+            } else {
+                setBorder(BorderFactory.createEmptyBorder());
             }
-            setOpaque(false);
+        }
+
+        private void highlightLastMove() {
+            if (lastMove != null) {
+                if (this.terrainCoordinate == lastMove.getCurrentCoordinate() || this.terrainCoordinate == lastMove.getDestinationCoordinate()) {
+                    if (chessBoard.getCurrentPlayer().getAllyColor().isRed()) {
+                        setBorder(blueSelectedBorder);
+                        setBackground(blueBackground);
+                    } else if (chessBoard.getCurrentPlayer().getAllyColor().isBlue()) {
+                        setBorder(redSelectedBorder);
+                        setBackground(redBackground);
+                    }
+                    setOpaque(true);
+                }
+            }
+        }
+
+        private void highlightValidMoves(final Board board) {
+            for (final Move move : selectedPieceValidMoves(board)) {
+                if (!move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
+                    try {
+                        String dotColor = GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue() ? "blue" : "red";
+                        ImageIcon dotIcon = new ImageIcon(ImageIO.read(new File(defaultImagesPath + dotColor + "dot.png")));
+                        Image resizedImage = dotIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+                        add(new JLabel(new ImageIcon(resizedImage)));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else if (move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
+                    setBorder(BorderFactory.createEmptyBorder());
+                    setBackground(new Color(0, 0, 0, 0));
+                    setBorder(capturedPieceBorder);
+                    setBackground(greenBackground);
+                    setOpaque(true);
+                }
+            }
+        }
+
+        private void highlightValidMovesGlitchMode(final Board board) {
+            for (final Move move : selectedPieceValidMoves(board)) {
+                if (!move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
+                    try {
+                        String dotColor = GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue() ? "blue" : "red";
+                        ImageIcon dotIcon = new ImageIcon(ImageIO.read(new File(defaultImagesPath + dotColor + "dot.png")));
+                        Image resizedImage = dotIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+                        add(new JLabel(new ImageIcon(resizedImage)));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else if (move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
+                    SwingWorker<Void, Void> worker = new SwingWorker<>() {
+                        @Override
+                        protected Void doInBackground() {
+                            publish();
+                            return null;
+                        }
+
+                        @Override
+                        protected void process(List<Void> chunks) {
+                            setBorder(capturedPieceBorder);
+                            setBackground(greenBackground);
+                            setOpaque(true);
+                        }
+                    };
+                    worker.execute();
+                }
+            }
+        }
+
+        private Collection<Move> selectedPieceValidMoves(final Board board) {
+            if (humanMovedPiece != null && humanMovedPiece.getPieceColor() == board.getCurrentPlayer().getAllyColor()) {
+                return humanMovedPiece.determineValidMoves(board);
+            }
+            return Collections.emptyList();
         }
 
         public void deselectLeftMouseButton() {
@@ -582,7 +611,7 @@ public class GameFrame extends Observable {
             Controller.handleWinningStateForDenPenetratedCondition();
         }
         if (GameFrame.get().getChessBoard().getCurrentPlayer().getActivePieces().isEmpty()) {
-            try{
+            try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -690,7 +719,7 @@ public class GameFrame extends Observable {
         this.replayMovesInProgress = replayMovesInProgress;
     }
 
-    public void setAnimationInProgress(boolean animationInProgress){
+    public void setAnimationInProgress(boolean animationInProgress) {
         this.animationInProgress = animationInProgress;
     }
 
