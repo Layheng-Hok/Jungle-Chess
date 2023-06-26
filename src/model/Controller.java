@@ -73,7 +73,8 @@ public class Controller {
                         "Game saved successfully.\nWould you like to continue playing or go back to the main menu?",
                         "Game Saved",
                         JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
-                        null, new String[]{"Continue", "Back"},
+                        null,
+                        new String[]{"Continue", "Back"},
                         "Continue");
                 if (continueResponse == JOptionPane.NO_OPTION) {
                     GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);

@@ -18,7 +18,7 @@ public class PlayerPanel extends JPanel {
     private final Image topPanelImage;
     private int roundNumber = 1;
     private Timer timer;
-    private int initialTimerSeconds = 3;
+    private int initialTimerSeconds = 60;
     private int timerSeconds = initialTimerSeconds;
     private boolean normalModeWithTimer = true;
     private boolean stopTimer = false;
