@@ -31,7 +31,7 @@ public class ProgressFrame extends JFrame {
         int HEIGHT = 150;
         setTitle("Progress Frame");
         setSize(WIDTH, HEIGHT);
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(MainMenu.get());
         setLayout(null);
         setIconImage(logo.getImage());
         setResizable(false);

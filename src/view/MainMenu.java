@@ -78,6 +78,11 @@ public class MainMenu extends JFrame {
         twoPlayersButton.addActionListener(e -> {
             AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
             this.setVisible(false);
+            if (!GameFrame.get().getPlayerPanel().isBlitzMode()
+                    && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                GameFrame.get().getPlayerPanel().initTimerForNormalMode();
+                GameFrame.get().getPlayerPanel().setStopTimer(false);
+            }
             GameFrame.get().show();
             GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
             GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);

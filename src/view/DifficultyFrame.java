@@ -60,6 +60,11 @@ public class DifficultyFrame extends JFrame {
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
             if (GameFrame.get().getGameConfiguration().isReady()) {
+                if (!GameFrame.get().getPlayerPanel().isBlitzMode()
+                        && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                    GameFrame.get().getPlayerPanel().initTimerForNormalMode();
+                    GameFrame.get().getPlayerPanel().setStopTimer(false);
+                }
                 this.setVisible(false);
                 GameFrame.get().show();
             }
@@ -79,6 +84,11 @@ public class DifficultyFrame extends JFrame {
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
             if (GameFrame.get().getGameConfiguration().isReady()) {
+                if (!GameFrame.get().getPlayerPanel().isBlitzMode()
+                        && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                    GameFrame.get().getPlayerPanel().initTimerForNormalMode();
+                    GameFrame.get().getPlayerPanel().setStopTimer(false);
+                }
                 this.setVisible(false);
                 GameFrame.get().show();
             }
@@ -98,6 +108,11 @@ public class DifficultyFrame extends JFrame {
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
             if (GameFrame.get().getGameConfiguration().isReady()) {
+                if (!GameFrame.get().getPlayerPanel().isBlitzMode()
+                        && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                    GameFrame.get().getPlayerPanel().initTimerForNormalMode();
+                    GameFrame.get().getPlayerPanel().setStopTimer(false);
+                }
                 this.setVisible(false);
                 GameFrame.get().show();
             }

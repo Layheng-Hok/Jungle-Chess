@@ -1,12 +1,11 @@
 package view;
 
 import model.Controller;
+import model.board.BoardUtilities;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MenuBar {
     static JMenuBar createGameFrameMenuBar() {
@@ -17,7 +16,7 @@ public class MenuBar {
     }
 
     private static JMenu createSettingMenu() {
-        final JMenu settingMenu = new JMenu("⚙\uFE0F  Game Setting");
+        final JMenu settingMenu = new JMenu("⚙️  Game Setting");
         settingMenu.addMenuListener(new MenuListener() {
             @Override
             public void menuSelected(MenuEvent e) {
@@ -34,37 +33,14 @@ public class MenuBar {
         });
 
         final JMenuItem saveMenuItem = new JMenuItem("\uD83D\uDCBE  Save Game");
-        saveMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
-                Controller.saveGame();
-            }
+        saveMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.saveGame();
         });
         settingMenu.add(saveMenuItem);
 
-        final JMenuItem bgmAudioControlMenuItem = new JMenuItem("\uD83C\uDFB5  Mute/Unmute BGM");
-        bgmAudioControlMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MainMenu.get().bgmButton.doClick();
-                if (!MainMenu.get().isGrayScaleBGMButton()) {
-                    AudioPlayer.LoopPlayer.playGameBGM();
-                }
-            }
-        });
-        settingMenu.add(bgmAudioControlMenuItem);
-
-        final JMenuItem soundEffectAudioControlMenuItem = new JMenuItem("\uD83D\uDD0A  Mute/Unmute Sound Effect");
-        soundEffectAudioControlMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                MainMenu.get().soundEffectButton.doClick();
-            }
-        });
-        settingMenu.add(soundEffectAudioControlMenuItem);
-
-        final JMenu glitchEffectMenuItem = new JMenu("\u3299  Secret Dev Mode");
+        final JMenu gameModeMenu = new JMenu("\uD83D\uDCDA  Game Mode");
+        final JMenu secretDevModeMenuItem = new JMenu("㊙  Secret Dev Mode");
         final JMenuItem question1 = new JMenuItem("Are");
         final JMenuItem question2 = new JMenuItem("you");
         final JMenuItem question3 = new JMenuItem("sure");
@@ -81,17 +57,30 @@ public class MenuBar {
         final JMenuItem i6 = new JMenuItem("out");
         final JMenuItem i7 = new JMenuItem("yourself");
         final JMenu i8 = new JMenu("...");
-        final JCheckBoxMenuItem glitchEffectCheckBoxMenuItem = new JCheckBoxMenuItem("Glitch in the Matrix");
-        glitchEffectCheckBoxMenuItem.addActionListener(e -> GameFrame.get().setGlitchMode(glitchEffectCheckBoxMenuItem.isSelected()));
-        settingMenu.add(glitchEffectMenuItem);
-        glitchEffectMenuItem.add(question1);
-        glitchEffectMenuItem.add(question2);
-        glitchEffectMenuItem.add(question3);
-        glitchEffectMenuItem.add(question4);
-        glitchEffectMenuItem.add(question5);
-        glitchEffectMenuItem.add(question6);
-        glitchEffectMenuItem.add(question7);
-        glitchEffectMenuItem.add(question8);
+        final JCheckBoxMenuItem blitzMode = new JCheckBoxMenuItem("⏱   Blitz Mode");
+        blitzMode.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.handleBlitzMode();
+        });
+        final JCheckBoxMenuItem glitchEffectCheckBoxMenuItem = new JCheckBoxMenuItem("\uD83C\uDF0C  Glitch in the Matrix");
+        glitchEffectCheckBoxMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
+            }
+            GameFrame.get().setGlitchMode(glitchEffectCheckBoxMenuItem.isSelected());
+        });
+        settingMenu.add(gameModeMenu);
+        gameModeMenu.add(blitzMode);
+        gameModeMenu.add(secretDevModeMenuItem);
+        secretDevModeMenuItem.add(question1);
+        secretDevModeMenuItem.add(question2);
+        secretDevModeMenuItem.add(question3);
+        secretDevModeMenuItem.add(question4);
+        secretDevModeMenuItem.add(question5);
+        secretDevModeMenuItem.add(question6);
+        secretDevModeMenuItem.add(question7);
+        secretDevModeMenuItem.add(question8);
         question8.add(i1);
         question8.add(i2);
         question8.add(i3);
@@ -102,23 +91,30 @@ public class MenuBar {
         question8.add(i8);
         i8.add(glitchEffectCheckBoxMenuItem);
 
-        final JMenuItem backMenuItem = new JMenuItem("\uD83D\uDD19  Back To Main Menu");
-        backMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
-                Controller.backToMainMenu();
+        final JMenuItem bgmAudioControlMenuItem = new JMenuItem("\uD83C\uDFB5  Mute/Unmute BGM");
+        bgmAudioControlMenuItem.addActionListener(e -> {
+            MainMenu.get().bgmButton.doClick();
+            if (!MainMenu.get().isGrayScaleBGMButton()) {
+                AudioPlayer.LoopPlayer.playGameBGM();
             }
+        });
+        settingMenu.add(bgmAudioControlMenuItem);
+
+        final JMenuItem soundEffectAudioControlMenuItem = new JMenuItem("\uD83D\uDD0A  Mute/Unmute Sound Effect");
+        soundEffectAudioControlMenuItem.addActionListener(e -> MainMenu.get().soundEffectButton.doClick());
+        settingMenu.add(soundEffectAudioControlMenuItem);
+
+        final JMenuItem backMenuItem = new JMenuItem("\uD83D\uDD19  Back To Main Menu");
+        backMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.backToMainMenu();
         });
         settingMenu.add(backMenuItem);
 
         final JMenuItem exitMenuItem = new JMenuItem("❌  Exit Game");
-        exitMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
-                Controller.exitGame();
-            }
+        exitMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.exitGame();
         });
         settingMenu.add(exitMenuItem);
         return settingMenu;
@@ -142,64 +138,53 @@ public class MenuBar {
         });
 
         final JMenuItem restartMenuItem = new JMenuItem("\uD83D\uDD04  Restart");
-        restartMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
-                Controller.restartGame();
-            }
+        restartMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.restartGame();
         });
         gameplayOptionsMenu.add(restartMenuItem);
 
-        final JMenuItem undoMenuItem = new JMenuItem("↩\uFE0F   Undo");
-        undoMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
-                Controller.undoMove();
-            }
+        final JMenuItem undoMenuItem = new JMenuItem("↩️   Undo");
+        undoMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.undoMove();
         });
         gameplayOptionsMenu.add(undoMenuItem);
 
-        final JMenuItem replayAllMovesMenuItem = new JMenuItem(" ⏯\uFE0F   Playback Moves");
-        replayAllMovesMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
-                Controller.replayMoves();
-            }
+        final JMenuItem replayAllMovesMenuItem = new JMenuItem(" ⏯️   Playback Moves");
+        replayAllMovesMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.replayMoves();
         });
         gameplayOptionsMenu.add(replayAllMovesMenuItem);
 
         final JMenuItem changeBoardMenuItem = new JMenuItem("\uD83D\uDDBC  Change Board");
-        changeBoardMenuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
-                Controller.changeBoard();
-            }
+        changeBoardMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.changeBoard();
         });
         gameplayOptionsMenu.add(changeBoardMenuItem);
 
         final JMenuItem switchSide = new JMenuItem("⇅   Switch Side");
-        switchSide.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
-                Controller.switchSide();
-            }
+        switchSide.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.switchSide();
         });
         gameplayOptionsMenu.add(switchSide);
 
-        final JMenuItem flipPieceIcons = new JMenuItem(" ↕️\uFE0F   Flip Piece Icons");
-        flipPieceIcons.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
-                Controller.flipPiecesIcon();
-            }
+        final JMenuItem flipPieceIcons = new JMenuItem(" ↕️️   Flip Piece Icons");
+        flipPieceIcons.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.flipPiecesIcon();
         });
         gameplayOptionsMenu.add(flipPieceIcons);
+
+        final JMenuItem setTimerMenuItem = new JMenuItem(" ⏳   Set Timer");
+        setTimerMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setTimer();
+        });
+        gameplayOptionsMenu.add(setTimerMenuItem);
 
         return gameplayOptionsMenu;
     }

@@ -19,16 +19,16 @@ public class Controller {
 
     public static void saveGame() {
         if (GameFrame.get().isReplayMovesInProgress()) {
-            JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Replay is in progress. Please wait.");
             return;
         }
         if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
-            JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "AI is still thinking. Please wait.");
             return;
         }
         String fileName = JOptionPane.showInputDialog("File Name");
         while (fileName.equals("")) {
-            JOptionPane.showMessageDialog(null, "Name cannot be empty. Please enter again.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Name cannot be empty. Please enter again.");
             fileName = JOptionPane.showInputDialog("File Name");
         }
         writeGame(fileName);
@@ -37,13 +37,13 @@ public class Controller {
     private static void writeGame(String fileName) {
         String location = "database\\" + fileName + ".txt";
         if (!fileName.matches("[^\\\\/:*?\"<>|]+")) {
-            JOptionPane.showMessageDialog(null, "A file name cannot contain any illegal characters.", "Invalid File Name", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "A file name cannot contain any illegal characters.", "Invalid File Name", JOptionPane.ERROR_MESSAGE);
             return;
         }
         File file = new File(location);
         try {
             if (file.exists()) {
-                int response = JOptionPane.showConfirmDialog(null, "The file already exists, do you want to overwrite it?",
+                int response = JOptionPane.showConfirmDialog(GameFrame.get().getBoardPanel(), "The file already exists, do you want to overwrite it?",
                         "Overlapped File Name", JOptionPane.YES_NO_OPTION);
                 if (response == JOptionPane.NO_OPTION) {
                     return;
@@ -69,13 +69,19 @@ public class Controller {
             fileWriter.close();
             ProgressFrame progressFrame = new ProgressFrame();
             progressFrame.addProgressListener(() -> {
-                int continueResponse = JOptionPane.showOptionDialog(null, "Game saved successfully.\nWould you want to continue playing or go back to the main menu?", "Game Saved", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new String[]{"Continue", "Back"}, "Continue");
+                int continueResponse = JOptionPane.showOptionDialog(GameFrame.get().getBoardPanel(),
+                        "Game saved successfully.\nWould you like to continue playing or go back to the main menu?",
+                        "Game Saved",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                        null, new String[]{"Continue", "Back"},
+                        "Continue");
                 if (continueResponse == JOptionPane.NO_OPTION) {
                     GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
                     GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
                     GameFrame.get().restartGame();
                     GameFrame.get().dispose();
                     MainMenu.get().setVisible(true);
+                    GameFrame.get().getPlayerPanel().setStopTimer(true);
                     System.out.println("Back To Main Menu");
                 }
             });
@@ -88,11 +94,11 @@ public class Controller {
     public static void loadSavedGame() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("database"));
-        fileChooser.showOpenDialog(null);
+        fileChooser.showOpenDialog(MainMenu.get());
         File file = fileChooser.getSelectedFile();
 
         if (!file.getName().endsWith(".txt")) {
-            JOptionPane.showMessageDialog(null, "The file extension is either missing or not supported.",
+            JOptionPane.showMessageDialog(MainMenu.get(), "The file extension is either missing or not supported.",
                     "File Load Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -104,7 +110,7 @@ public class Controller {
                 readList.add(line);
             }
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, "Error reading file.",
+            JOptionPane.showMessageDialog(MainMenu.get(), "Error reading file.",
                     "File Read Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -120,7 +126,7 @@ public class Controller {
         try {
             playerTypeList = new ArrayList<>(Arrays.asList(playerTypeLine.split(" ")));
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "The file is corrupted.",
+            JOptionPane.showMessageDialog(MainMenu.get(), "The file is corrupted.",
                     "File Load Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -131,7 +137,7 @@ public class Controller {
             String[] moveTokens = moveLine.split(" ");
             try {
                 if (moveTokens.length != 3) {
-                    JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                    JOptionPane.showMessageDialog(MainMenu.get(), "The file is corrupted.",
                             "File Load Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -139,7 +145,7 @@ public class Controller {
                 currentCoordinateList.add(Integer.parseInt(moveTokens[1]));
                 destinationCoordinateList.add(Integer.parseInt(moveTokens[2]));
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                JOptionPane.showMessageDialog(MainMenu.get(), "The file is corrupted.",
                         "File Load Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -155,7 +161,7 @@ public class Controller {
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(null, "The file is corrupted.",
+            JOptionPane.showMessageDialog(MainMenu.get(), "The file is corrupted.",
                     "File Load Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -166,14 +172,14 @@ public class Controller {
         for (int i = 0; i < playerList.size(); i++) {
             if (i % 2 == 0) {
                 if (!playerList.get(i).equals("bl")) {
-                    JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                    JOptionPane.showMessageDialog(MainMenu.get(), "The file is corrupted.",
                             "File Load Error", JOptionPane.ERROR_MESSAGE);
                     System.out.println("Wrong player turns.");
                     return;
                 }
             } else {
                 if (!playerList.get(i).equals("re")) {
-                    JOptionPane.showMessageDialog(null, "The file is corrupted.",
+                    JOptionPane.showMessageDialog(MainMenu.get(), "The file is corrupted.",
                             "File Load Error", JOptionPane.ERROR_MESSAGE);
                     System.out.println("Wrong player turns.");
                     return;
@@ -204,7 +210,7 @@ public class Controller {
             GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
             GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
         } else {
-            JOptionPane.showMessageDialog(null, "The file is corrupted.",
+            JOptionPane.showMessageDialog(MainMenu.get(), "The file is corrupted.",
                     "File Load Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -231,7 +237,7 @@ public class Controller {
         System.out.println(expectedBoard);
         if (!expectedBoard.equals(loadedBoard)) {
             System.out.println("Board is incorrect");
-            JOptionPane.showMessageDialog(null, "The file is corrupted.",
+            JOptionPane.showMessageDialog(MainMenu.get(), "The file is corrupted.",
                     "File Load Error", JOptionPane.ERROR_MESSAGE);
         } else {
             System.out.println("Board is correct");
@@ -242,19 +248,27 @@ public class Controller {
                 if (!MainMenu.get().isGrayScaleBGMButton()) {
                     AudioPlayer.LoopPlayer.playGameBGM();
                 }
-                GameFrame.get().getPlayerPanel().setTimerSeconds(30);
+                if (!GameFrame.get().getPlayerPanel().isBlitzMode()
+                        && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                    GameFrame.get().getPlayerPanel().initTimerForNormalMode();
+                    GameFrame.get().getPlayerPanel().setStopTimer(false);
+                    GameFrame.get().getPlayerPanel().setTimerSeconds(GameFrame.get().getPlayerPanel().getInitialTimerSeconds());
+                }
                 System.out.println("Load a Saved Game");
             });
         }
     }
 
+    public static void handleBlitzMode() {
+    }
+
     public static void backToMainMenu() {
         if (GameFrame.get().isReplayMovesInProgress()) {
-            JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Replay is in progress. Please wait.");
             return;
         }
         if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
-            JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "AI is still thinking. Please wait.");
             return;
         }
         GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
@@ -265,6 +279,7 @@ public class Controller {
         if (!MainMenu.get().isGrayScaleBGMButton()) {
             AudioPlayer.LoopPlayer.playMenuBGM();
         }
+        GameFrame.get().getPlayerPanel().setStopTimer(true);
         System.out.println("Back To Main Menu");
     }
 
@@ -276,11 +291,11 @@ public class Controller {
 
     public static void restartGame() {
         if (GameFrame.get().isReplayMovesInProgress()) {
-            JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Replay is in progress. Please wait.");
             return;
         }
         if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
-            JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "AI is still thinking. Please wait.");
             return;
         }
         if (GameFrame.get().getMoveLog().size() == 0) {
@@ -291,6 +306,10 @@ public class Controller {
             System.out.println("Game Restarted");
             return;
         }
+        restartGameWithAnimation();
+    }
+
+    public static void restartGameWithAnimation() {
         GameFrame.get().setAnimationInProgress(true);
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
@@ -316,15 +335,15 @@ public class Controller {
 
     public static void undoMove() {
         if (GameFrame.get().getMoveLog().size() == 0) {
-            JOptionPane.showMessageDialog(null, "No moves to undo.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "No moves to undo.");
             return;
         }
         if (GameFrame.get().isReplayMovesInProgress()) {
-            JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Replay is in progress. Please wait.");
             return;
         }
         if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
-            JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "AI is still thinking. Please wait.");
             return;
         }
         if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.AI &&
@@ -395,15 +414,15 @@ public class Controller {
 
     public static void replayMoves() {
         if (GameFrame.get().isReplayMovesInProgress()) {
-            JOptionPane.showMessageDialog(null, "Replay is already in progress. Please wait for the next replay.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Replay is already in progress. Please wait for the next replay.");
             return;
         }
         if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
-            JOptionPane.showMessageDialog(null, "AI is still thinking. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "AI is still thinking. Please wait.");
             return;
         }
         if (GameFrame.get().getMoveLog().size() == 0) {
-            JOptionPane.showMessageDialog(null, "No moves to replay.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "No moves to replay.");
             return;
         }
         GameFrame.get().setLastMove(null);
@@ -599,7 +618,7 @@ public class Controller {
                 ImageIcon gameOverIcon = new ImageIcon(defaultImagesPath + "gameover.png");
                 Image resizedImage = gameOverIcon.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT);
                 Icon resizedIcon = new ImageIcon(resizedImage);
-                JOptionPane.showMessageDialog(null,
+                JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
                         "Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
                                 + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + "'s den is penetrated by the enemy!",
                         "Game Over",
@@ -609,9 +628,77 @@ public class Controller {
                 System.out.println("Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
                         + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + "'s den is penetrated by the enemy!");
                 GameFrame.get().restartGame();
+                if (!GameFrame.get().getPlayerPanel().isBlitzMode()
+                        && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                    GameFrame.get().getPlayerPanel().getTimer().start();
+                }
                 System.out.println("Game Restarted");
             }
         };
         worker.execute();
+    }
+
+    public static void setTimer() {
+        if (!GameFrame.get().getPlayerPanel().isBlitzMode()) {
+            JDialog dialog = new JDialog();
+            dialog.setTitle("Set Timer");
+            dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            dialog.setSize(280, 150);
+            dialog.setLayout(new FlowLayout());
+            dialog.setLocationRelativeTo(GameFrame.get().getBoardPanel());
+            dialog.setIconImage(GameFrame.get().logo.getImage());
+            dialog.setResizable(false);
+
+            JLabel valueLabel = new JLabel("Enter the timer value in seconds (10 - 100):");
+            JTextField textField = new JTextField(23);
+            JButton setTimerButton = new JButton("Set Timer");
+            JButton removeTimer = new JButton("Remove Timer");
+            JLabel restartLabel = new JLabel("The game will restart once the timer is set.");
+
+            dialog.add(valueLabel);
+            dialog.add(restartLabel);
+            dialog.add(textField);
+            dialog.add(setTimerButton);
+            dialog.add(removeTimer);
+            dialog.add(restartLabel);
+
+            setTimerButton.addActionListener(e -> {
+                try {
+                    int timerValue = Integer.parseInt(textField.getText());
+                    if (timerValue >= 10 && timerValue <= 100) {
+                        GameFrame.get().getPlayerPanel().setInitialTimerSeconds(timerValue);
+                        if (GameFrame.get().getMoveLog().size() == 0) {
+                            GameFrame.get().restartGame();
+                        } else if (GameFrame.get().getMoveLog().size() > 0) {
+                            restartGameWithAnimation();
+                        }
+                        GameFrame.get().getPlayerPanel().setNormalModeWithTimer(true);
+                        GameFrame.get().getPlayerPanel().getTimer().start();
+                        System.out.println("Timer value: " + timerValue + " seconds");
+                        dialog.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Invalid input.\nPlease enter an integer value between 10 and 100.");
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Invalid input.\nPlease enter an integer value.");
+                }
+            });
+
+            removeTimer.addActionListener(e -> {
+                GameFrame.get().getPlayerPanel().setNormalModeWithTimer(false);
+                if (GameFrame.get().getMoveLog().size() == 0) {
+                    GameFrame.get().restartGame();
+                } else if (GameFrame.get().getMoveLog().size() > 0) {
+                    restartGameWithAnimation();
+                }
+                GameFrame.get().getPlayerPanel().getTimer().stop();
+                System.out.println("Timer removed");
+                dialog.dispose();
+            });
+
+            dialog.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Blitz mode is enabled.\nThis function is only for normal mode.");
+        }
     }
 }

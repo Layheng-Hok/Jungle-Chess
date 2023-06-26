@@ -49,10 +49,11 @@ public class GameFrame extends Observable {
     private boolean reversedRedSide = true;
     private boolean reversedBlueSide = false;
     private boolean glitchMode = false;
+    boolean firstGlitchModeEncountered = true;
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(500, 650);
     private static final Dimension TERRAIN_PANEL_DIMENSION = new Dimension(10, 10);
-    final ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
+    public final ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
     public static final String defaultImagesPath = "resources/images/";
     private static final GameFrame INSTANCE = new GameFrame();
 
@@ -458,6 +459,12 @@ public class GameFrame extends Observable {
 
         private void highlightValidMovesGlitchMode(final Board board) {
             for (final Move move : selectedPieceValidMoves(board)) {
+                if (move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate
+                        && firstGlitchModeEncountered) {
+                    String message = "You must win without capturing your enemy's pieces!\n" +
+                            "Click on the screen continuously nonstop until the glitch stops!";
+                    JOptionPane.showMessageDialog(null, message, "Welcome to Glitch Mode", JOptionPane.INFORMATION_MESSAGE);
+                }
                 if (!move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
                     try {
                         String dotColor = GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue() ? "blue" : "red";
@@ -468,17 +475,23 @@ public class GameFrame extends Observable {
                         e.printStackTrace();
                     }
                 } else if (move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
+                    setFirstGlitchModeEncountered(false);
+                    setBorder(capturedPieceBorder);
+                    setBackground(new Color(12, 211, 28, 90));
+                    setOpaque(true);
                     SwingWorker<Void, Void> worker = new SwingWorker<>() {
                         @Override
                         protected Void doInBackground() {
-                            publish();
+                            setBorder(null);
+                            setBackground(null);
+                            GameFrame.get().getBoardPanel().drawBoard(chessBoard);
                             return null;
                         }
 
                         @Override
-                        protected void process(List<Void> chunks) {
+                        protected void done() {
                             setBorder(capturedPieceBorder);
-                            setBackground(greenBackground);
+                            setBackground(new Color(5, 138, 15));
                             setOpaque(true);
                         }
                     };
@@ -580,11 +593,7 @@ public class GameFrame extends Observable {
     }
 
     public void show() {
-        GameFrame.get().getMoveLog().clear();
-        GameFrame.get().getPlayerPanel().reset();
-        GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
-        GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-        GameFrame.get().getBoardPanel().removeAllBorders();
+        restartGame();
         if (!MainMenu.get().isGrayScaleBGMButton()) {
             AudioPlayer.LoopPlayer.playGameBGM();
         }
@@ -608,9 +617,17 @@ public class GameFrame extends Observable {
 
     void checkWin() {
         if (GameFrame.get().getChessBoard().getCurrentPlayer().isDenPenetrated()) {
+            if (!GameFrame.get().getPlayerPanel().isBlitzMode()
+                    && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                GameFrame.get().getPlayerPanel().getTimer().stop();
+            }
             Controller.handleWinningStateForDenPenetratedCondition();
         }
         if (GameFrame.get().getChessBoard().getCurrentPlayer().getActivePieces().isEmpty()) {
+            if (!GameFrame.get().getPlayerPanel().isBlitzMode()
+                    && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                GameFrame.get().getPlayerPanel().getTimer().stop();
+            }
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -635,6 +652,10 @@ public class GameFrame extends Observable {
             System.out.println("Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
                     + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + " has no more pieces!");
             GameFrame.get().restartGame();
+            if (!GameFrame.get().getPlayerPanel().isBlitzMode()
+                    && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                GameFrame.get().getPlayerPanel().getTimer().start();
+            }
             System.out.println("Game Restarted");
         }
     }
@@ -749,6 +770,10 @@ public class GameFrame extends Observable {
 
     public void setGlitchMode(boolean glitchMode) {
         this.glitchMode = glitchMode;
+    }
+
+    public void setFirstGlitchModeEncountered(boolean firstGlitchModeEncountered) {
+        this.firstGlitchModeEncountered = firstGlitchModeEncountered;
     }
 
     public static GameFrame get() {
