@@ -19,16 +19,19 @@ public class Controller {
 
     public static void saveGame() {
         if (GameFrame.get().isReplayMovesInProgress()) {
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Replay is in progress. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "Replay is in progress. Please wait.");
             return;
         }
         if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "AI is still thinking. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "AI is still thinking. Please wait.");
             return;
         }
         String fileName = JOptionPane.showInputDialog("File Name");
         while (fileName.equals("")) {
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Name cannot be empty. Please enter again.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "Name cannot be empty. Please enter again.");
             fileName = JOptionPane.showInputDialog("File Name");
         }
         writeGame(fileName);
@@ -37,13 +40,16 @@ public class Controller {
     private static void writeGame(String fileName) {
         String location = "database\\" + fileName + ".txt";
         if (!fileName.matches("[^\\\\/:*?\"<>|]+")) {
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "A file name cannot contain any illegal characters.", "Invalid File Name", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "A file name cannot contain any illegal characters.",
+                    "Invalid File Name", JOptionPane.ERROR_MESSAGE);
             return;
         }
         File file = new File(location);
         try {
             if (file.exists()) {
-                int response = JOptionPane.showConfirmDialog(GameFrame.get().getBoardPanel(), "The file already exists, do you want to overwrite it?",
+                int response = JOptionPane.showConfirmDialog(GameFrame.get().getBoardPanel(),
+                        "The file already exists, do you want to overwrite it?",
                         "Overlapped File Name", JOptionPane.YES_NO_OPTION);
                 if (response == JOptionPane.NO_OPTION) {
                     return;
@@ -102,7 +108,8 @@ public class Controller {
         File file = fileChooser.getSelectedFile();
 
         if (!file.getName().endsWith(".txt")) {
-            JOptionPane.showMessageDialog(MainMenu.get(), "The file extension is either missing or not supported.",
+            JOptionPane.showMessageDialog(MainMenu.get(),
+                    "The file extension is either missing or not supported.",
                     "File Load Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -114,7 +121,8 @@ public class Controller {
                 readList.add(line);
             }
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(MainMenu.get(), "Error reading file.",
+            JOptionPane.showMessageDialog(MainMenu.get(),
+                    "Error reading file.",
                     "File Read Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -130,7 +138,8 @@ public class Controller {
         try {
             playerTypeList = new ArrayList<>(Arrays.asList(playerTypeLine.split(" ")));
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(MainMenu.get(), "The file is corrupted.",
+            JOptionPane.showMessageDialog(MainMenu.get(),
+                    "The file is corrupted.",
                     "File Load Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -141,7 +150,8 @@ public class Controller {
             String[] moveTokens = moveLine.split(" ");
             try {
                 if (moveTokens.length != 3) {
-                    JOptionPane.showMessageDialog(MainMenu.get(), "The file is corrupted.",
+                    JOptionPane.showMessageDialog(MainMenu.get(),
+                            "The file is corrupted.",
                             "File Load Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
@@ -149,7 +159,8 @@ public class Controller {
                 currentCoordinateList.add(Integer.parseInt(moveTokens[1]));
                 destinationCoordinateList.add(Integer.parseInt(moveTokens[2]));
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(MainMenu.get(), "The file is corrupted.",
+                JOptionPane.showMessageDialog(MainMenu.get(),
+                        "The file is corrupted.",
                         "File Load Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -165,7 +176,8 @@ public class Controller {
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(MainMenu.get(), "The file is corrupted.",
+            JOptionPane.showMessageDialog(MainMenu.get(),
+                    "The file is corrupted.",
                     "File Load Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -176,14 +188,16 @@ public class Controller {
         for (int i = 0; i < playerList.size(); i++) {
             if (i % 2 == 0) {
                 if (!playerList.get(i).equals("bl")) {
-                    JOptionPane.showMessageDialog(MainMenu.get(), "The file is corrupted.",
+                    JOptionPane.showMessageDialog(MainMenu.get(),
+                            "The file is corrupted.",
                             "File Load Error", JOptionPane.ERROR_MESSAGE);
                     System.out.println("Wrong player turns.");
                     return;
                 }
             } else {
                 if (!playerList.get(i).equals("re")) {
-                    JOptionPane.showMessageDialog(MainMenu.get(), "The file is corrupted.",
+                    JOptionPane.showMessageDialog(MainMenu.get(),
+                            "The file is corrupted.",
                             "File Load Error", JOptionPane.ERROR_MESSAGE);
                     System.out.println("Wrong player turns.");
                     return;
@@ -214,7 +228,8 @@ public class Controller {
             GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
             GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
         } else {
-            JOptionPane.showMessageDialog(MainMenu.get(), "The file is corrupted.",
+            JOptionPane.showMessageDialog(MainMenu.get(),
+                    "The file is corrupted.",
                     "File Load Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -241,7 +256,8 @@ public class Controller {
         System.out.println(expectedBoard);
         if (!expectedBoard.equals(loadedBoard)) {
             System.out.println("Board is incorrect");
-            JOptionPane.showMessageDialog(MainMenu.get(), "The file is corrupted.",
+            JOptionPane.showMessageDialog(MainMenu.get(),
+                    "The file is corrupted.",
                     "File Load Error", JOptionPane.ERROR_MESSAGE);
         } else {
             System.out.println("Board is correct");
@@ -265,11 +281,13 @@ public class Controller {
 
     public static void backToMainMenu() {
         if (GameFrame.get().isReplayMovesInProgress()) {
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Replay is in progress. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "Replay is in progress. Please wait.");
             return;
         }
         if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "AI is still thinking. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "AI is still thinking. Please wait.");
             return;
         }
         GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
@@ -295,11 +313,13 @@ public class Controller {
 
     public static void restartGame() {
         if (GameFrame.get().isReplayMovesInProgress()) {
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Replay is in progress. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "Replay is in progress. Please wait.");
             return;
         }
         if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "AI is still thinking. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "AI is still thinking. Please wait.");
             return;
         }
         if (GameFrame.get().getMoveLog().size() == 0) {
@@ -339,16 +359,24 @@ public class Controller {
     }
 
     public static void undoMove() {
+        if (GameFrame.get().getPlayerPanel().isBlitzMode()){
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "Undo is not allowed in Blitz Mode!\nIf you blunder, that is your bad. Cheers!");
+            return;
+        }
         if (GameFrame.get().getMoveLog().size() == 0) {
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "No moves to undo.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "No moves to undo.");
             return;
         }
         if (GameFrame.get().isReplayMovesInProgress()) {
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Replay is in progress. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "Replay is in progress. Please wait.");
             return;
         }
         if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "AI is still thinking. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "AI is still thinking. Please wait.");
             return;
         }
         if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.AI &&
@@ -419,15 +447,18 @@ public class Controller {
 
     public static void replayMoves() {
         if (GameFrame.get().isReplayMovesInProgress()) {
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Replay is already in progress. Please wait for the next replay.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "Replay is already in progress. Please wait for the next replay.");
             return;
         }
         if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "AI is still thinking. Please wait.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "AI is still thinking. Please wait.");
             return;
         }
         if (GameFrame.get().getMoveLog().size() == 0) {
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "No moves to replay.");
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "No moves to replay.");
             return;
         }
         GameFrame.get().setReplayMovesInProgress(true);
@@ -560,10 +591,12 @@ public class Controller {
                         System.out.println("Timer value: " + timerValue + " seconds");
                         dialog.dispose();
                     } else {
-                        JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Invalid input.\nPlease enter an integer value between 10 and 100.");
+                        JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                                "Invalid input.\nPlease enter an integer value between 10 and 100.");
                     }
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Invalid input.\nPlease enter an integer value.");
+                    JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                            "Invalid input.\nPlease enter an integer value.");
                 }
             });
 
@@ -697,7 +730,8 @@ public class Controller {
                     System.out.println("Timer value: 15 minutes");
                     dialog.dispose();
                 } else {
-                    JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Please select an option.");
+                    JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                            "Please select an option.");
                 }
             });
 

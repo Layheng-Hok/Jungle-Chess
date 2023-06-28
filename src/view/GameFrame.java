@@ -219,7 +219,8 @@ public class GameFrame extends Observable {
                             return;
                         }
                         if (replayMovesInProgress) {
-                            JOptionPane.showMessageDialog(null, "Replay is in progress. Please wait.");
+                            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                                    "Replay is in progress. Please wait.");
                             return;
                         }
                         if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
@@ -468,7 +469,9 @@ public class GameFrame extends Observable {
                         && firstGlitchModeEncountered) {
                     String message = "You must win without capturing your enemy's pieces!\n" +
                             "Click on the screen continuously nonstop until the glitch stops!";
-                    JOptionPane.showMessageDialog(null, message, "Welcome to Glitch Mode", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                            message,
+                            "Welcome to Glitch Mode", JOptionPane.INFORMATION_MESSAGE);
                 }
                 if (!move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
                     try {
@@ -669,7 +672,7 @@ public class GameFrame extends Observable {
             ImageIcon gameOverIcon = new ImageIcon(defaultImagesPath + "gameover.png");
             Image resizedImage = gameOverIcon.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT);
             Icon resizedIcon = new ImageIcon(resizedImage);
-            JOptionPane.showMessageDialog(null,
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
                     "Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
                             + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + " has no more pieces!",
                     "Game Over",
