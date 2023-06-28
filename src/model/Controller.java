@@ -74,6 +74,18 @@ public class Controller {
             }
             fileWriter.write(GameFrame.get().getChessBoard().getCurrentPlayer().toString().toLowerCase().substring(0, 2) + "\n");
             fileWriter.write(GameFrame.get().getChessBoard().toString());
+            if (GameFrame.get().isBlitzMode()) {
+                fileWriter.write("blitz ");
+                fileWriter.write(GameFrame.get().getPlayerPanel().getBlueCurrentTimerSecondsBlitzMode() + " " +
+                        GameFrame.get().getPlayerPanel().getRedCurrentTimerSecondsBlitzMode() + "\n");
+            } else {
+                fileWriter.write("normal ");
+                if (GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                    fileWriter.write(GameFrame.get().getPlayerPanel().getInitialTimerSecondsNormalMode() + "\n");
+                } else {
+                    fileWriter.write("0\n");
+                }
+            }
             fileWriter.close();
             ProgressFrame progressFrame = new ProgressFrame();
             progressFrame.addProgressListener(() -> {
@@ -267,7 +279,16 @@ public class Controller {
                 }
                 if (tokens.length == 2) {
                     String mode = tokens[0];
-                    int timer = Integer.parseInt(tokens[1]);
+                    int timer;
+                    try {
+                        timer = Integer.parseInt(tokens[1]);
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(MainMenu.get(),
+                                "The file is corrupted.",
+                                "File Load Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                     if (!mode.equals("normal") || (timer < 10 && timer != 0) || timer > 100) {
                         JOptionPane.showMessageDialog(MainMenu.get(),
                                 "The file is corrupted.",
@@ -280,13 +301,23 @@ public class Controller {
                         GameFrame.get().getPlayerPanel().setNormalModeWithTimer(false);
                     } else {
                         GameFrame.get().getPlayerPanel().setNormalModeWithTimer(true);
-                        GameFrame.get().getPlayerPanel().setInitialTimerSeconds(timer);
+                        GameFrame.get().getPlayerPanel().setInitialTimerSecondsNormalMode(timer);
                     }
                 }
                 if (tokens.length == 3) {
                     String mode = tokens[0];
-                    int blueTimer = Integer.parseInt(tokens[1]);
-                    int redTimer = Integer.parseInt(tokens[2]);
+                    int blueTimer;
+                    int redTimer;
+                    try {
+                        blueTimer = Integer.parseInt(tokens[1]);
+                        redTimer = Integer.parseInt(tokens[2]);
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(MainMenu.get(),
+                                "The file is corrupted.",
+                                "File Load Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                     if (!mode.equals("blitz") || blueTimer < 0 || blueTimer > 900 || redTimer < 0 || redTimer > 900) {
                         JOptionPane.showMessageDialog(MainMenu.get(),
                                 "The file is corrupted.",
@@ -296,8 +327,8 @@ public class Controller {
                     }
                     GameFrame.get().setBlitzMode(true);
                     MenuBar.blitzModeCheckBoxMenuItem.setSelected(true);
-                    GameFrame.get().getPlayerPanel().setBlueInitialTimerSecondsBlitzMode(blueTimer);
-                    GameFrame.get().getPlayerPanel().setRedInitialTimerSecondsBlitzMode(redTimer);
+                    GameFrame.get().getPlayerPanel().setBlueCurrentTimerSecondsBlitzMode(blueTimer);
+                    GameFrame.get().getPlayerPanel().setRedCurrentTimerSecondsBlitzMode(redTimer);
                 }
                 break;
             }
@@ -311,7 +342,6 @@ public class Controller {
             }
             index++;
         }
-
 
         Board expectedBoard = Board.constructSpecificBoard(animalList, coordinateList, lastTurn);
         System.out.println(loadedBoard);
@@ -335,7 +365,7 @@ public class Controller {
                         && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
                     GameFrame.get().getPlayerPanel().initTimerForNormalMode();
                     GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(false);
-                    GameFrame.get().getPlayerPanel().setTimerSeconds(GameFrame.get().getPlayerPanel().getInitialTimerSeconds());
+                    GameFrame.get().getPlayerPanel().setCurrentTimerSecondsNormalMode(GameFrame.get().getPlayerPanel().getInitialTimerSecondsNormalMode());
                     GameFrame.get().getPlayerPanel().getTimerNormalMode().start();
                 } else if (!GameFrame.get().isBlitzMode()
                         && !GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
@@ -656,7 +686,7 @@ public class Controller {
                 try {
                     int timerValue = Integer.parseInt(textField.getText());
                     if (timerValue >= 10 && timerValue <= 100) {
-                        GameFrame.get().getPlayerPanel().setInitialTimerSeconds(timerValue);
+                        GameFrame.get().getPlayerPanel().setInitialTimerSecondsNormalMode(timerValue);
                         if (GameFrame.get().getMoveLog().size() == 0) {
                             GameFrame.get().restartGame();
                         } else if (GameFrame.get().getMoveLog().size() > 0) {
@@ -753,8 +783,8 @@ public class Controller {
                     GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
                     GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
                     GameFrame.get().getPlayerPanel().setInitialTimerSecondsBlitzMode(300);
-                    GameFrame.get().getPlayerPanel().setBlueInitialTimerSecondsBlitzMode(300);
-                    GameFrame.get().getPlayerPanel().setRedInitialTimerSecondsBlitzMode(300);
+                    GameFrame.get().getPlayerPanel().setBlueCurrentTimerSecondsBlitzMode(300);
+                    GameFrame.get().getPlayerPanel().setRedCurrentTimerSecondsBlitzMode(300);
                     GameFrame.get().getPlayerPanel().initTimerForBlueBlitzMode();
                     GameFrame.get().getPlayerPanel().initTimerForRedBlitzMode();
                     if (!GameFrame.get().isAnimationInProgress()) {
@@ -774,8 +804,8 @@ public class Controller {
                     GameFrame.get().setBlitzMode(true);
                     GameFrame.get().setBlitzModeGameOver(false);
                     GameFrame.get().getPlayerPanel().setInitialTimerSecondsBlitzMode(600);
-                    GameFrame.get().getPlayerPanel().setBlueInitialTimerSecondsBlitzMode(600);
-                    GameFrame.get().getPlayerPanel().setRedInitialTimerSecondsBlitzMode(600);
+                    GameFrame.get().getPlayerPanel().setBlueCurrentTimerSecondsBlitzMode(600);
+                    GameFrame.get().getPlayerPanel().setRedCurrentTimerSecondsBlitzMode(600);
                     GameFrame.get().getPlayerPanel().initTimerForBlueBlitzMode();
                     GameFrame.get().getPlayerPanel().initTimerForRedBlitzMode();
                     if (!GameFrame.get().isAnimationInProgress()) {
@@ -795,8 +825,8 @@ public class Controller {
                     GameFrame.get().setBlitzMode(true);
                     GameFrame.get().setBlitzModeGameOver(false);
                     GameFrame.get().getPlayerPanel().setInitialTimerSecondsBlitzMode(900);
-                    GameFrame.get().getPlayerPanel().setBlueInitialTimerSecondsBlitzMode(900);
-                    GameFrame.get().getPlayerPanel().setRedInitialTimerSecondsBlitzMode(900);
+                    GameFrame.get().getPlayerPanel().setBlueCurrentTimerSecondsBlitzMode(900);
+                    GameFrame.get().getPlayerPanel().setRedCurrentTimerSecondsBlitzMode(900);
                     GameFrame.get().getPlayerPanel().initTimerForBlueBlitzMode();
                     GameFrame.get().getPlayerPanel().initTimerForRedBlitzMode();
                     if (!GameFrame.get().isAnimationInProgress()) {

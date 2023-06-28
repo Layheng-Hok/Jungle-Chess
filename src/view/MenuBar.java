@@ -68,8 +68,8 @@ public class MenuBar {
                 GameFrame.get().setBlitzMode(true);
                 GameFrame.get().setBlitzModeGameOver(false);
                 Controller.restartGameWithAnimation();
-                GameFrame.get().getPlayerPanel().setBlueInitialTimerSecondsBlitzMode(GameFrame.get().getPlayerPanel().getRedInitialTimerSecondsBlitzMode());
-                GameFrame.get().getPlayerPanel().setRedInitialTimerSecondsBlitzMode(GameFrame.get().getPlayerPanel().getBlueInitialTimerSecondsBlitzMode());
+                GameFrame.get().getPlayerPanel().setBlueCurrentTimerSecondsBlitzMode(GameFrame.get().getPlayerPanel().getRedCurrentTimerSecondsBlitzMode());
+                GameFrame.get().getPlayerPanel().setRedCurrentTimerSecondsBlitzMode(GameFrame.get().getPlayerPanel().getBlueCurrentTimerSecondsBlitzMode());
                 GameFrame.get().getPlayerPanel().initTimerForBlueBlitzMode();
                 GameFrame.get().getPlayerPanel().initTimerForRedBlitzMode();
             } else {

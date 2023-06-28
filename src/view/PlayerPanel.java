@@ -18,15 +18,15 @@ public class PlayerPanel extends JPanel {
     private final Image topPanelImage;
     private int roundNumber = 1;
     private Timer timerNormalMode;
-    private int initialTimerSeconds = 60;
-    private int timerSeconds = initialTimerSeconds;
+    private int initialTimerSecondsNormalMode = 60;
+    private int currentTimerSecondsNormalMode = initialTimerSecondsNormalMode;
     private boolean normalModeWithTimer = true;
     private boolean stopTimerInNormalMode = false;
     private Timer blueTimerBlitzMode;
     private Timer redTimerBlitzMode;
     private int initialTimerSecondsBlitzMode = 300;
-    private int blueInitialTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
-    private int redInitialTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
+    private int blueCurrentTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
+    private int redCurrentTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
 
     public PlayerPanel() {
         super(new BorderLayout());
@@ -54,26 +54,26 @@ public class PlayerPanel extends JPanel {
             int timerY = y + 26;
             g.drawString(timerText, timerX, timerY);
 
-            if (blueInitialTimerSecondsBlitzMode <= 60) {
+            if (blueCurrentTimerSecondsBlitzMode <= 60) {
                 g.setColor(Color.RED);
             } else {
                 g.setColor(Color.BLACK);
             }
-            int blueTimerMinutes = blueInitialTimerSecondsBlitzMode / 60;
-            int blueTimerSeconds = blueInitialTimerSecondsBlitzMode % 60;
+            int blueTimerMinutes = blueCurrentTimerSecondsBlitzMode / 60;
+            int blueTimerSeconds = blueCurrentTimerSecondsBlitzMode % 60;
             String blueTimerText = String.format("%02d:%02d", blueTimerMinutes, blueTimerSeconds);
             int blueTimerX = ((getWidth() - g.getFontMetrics().stringWidth(blueTimerText)) / 2) - 50;
             int blueTimerY = timerY + 26;
             g.drawString(blueTimerText, blueTimerX, blueTimerY);
 
 
-            if (redInitialTimerSecondsBlitzMode <= 60) {
+            if (redCurrentTimerSecondsBlitzMode <= 60) {
                 g.setColor(Color.RED);
             } else {
                 g.setColor(Color.BLACK);
             }
-            int redTimerMinutes = redInitialTimerSecondsBlitzMode / 60;
-            int redTimerSeconds = redInitialTimerSecondsBlitzMode % 60;
+            int redTimerMinutes = redCurrentTimerSecondsBlitzMode / 60;
+            int redTimerSeconds = redCurrentTimerSecondsBlitzMode % 60;
             String redTimerText = String.format("%02d:%02d", redTimerMinutes, redTimerSeconds);
             int redTimerX = ((getWidth() - g.getFontMetrics().stringWidth(redTimerText)) / 2) + 50;
             int redTimerY = timerY + 26;
@@ -127,17 +127,17 @@ public class PlayerPanel extends JPanel {
             g.drawString(text, x, y);
 
             if (normalModeWithTimer) {
-                if (timerSeconds <= 10) {
+                if (currentTimerSecondsNormalMode <= 10) {
                     g.setFont(new Font("Consolas", Font.BOLD, 20));
                     g.setColor(Color.RED);
-                    String timerText = "Timer: " + timerSeconds + "s";
+                    String timerText = "Timer: " + currentTimerSecondsNormalMode + "s";
                     int timerX = (getWidth() - g.getFontMetrics().stringWidth(timerText)) / 2;
                     int timerY = y + 30;
                     g.drawString(timerText, timerX, timerY);
                 } else {
                     g.setFont(new Font("Consolas", Font.BOLD, 20));
                     g.setColor(Color.BLACK);
-                    String timerText = "Timer: " + timerSeconds + "s";
+                    String timerText = "Timer: " + currentTimerSecondsNormalMode + "s";
                     int timerX = (getWidth() - g.getFontMetrics().stringWidth(timerText)) / 2;
                     int timerY = y + 30;
                     g.drawString(timerText, timerX, timerY);
@@ -185,8 +185,8 @@ public class PlayerPanel extends JPanel {
 
     public void initTimerForNormalMode() {
         timerNormalMode = new Timer(1000, e -> {
-            timerSeconds--;
-            if (timerSeconds == 0) {
+            currentTimerSecondsNormalMode--;
+            if (currentTimerSecondsNormalMode == 0) {
                 Board chessBoard = GameFrame.get().getChessBoard();
                 List<Move> validMoves = new ArrayList<>(chessBoard.getCurrentPlayer().getValidMoves());
                 Move selectedMove = null;
@@ -219,10 +219,10 @@ public class PlayerPanel extends JPanel {
     public void initTimerForBlueBlitzMode() {
         blueTimerBlitzMode = new Timer(1000, e -> {
             if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue()) {
-                blueInitialTimerSecondsBlitzMode--;
+                blueCurrentTimerSecondsBlitzMode--;
                 if (GameFrame.get().isBlitzMode()
-                        && (GameFrame.get().getPlayerPanel().getBlueInitialTimerSecondsBlitzMode() == 0
-                        || GameFrame.get().getPlayerPanel().getRedInitialTimerSecondsBlitzMode() == 0)) {
+                        && (GameFrame.get().getPlayerPanel().getBlueCurrentTimerSecondsBlitzMode() == 0
+                        || GameFrame.get().getPlayerPanel().getRedCurrentTimerSecondsBlitzMode() == 0)) {
                     GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
                     GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
                     GameFrame.get().setBlitzModeGameOver(true);
@@ -240,10 +240,10 @@ public class PlayerPanel extends JPanel {
     public void initTimerForRedBlitzMode() {
         redTimerBlitzMode = new Timer(1000, e -> {
             if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isRed()) {
-                redInitialTimerSecondsBlitzMode--;
+                redCurrentTimerSecondsBlitzMode--;
                 if (GameFrame.get().isBlitzMode()
-                        && (GameFrame.get().getPlayerPanel().getBlueInitialTimerSecondsBlitzMode() == 0
-                        || GameFrame.get().getPlayerPanel().getRedInitialTimerSecondsBlitzMode() == 0)) {
+                        && (GameFrame.get().getPlayerPanel().getBlueCurrentTimerSecondsBlitzMode() == 0
+                        || GameFrame.get().getPlayerPanel().getRedCurrentTimerSecondsBlitzMode() == 0)) {
                     GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
                     GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
                     GameFrame.get().setBlitzModeGameOver(true);
@@ -259,8 +259,8 @@ public class PlayerPanel extends JPanel {
     }
 
     public void initBlitzMode(){
-        blueInitialTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
-        redInitialTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
+        blueCurrentTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
+        redCurrentTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
         initTimerForBlueBlitzMode();
         initTimerForRedBlitzMode();
         blueTimerBlitzMode.restart();
@@ -269,12 +269,12 @@ public class PlayerPanel extends JPanel {
 
     public void reset() {
         roundNumber = 1;
-        timerSeconds = initialTimerSeconds;
+        currentTimerSecondsNormalMode = initialTimerSecondsNormalMode;
         if (!GameFrame.get().isBlitzMode() && normalModeWithTimer && !stopTimerInNormalMode) {
             timerNormalMode.restart();
         } else if (GameFrame.get().isBlitzMode() && !GameFrame.get().isReplayMovesInProgress()) {
-            blueInitialTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
-            redInitialTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
+            blueCurrentTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
+            redCurrentTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
             blueTimerBlitzMode.restart();
             redTimerBlitzMode.restart();
             GameFrame.get().setBlitzModeGameOver(false);
@@ -296,7 +296,7 @@ public class PlayerPanel extends JPanel {
             setRoundNumber(getRoundNumber() - 1);
         }
         if (!GameFrame.get().isBlitzMode() && normalModeWithTimer && !stopTimerInNormalMode) {
-            timerSeconds = initialTimerSeconds;
+            currentTimerSecondsNormalMode = initialTimerSecondsNormalMode;
             timerNormalMode.restart();
         }
         repaint();
@@ -307,7 +307,7 @@ public class PlayerPanel extends JPanel {
             setRoundNumber(getRoundNumber() + 1);
         }
         if (!GameFrame.get().isBlitzMode() && normalModeWithTimer && !stopTimerInNormalMode) {
-            timerSeconds = initialTimerSeconds;
+            currentTimerSecondsNormalMode = initialTimerSecondsNormalMode;
             timerNormalMode.restart();
         }
         repaint();
@@ -333,16 +333,16 @@ public class PlayerPanel extends JPanel {
         this.roundNumber = roundNumber;
     }
 
-    public void setTimerSeconds(int timerSeconds) {
-        this.timerSeconds = timerSeconds;
+    public void setCurrentTimerSecondsNormalMode(int currentTimerSecondsNormalMode) {
+        this.currentTimerSecondsNormalMode = currentTimerSecondsNormalMode;
     }
 
-    public int getInitialTimerSeconds() {
-        return initialTimerSeconds;
+    public int getInitialTimerSecondsNormalMode() {
+        return initialTimerSecondsNormalMode;
     }
 
-    public void setInitialTimerSeconds(int initialTimerSeconds) {
-        this.initialTimerSeconds = initialTimerSeconds;
+    public void setInitialTimerSecondsNormalMode(int initialTimerSecondsNormalMode) {
+        this.initialTimerSecondsNormalMode = initialTimerSecondsNormalMode;
     }
 
     public boolean isStopTimerInNormalMode() {
@@ -369,19 +369,19 @@ public class PlayerPanel extends JPanel {
         this.initialTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
     }
 
-    public int getBlueInitialTimerSecondsBlitzMode() {
-        return blueInitialTimerSecondsBlitzMode;
+    public int getBlueCurrentTimerSecondsBlitzMode() {
+        return blueCurrentTimerSecondsBlitzMode;
     }
 
-    public void setBlueInitialTimerSecondsBlitzMode(int blueInitialTimerSecondsBlitzMode) {
-        this.blueInitialTimerSecondsBlitzMode = blueInitialTimerSecondsBlitzMode;
+    public void setBlueCurrentTimerSecondsBlitzMode(int blueCurrentTimerSecondsBlitzMode) {
+        this.blueCurrentTimerSecondsBlitzMode = blueCurrentTimerSecondsBlitzMode;
     }
 
-    public int getRedInitialTimerSecondsBlitzMode() {
-        return redInitialTimerSecondsBlitzMode;
+    public int getRedCurrentTimerSecondsBlitzMode() {
+        return redCurrentTimerSecondsBlitzMode;
     }
 
-    public void setRedInitialTimerSecondsBlitzMode(int redInitialTimerSecondsBlitzMode) {
-        this.redInitialTimerSecondsBlitzMode = redInitialTimerSecondsBlitzMode;
+    public void setRedCurrentTimerSecondsBlitzMode(int redCurrentTimerSecondsBlitzMode) {
+        this.redCurrentTimerSecondsBlitzMode = redCurrentTimerSecondsBlitzMode;
     }
 }
