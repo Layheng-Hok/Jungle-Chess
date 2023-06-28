@@ -78,12 +78,12 @@ public class MainMenu extends JFrame {
         twoPlayersButton.addActionListener(e -> {
             AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
             this.setVisible(false);
-            if (!GameFrame.get().getPlayerPanel().isBlitzMode()
+            if (!GameFrame.get().isBlitzMode()
                     && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
                 GameFrame.get().getPlayerPanel().initTimerForNormalMode();
                 GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(false);
-            } else if (GameFrame.get().getPlayerPanel().isBlitzMode()) {
-                GameFrame.get().getPlayerPanel().setBlitzModeGameOver(false);
+            } else if (GameFrame.get().isBlitzMode()) {
+                GameFrame.get().setBlitzModeGameOver(false);
                 GameFrame.get().getPlayerPanel().initBlitzMode();
             }
             GameFrame.get().show();

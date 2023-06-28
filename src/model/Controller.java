@@ -3,6 +3,7 @@ package model;
 import model.board.*;
 import model.player.PlayerType;
 import view.*;
+import view.MenuBar;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,7 +51,8 @@ public class Controller {
             if (file.exists()) {
                 int response = JOptionPane.showConfirmDialog(GameFrame.get().getBoardPanel(),
                         "The file already exists, do you want to overwrite it?",
-                        "Overlapped File Name", JOptionPane.YES_NO_OPTION);
+                        "Overlapped File Name",
+                        JOptionPane.YES_NO_OPTION);
                 if (response == JOptionPane.NO_OPTION) {
                     return;
                 }
@@ -89,9 +91,13 @@ public class Controller {
                     GameFrame.get().dispose();
                     MainMenu.get().setVisible(true);
                     GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(true);
-                    GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
-                    GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
-                    GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
+                    if (!GameFrame.get().isBlitzMode()) {
+                        GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
+                    }
+                    if (GameFrame.get().isBlitzMode()) {
+                        GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
+                        GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
+                    }
                     System.out.println("Back To Main Menu");
                 }
             });
@@ -110,7 +116,8 @@ public class Controller {
         if (!file.getName().endsWith(".txt")) {
             JOptionPane.showMessageDialog(MainMenu.get(),
                     "The file extension is either missing or not supported.",
-                    "File Load Error", JOptionPane.ERROR_MESSAGE);
+                    "File Load Error",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -140,7 +147,8 @@ public class Controller {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(MainMenu.get(),
                     "The file is corrupted.",
-                    "File Load Error", JOptionPane.ERROR_MESSAGE);
+                    "File Load Error",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
         numMoves = Integer.parseInt(readList.remove(0));
@@ -152,7 +160,8 @@ public class Controller {
                 if (moveTokens.length != 3) {
                     JOptionPane.showMessageDialog(MainMenu.get(),
                             "The file is corrupted.",
-                            "File Load Error", JOptionPane.ERROR_MESSAGE);
+                            "File Load Error",
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 playerList.add(moveTokens[0]);
@@ -161,12 +170,15 @@ public class Controller {
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(MainMenu.get(),
                         "The file is corrupted.",
-                        "File Load Error", JOptionPane.ERROR_MESSAGE);
+                        "File Load Error",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
 
-        if (numMoves == currentCoordinateList.size() && numMoves == destinationCoordinateList.size() && numMoves == playerList.size()) {
+        if (numMoves == currentCoordinateList.size()
+                && numMoves == destinationCoordinateList.size()
+                && numMoves == playerList.size()) {
             for (int i = 0; i < currentCoordinateList.size(); i++) {
                 Move move = Move.MoveFactory.createMove(loadedBoard, currentCoordinateList.get(i), destinationCoordinateList.get(i));
                 MoveTransition transition = loadedBoard.getCurrentPlayer().makeMove(move);
@@ -178,7 +190,8 @@ public class Controller {
         } else {
             JOptionPane.showMessageDialog(MainMenu.get(),
                     "The file is corrupted.",
-                    "File Load Error", JOptionPane.ERROR_MESSAGE);
+                    "File Load Error",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -190,7 +203,8 @@ public class Controller {
                 if (!playerList.get(i).equals("bl")) {
                     JOptionPane.showMessageDialog(MainMenu.get(),
                             "The file is corrupted.",
-                            "File Load Error", JOptionPane.ERROR_MESSAGE);
+                            "File Load Error",
+                            JOptionPane.ERROR_MESSAGE);
                     System.out.println("Wrong player turns.");
                     return;
                 }
@@ -198,7 +212,8 @@ public class Controller {
                 if (!playerList.get(i).equals("re")) {
                     JOptionPane.showMessageDialog(MainMenu.get(),
                             "The file is corrupted.",
-                            "File Load Error", JOptionPane.ERROR_MESSAGE);
+                            "File Load Error",
+                            JOptionPane.ERROR_MESSAGE);
                     System.out.println("Wrong player turns.");
                     return;
                 }
@@ -230,7 +245,8 @@ public class Controller {
         } else {
             JOptionPane.showMessageDialog(MainMenu.get(),
                     "The file is corrupted.",
-                    "File Load Error", JOptionPane.ERROR_MESSAGE);
+                    "File Load Error",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -238,18 +254,64 @@ public class Controller {
         ArrayList<Integer> coordinateList = new ArrayList<>();
 
         int position = 0;
+        int index = 0;
         for (String line : readList) {
+            if (index == 9) {
+                String[] tokens = line.split("\\s+");
+                if (tokens.length != 2 && tokens.length != 3) {
+                    JOptionPane.showMessageDialog(MainMenu.get(),
+                            "The file is corrupted.",
+                            "File Load Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (tokens.length == 2) {
+                    String mode = tokens[0];
+                    int timer = Integer.parseInt(tokens[1]);
+                    if (!mode.equals("normal") || (timer < 10 && timer != 0) || timer > 100) {
+                        JOptionPane.showMessageDialog(MainMenu.get(),
+                                "The file is corrupted.",
+                                "File Load Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    GameFrame.get().setBlitzMode(false);
+                    if (timer == 0) {
+                        GameFrame.get().getPlayerPanel().setNormalModeWithTimer(false);
+                    } else {
+                        GameFrame.get().getPlayerPanel().setNormalModeWithTimer(true);
+                        GameFrame.get().getPlayerPanel().setInitialTimerSeconds(timer);
+                    }
+                }
+                if (tokens.length == 3) {
+                    String mode = tokens[0];
+                    int blueTimer = Integer.parseInt(tokens[1]);
+                    int redTimer = Integer.parseInt(tokens[2]);
+                    if (!mode.equals("blitz") || blueTimer < 0 || blueTimer > 900 || redTimer < 0 || redTimer > 900) {
+                        JOptionPane.showMessageDialog(MainMenu.get(),
+                                "The file is corrupted.",
+                                "File Load Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    GameFrame.get().setBlitzMode(true);
+                    MenuBar.blitzModeCheckBoxMenuItem.setSelected(true);
+                    GameFrame.get().getPlayerPanel().setBlueInitialTimerSecondsBlitzMode(blueTimer);
+                    GameFrame.get().getPlayerPanel().setRedInitialTimerSecondsBlitzMode(redTimer);
+                }
+                break;
+            }
             String[] tokens = line.split("\\s+");
             for (String token : tokens) {
                 if (token.length() == 2 && Character.isLetter(token.charAt(0)) && Character.isLetter(token.charAt(1))) {
                     animalList.add(token);
                     coordinateList.add(position);
-                } else if (token.length() == 2 && Character.isDigit(token.charAt(0)) && Character.isDigit(token.charAt(1))) {
-                    position = Integer.parseInt(token);
                 }
                 position++;
             }
+            index++;
         }
+
 
         Board expectedBoard = Board.constructSpecificBoard(animalList, coordinateList, lastTurn);
         System.out.println(loadedBoard);
@@ -258,7 +320,8 @@ public class Controller {
             System.out.println("Board is incorrect");
             JOptionPane.showMessageDialog(MainMenu.get(),
                     "The file is corrupted.",
-                    "File Load Error", JOptionPane.ERROR_MESSAGE);
+                    "File Load Error",
+                    JOptionPane.ERROR_MESSAGE);
         } else {
             System.out.println("Board is correct");
             ProgressFrame progressFrame = new ProgressFrame();
@@ -268,11 +331,20 @@ public class Controller {
                 if (!MainMenu.get().isGrayScaleBGMButton()) {
                     AudioPlayer.LoopPlayer.playGameBGM();
                 }
-                if (!GameFrame.get().getPlayerPanel().isBlitzMode()
+                if (!GameFrame.get().isBlitzMode()
                         && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
                     GameFrame.get().getPlayerPanel().initTimerForNormalMode();
                     GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(false);
                     GameFrame.get().getPlayerPanel().setTimerSeconds(GameFrame.get().getPlayerPanel().getInitialTimerSeconds());
+                    GameFrame.get().getPlayerPanel().getTimerNormalMode().start();
+                } else if (!GameFrame.get().isBlitzMode()
+                        && !GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                    GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(true);
+                } else if (GameFrame.get().isBlitzMode()) {
+                    GameFrame.get().getPlayerPanel().initTimerForBlueBlitzMode();
+                    GameFrame.get().getPlayerPanel().initTimerForRedBlitzMode();
+                    GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().start();
+                    GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().start();
                 }
                 System.out.println("Load a Saved Game");
             });
@@ -299,9 +371,13 @@ public class Controller {
             AudioPlayer.LoopPlayer.playMenuBGM();
         }
         GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(true);
-        GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
-        GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
-        GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
+        if (!GameFrame.get().isBlitzMode() && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+            GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
+        }
+        if (GameFrame.get().isBlitzMode()) {
+            GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
+            GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
+        }
         System.out.println("Back To Main Menu");
     }
 
@@ -359,7 +435,7 @@ public class Controller {
     }
 
     public static void undoMove() {
-        if (GameFrame.get().getPlayerPanel().isBlitzMode()){
+        if (GameFrame.get().isBlitzMode()) {
             JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
                     "Undo is not allowed in Blitz Mode!\nIf you blunder, that is your bad. Cheers!");
             return;
@@ -508,7 +584,7 @@ public class Controller {
                 }
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 GameFrame.get().setReplayMovesInProgress(false);
-                if (GameFrame.get().getPlayerPanel().isBlitzMode()) {
+                if (GameFrame.get().isBlitzMode()) {
                     GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().start();
                     GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().start();
                 }
@@ -552,7 +628,7 @@ public class Controller {
     }
 
     public static void setTimer() {
-        if (!GameFrame.get().getPlayerPanel().isBlitzMode()) {
+        if (!GameFrame.get().isBlitzMode()) {
             final JDialog dialog = new JDialog();
             dialog.setTitle("Set Timer");
             dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -672,8 +748,8 @@ public class Controller {
                     } else if (GameFrame.get().getMoveLog().size() > 0) {
                         restartGameWithAnimation();
                     }
-                    GameFrame.get().getPlayerPanel().setBlitzMode(true);
-                    GameFrame.get().getPlayerPanel().setBlitzModeGameOver(false);
+                    GameFrame.get().setBlitzMode(true);
+                    GameFrame.get().setBlitzModeGameOver(false);
                     GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
                     GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
                     GameFrame.get().getPlayerPanel().setInitialTimerSecondsBlitzMode(300);
@@ -695,8 +771,8 @@ public class Controller {
                     }
                     GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
                     GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
-                    GameFrame.get().getPlayerPanel().setBlitzMode(true);
-                    GameFrame.get().getPlayerPanel().setBlitzModeGameOver(false);
+                    GameFrame.get().setBlitzMode(true);
+                    GameFrame.get().setBlitzModeGameOver(false);
                     GameFrame.get().getPlayerPanel().setInitialTimerSecondsBlitzMode(600);
                     GameFrame.get().getPlayerPanel().setBlueInitialTimerSecondsBlitzMode(600);
                     GameFrame.get().getPlayerPanel().setRedInitialTimerSecondsBlitzMode(600);
@@ -716,8 +792,8 @@ public class Controller {
                     }
                     GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
                     GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
-                    GameFrame.get().getPlayerPanel().setBlitzMode(true);
-                    GameFrame.get().getPlayerPanel().setBlitzModeGameOver(false);
+                    GameFrame.get().setBlitzMode(true);
+                    GameFrame.get().setBlitzModeGameOver(false);
                     GameFrame.get().getPlayerPanel().setInitialTimerSecondsBlitzMode(900);
                     GameFrame.get().getPlayerPanel().setBlueInitialTimerSecondsBlitzMode(900);
                     GameFrame.get().getPlayerPanel().setRedInitialTimerSecondsBlitzMode(900);
@@ -782,7 +858,7 @@ public class Controller {
                 System.out.println("Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
                         + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + "'s den is penetrated by the enemy!");
                 GameFrame.get().restartGame();
-                if (!GameFrame.get().getPlayerPanel().isBlitzMode()
+                if (!GameFrame.get().isBlitzMode()
                         && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
                     GameFrame.get().getPlayerPanel().getTimerNormalMode().start();
                 }

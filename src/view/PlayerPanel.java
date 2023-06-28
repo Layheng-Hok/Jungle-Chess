@@ -22,14 +22,11 @@ public class PlayerPanel extends JPanel {
     private int timerSeconds = initialTimerSeconds;
     private boolean normalModeWithTimer = true;
     private boolean stopTimerInNormalMode = false;
-    private boolean normalModeGameOver = false;
     private Timer blueTimerBlitzMode;
     private Timer redTimerBlitzMode;
     private int initialTimerSecondsBlitzMode = 300;
     private int blueInitialTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
     private int redInitialTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
-    private boolean blitzMode = false;
-    private boolean blitzModeGameOver = false;
 
     public PlayerPanel() {
         super(new BorderLayout());
@@ -39,7 +36,7 @@ public class PlayerPanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        if (blitzMode) {
+        if (GameFrame.get().isBlitzMode()) {
             super.paintComponent(g);
             g.drawImage(topPanelImage, 0, 0, getWidth(), getHeight(), this);
 
@@ -211,7 +208,7 @@ public class PlayerPanel extends JPanel {
                     GameFrame.get().setGameBoard(chessBoard);
                 }
                 timerNormalMode.stop();
-                if (!blitzMode && normalModeWithTimer && !stopTimerInNormalMode) {
+                if (!GameFrame.get().isBlitzMode() && normalModeWithTimer && !stopTimerInNormalMode) {
                     redo(GameFrame.get().getChessBoard());
                 }
             }
@@ -223,12 +220,12 @@ public class PlayerPanel extends JPanel {
         blueTimerBlitzMode = new Timer(1000, e -> {
             if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue()) {
                 blueInitialTimerSecondsBlitzMode--;
-                if (GameFrame.get().getPlayerPanel().isBlitzMode()
+                if (GameFrame.get().isBlitzMode()
                         && (GameFrame.get().getPlayerPanel().getBlueInitialTimerSecondsBlitzMode() == 0
                         || GameFrame.get().getPlayerPanel().getRedInitialTimerSecondsBlitzMode() == 0)) {
                     GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
                     GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
-                    blitzModeGameOver = true;
+                    GameFrame.get().setBlitzModeGameOver(true);
                     for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
                         GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
                     }
@@ -244,12 +241,12 @@ public class PlayerPanel extends JPanel {
         redTimerBlitzMode = new Timer(1000, e -> {
             if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isRed()) {
                 redInitialTimerSecondsBlitzMode--;
-                if (GameFrame.get().getPlayerPanel().isBlitzMode()
+                if (GameFrame.get().isBlitzMode()
                         && (GameFrame.get().getPlayerPanel().getBlueInitialTimerSecondsBlitzMode() == 0
                         || GameFrame.get().getPlayerPanel().getRedInitialTimerSecondsBlitzMode() == 0)) {
                     GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
                     GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
-                    blitzModeGameOver = true;
+                    GameFrame.get().setBlitzModeGameOver(true);
                     for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
                         GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
                     }
@@ -273,15 +270,15 @@ public class PlayerPanel extends JPanel {
     public void reset() {
         roundNumber = 1;
         timerSeconds = initialTimerSeconds;
-        if (!blitzMode && normalModeWithTimer && !stopTimerInNormalMode) {
+        if (!GameFrame.get().isBlitzMode() && normalModeWithTimer && !stopTimerInNormalMode) {
             timerNormalMode.restart();
-        } else if (blitzMode && !GameFrame.get().isReplayMovesInProgress()) {
+        } else if (GameFrame.get().isBlitzMode() && !GameFrame.get().isReplayMovesInProgress()) {
             blueInitialTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
             redInitialTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
             blueTimerBlitzMode.restart();
             redTimerBlitzMode.restart();
-            blitzModeGameOver = false;
-        } else if (blitzMode && GameFrame.get().isReplayMovesInProgress()) {
+            GameFrame.get().setBlitzModeGameOver(false);
+        } else if (GameFrame.get().isBlitzMode() && GameFrame.get().isReplayMovesInProgress()) {
             blueTimerBlitzMode.stop();
             redTimerBlitzMode.stop();
         }
@@ -298,7 +295,7 @@ public class PlayerPanel extends JPanel {
                 && GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isRed()) {
             setRoundNumber(getRoundNumber() - 1);
         }
-        if (!blitzMode && normalModeWithTimer && !stopTimerInNormalMode) {
+        if (!GameFrame.get().isBlitzMode() && normalModeWithTimer && !stopTimerInNormalMode) {
             timerSeconds = initialTimerSeconds;
             timerNormalMode.restart();
         }
@@ -309,7 +306,7 @@ public class PlayerPanel extends JPanel {
         if (chessBoard.getCurrentPlayer().getAllyColor().isBlue()) {
             setRoundNumber(getRoundNumber() + 1);
         }
-        if (!blitzMode && normalModeWithTimer && !stopTimerInNormalMode) {
+        if (!GameFrame.get().isBlitzMode() && normalModeWithTimer && !stopTimerInNormalMode) {
             timerSeconds = initialTimerSeconds;
             timerNormalMode.restart();
         }
@@ -356,22 +353,6 @@ public class PlayerPanel extends JPanel {
         this.stopTimerInNormalMode = stopTimerInNormalMode;
     }
 
-    public boolean isNormalModeGameOver() {
-        return normalModeGameOver;
-    }
-
-    public void setNormalModeGameOver(boolean normalModeGameOver) {
-        this.normalModeGameOver = normalModeGameOver;
-    }
-
-    public boolean isBlitzMode() {
-        return blitzMode;
-    }
-
-    public void setBlitzMode(boolean blitzMode) {
-        this.blitzMode = blitzMode;
-    }
-
     public Timer getBlueTimerBlitzMode() {
         return blueTimerBlitzMode;
     }
@@ -402,13 +383,5 @@ public class PlayerPanel extends JPanel {
 
     public void setRedInitialTimerSecondsBlitzMode(int redInitialTimerSecondsBlitzMode) {
         this.redInitialTimerSecondsBlitzMode = redInitialTimerSecondsBlitzMode;
-    }
-
-    public boolean isBlitzModeGameOver() {
-        return blitzModeGameOver;
-    }
-
-    public void setBlitzModeGameOver(boolean blitzModeGameOver) {
-        this.blitzModeGameOver = blitzModeGameOver;
     }
 }

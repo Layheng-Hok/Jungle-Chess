@@ -30,7 +30,6 @@ public abstract class SpecialPiece extends Piece {
                     continue;
                 }
                 Terrain potentialDestinationTerrain = board.getTerrain(potentialDestinationCoordinate);
-                Terrain tempPotentialDestinationTerrain = board.getTerrain(tempPotentialDestinationCoordinate);
                 if ((currentPotentialOffset == POTENTIAL_MOVE_COORDINATES[0] || currentPotentialOffset == POTENTIAL_MOVE_COORDINATES[3])
                         && BoardUtilities.isRiver(potentialDestinationCoordinate)) {
                     boolean isRiverTerrainOccupied = false;

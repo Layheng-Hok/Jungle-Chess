@@ -60,7 +60,7 @@ public class DifficultyFrame extends JFrame {
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
             if (GameFrame.get().getGameConfiguration().isReady()) {
-                if (!GameFrame.get().getPlayerPanel().isBlitzMode()
+                if (!GameFrame.get().isBlitzMode()
                         && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
                     GameFrame.get().getPlayerPanel().initTimerForNormalMode();
                     GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(false);
@@ -84,7 +84,7 @@ public class DifficultyFrame extends JFrame {
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
             if (GameFrame.get().getGameConfiguration().isReady()) {
-                if (!GameFrame.get().getPlayerPanel().isBlitzMode()
+                if (!GameFrame.get().isBlitzMode()
                         && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
                     GameFrame.get().getPlayerPanel().initTimerForNormalMode();
                     GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(false);
@@ -108,7 +108,7 @@ public class DifficultyFrame extends JFrame {
             GameFrame.get().getGameConfiguration().promptUser();
             GameFrame.get().setupUpdate(GameFrame.get().getGameConfiguration());
             if (GameFrame.get().getGameConfiguration().isReady()) {
-                if (!GameFrame.get().getPlayerPanel().isBlitzMode()
+                if (!GameFrame.get().isBlitzMode()
                         && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
                     GameFrame.get().getPlayerPanel().initTimerForNormalMode();
                     GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(false);

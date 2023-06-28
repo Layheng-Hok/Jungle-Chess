@@ -8,6 +8,8 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
 public class MenuBar {
+    public static JCheckBoxMenuItem blitzModeCheckBoxMenuItem;
+
     static JMenuBar createGameFrameMenuBar() {
         final JMenuBar gameFrameMenuBar = new JMenuBar();
         gameFrameMenuBar.add(createSettingMenu());
@@ -57,14 +59,14 @@ public class MenuBar {
         final JMenuItem i6 = new JMenuItem("out");
         final JMenuItem i7 = new JMenuItem("yourself");
         final JMenu i8 = new JMenu("...");
-        final JCheckBoxMenuItem blitzModeCheckBoxMenuItem = new JCheckBoxMenuItem("⏱   Blitz Mode");
+        blitzModeCheckBoxMenuItem = new JCheckBoxMenuItem("⏱   Blitz Mode");
         blitzModeCheckBoxMenuItem.addActionListener(e -> {
             AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
             if (blitzModeCheckBoxMenuItem.isSelected()) {
                 GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(true);
                 GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
-                GameFrame.get().getPlayerPanel().setBlitzMode(true);
-                GameFrame.get().getPlayerPanel().setBlitzModeGameOver(false);
+                GameFrame.get().setBlitzMode(true);
+                GameFrame.get().setBlitzModeGameOver(false);
                 Controller.restartGameWithAnimation();
                 GameFrame.get().getPlayerPanel().setBlueInitialTimerSecondsBlitzMode(GameFrame.get().getPlayerPanel().getRedInitialTimerSecondsBlitzMode());
                 GameFrame.get().getPlayerPanel().setRedInitialTimerSecondsBlitzMode(GameFrame.get().getPlayerPanel().getBlueInitialTimerSecondsBlitzMode());
@@ -73,7 +75,7 @@ public class MenuBar {
             } else {
                 GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
                 GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
-                GameFrame.get().getPlayerPanel().setBlitzMode(false);
+                GameFrame.get().setBlitzMode(false);
                 Controller.restartGameWithAnimation();
                 if (GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
                     GameFrame.get().getPlayerPanel().initTimerForNormalMode();
