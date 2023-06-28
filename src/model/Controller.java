@@ -297,6 +297,7 @@ public class Controller {
                         return;
                     }
                     GameFrame.get().setBlitzMode(false);
+                    MenuBar.blitzModeCheckBoxMenuItem.setSelected(false);
                     if (timer == 0) {
                         GameFrame.get().getPlayerPanel().setNormalModeWithTimer(false);
                     } else {
