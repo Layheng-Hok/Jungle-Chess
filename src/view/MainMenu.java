@@ -81,7 +81,10 @@ public class MainMenu extends JFrame {
             if (!GameFrame.get().getPlayerPanel().isBlitzMode()
                     && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
                 GameFrame.get().getPlayerPanel().initTimerForNormalMode();
-                GameFrame.get().getPlayerPanel().setStopTimer(false);
+                GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(false);
+            } else if (GameFrame.get().getPlayerPanel().isBlitzMode()) {
+                GameFrame.get().getPlayerPanel().setBlitzModeGameOver(false);
+                GameFrame.get().getPlayerPanel().initBlitzMode();
             }
             GameFrame.get().show();
             GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);

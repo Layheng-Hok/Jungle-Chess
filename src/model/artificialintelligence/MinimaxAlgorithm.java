@@ -93,6 +93,6 @@ public class MinimaxAlgorithm implements MoveStrategy {
     }
 
     private static boolean isGameOverScenario(final Board board) {
-        return board.getCurrentPlayer().isDenPenetrated();
+        return board.getCurrentPlayer().isDenPenetrated() || board.getCurrentPlayer().getActivePieces().isEmpty();
     }
 }

@@ -57,10 +57,29 @@ public class MenuBar {
         final JMenuItem i6 = new JMenuItem("out");
         final JMenuItem i7 = new JMenuItem("yourself");
         final JMenu i8 = new JMenu("...");
-        final JCheckBoxMenuItem blitzMode = new JCheckBoxMenuItem("⏱   Blitz Mode");
-        blitzMode.addActionListener(e -> {
+        final JCheckBoxMenuItem blitzModeCheckBoxMenuItem = new JCheckBoxMenuItem("⏱   Blitz Mode");
+        blitzModeCheckBoxMenuItem.addActionListener(e -> {
             AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
-            Controller.handleBlitzMode();
+            if (blitzModeCheckBoxMenuItem.isSelected()) {
+                GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(true);
+                GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
+                GameFrame.get().getPlayerPanel().setBlitzMode(true);
+                GameFrame.get().getPlayerPanel().setBlitzModeGameOver(false);
+                Controller.restartGameWithAnimation();
+                GameFrame.get().getPlayerPanel().setBlueInitialTimerSecondsBlitzMode(GameFrame.get().getPlayerPanel().getRedInitialTimerSecondsBlitzMode());
+                GameFrame.get().getPlayerPanel().setRedInitialTimerSecondsBlitzMode(GameFrame.get().getPlayerPanel().getBlueInitialTimerSecondsBlitzMode());
+                GameFrame.get().getPlayerPanel().initTimerForBlueBlitzMode();
+                GameFrame.get().getPlayerPanel().initTimerForRedBlitzMode();
+            } else {
+                GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
+                GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
+                GameFrame.get().getPlayerPanel().setBlitzMode(false);
+                Controller.restartGameWithAnimation();
+                if (GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                    GameFrame.get().getPlayerPanel().initTimerForNormalMode();
+                }
+                GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(false);
+            }
         });
         final JCheckBoxMenuItem glitchEffectCheckBoxMenuItem = new JCheckBoxMenuItem("\uD83C\uDF0C  Glitch in the Matrix");
         glitchEffectCheckBoxMenuItem.addActionListener(e -> {
@@ -71,7 +90,7 @@ public class MenuBar {
             GameFrame.get().setGlitchMode(glitchEffectCheckBoxMenuItem.isSelected());
         });
         settingMenu.add(gameModeMenu);
-        gameModeMenu.add(blitzMode);
+        gameModeMenu.add(blitzModeCheckBoxMenuItem);
         gameModeMenu.add(secretDevModeMenuItem);
         secretDevModeMenuItem.add(question1);
         secretDevModeMenuItem.add(question2);

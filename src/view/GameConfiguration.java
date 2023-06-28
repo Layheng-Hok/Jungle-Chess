@@ -6,7 +6,6 @@ import model.player.PlayerType;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import static view.GameFrame.defaultImagesPath;
@@ -47,40 +46,32 @@ public class GameConfiguration extends JDialog {
 
         final JButton okButton = new JButton("Get Started");
 
-        ActionListener blueButtonListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (blueComputerButton.isSelected()) {
-                    redHumanButton.setSelected(true);
-                } else if (blueHumanButton.isSelected()){
-                    redComputerButton.setSelected(true);
-                }
+        ActionListener blueButtonListener = e -> {
+            if (blueComputerButton.isSelected()) {
+                redHumanButton.setSelected(true);
+            } else if (blueHumanButton.isSelected()){
+                redComputerButton.setSelected(true);
             }
         };
         blueHumanButton.addActionListener(blueButtonListener);
         blueComputerButton.addActionListener(blueButtonListener);
 
-        ActionListener redButtonListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (redComputerButton.isSelected()) {
-                    blueHumanButton.setSelected(true);
-                } else if (redHumanButton.isSelected()){
-                    blueComputerButton.setSelected(true);
-                }
+        ActionListener redButtonListener = e -> {
+            if (redComputerButton.isSelected()) {
+                blueHumanButton.setSelected(true);
+            } else if (redHumanButton.isSelected()){
+                blueComputerButton.setSelected(true);
             }
         };
         redHumanButton.addActionListener(redButtonListener);
         redComputerButton.addActionListener(redButtonListener);
 
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                bluePlayerType = blueComputerButton.isSelected() ? PlayerType.AI : PlayerType.HUMAN;
-                redPlayerType = redComputerButton.isSelected() ? PlayerType.AI : PlayerType.HUMAN;
-                GameConfiguration.this.setVisible(false);
-                isReady = true;
-                System.out.println("Set Up Game");
-            }
+        okButton.addActionListener(e -> {
+            bluePlayerType = blueComputerButton.isSelected() ? PlayerType.AI : PlayerType.HUMAN;
+            redPlayerType = redComputerButton.isSelected() ? PlayerType.AI : PlayerType.HUMAN;
+            GameConfiguration.this.setVisible(false);
+            isReady = true;
+            System.out.println("Set Up Game");
         });
 
         gameConfigPanel.add(okButton);

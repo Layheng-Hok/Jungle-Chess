@@ -82,7 +82,10 @@ public class Controller {
                     GameFrame.get().restartGame();
                     GameFrame.get().dispose();
                     MainMenu.get().setVisible(true);
-                    GameFrame.get().getPlayerPanel().setStopTimer(true);
+                    GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(true);
+                    GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
+                    GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
+                    GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
                     System.out.println("Back To Main Menu");
                 }
             });
@@ -252,15 +255,12 @@ public class Controller {
                 if (!GameFrame.get().getPlayerPanel().isBlitzMode()
                         && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
                     GameFrame.get().getPlayerPanel().initTimerForNormalMode();
-                    GameFrame.get().getPlayerPanel().setStopTimer(false);
+                    GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(false);
                     GameFrame.get().getPlayerPanel().setTimerSeconds(GameFrame.get().getPlayerPanel().getInitialTimerSeconds());
                 }
                 System.out.println("Load a Saved Game");
             });
         }
-    }
-
-    public static void handleBlitzMode() {
     }
 
     public static void backToMainMenu() {
@@ -280,7 +280,10 @@ public class Controller {
         if (!MainMenu.get().isGrayScaleBGMButton()) {
             AudioPlayer.LoopPlayer.playMenuBGM();
         }
-        GameFrame.get().getPlayerPanel().setStopTimer(true);
+        GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(true);
+        GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
+        GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
+        GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
         System.out.println("Back To Main Menu");
     }
 
@@ -311,6 +314,7 @@ public class Controller {
     }
 
     public static void restartGameWithAnimation() {
+        GameFrame.get().setAnimationInProgress(true);
         GameFrame.get().setAnimationInProgress(true);
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
@@ -426,10 +430,10 @@ public class Controller {
             JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "No moves to replay.");
             return;
         }
+        GameFrame.get().setReplayMovesInProgress(true);
         GameFrame.get().setLastMove(null);
         GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-        GameFrame.get().setReplayMovesInProgress(true);
-        GameFrame.get().getPlayerPanel().setRoundNumber(1);
+        GameFrame.get().getPlayerPanel().reset();
         GameFrame.get().getCapturedPiecesPanel().reset();
         MoveLog seperateMoveLog = new MoveLog();
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
@@ -473,6 +477,10 @@ public class Controller {
                 }
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 GameFrame.get().setReplayMovesInProgress(false);
+                if (GameFrame.get().getPlayerPanel().isBlitzMode()) {
+                    GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().start();
+                    GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().start();
+                }
             }
         };
         worker.execute();
@@ -512,77 +520,188 @@ public class Controller {
         System.out.println("Piece Icons Flipped");
     }
 
-    public enum BoardDirection {
-        NORMAL {
-            @Override
-            public List<GameFrame.TerrainPanel> traverse(final List<GameFrame.TerrainPanel> boardTiles) {
-                return boardTiles;
-            }
+    public static void setTimer() {
+        if (!GameFrame.get().getPlayerPanel().isBlitzMode()) {
+            final JDialog dialog = new JDialog();
+            dialog.setTitle("Set Timer");
+            dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            dialog.setSize(280, 150);
+            dialog.setLayout(new FlowLayout());
+            dialog.setLocationRelativeTo(GameFrame.get().getBoardPanel());
+            dialog.setIconImage(GameFrame.get().logo.getImage());
+            dialog.setResizable(false);
+            dialog.setModal(true);
 
-            @Override
-            public BoardDirection opposite() {
-                return FLIPPED;
-            }
-        },
-        FLIPPED {
-            @Override
-            public List<GameFrame.TerrainPanel> traverse(final List<GameFrame.TerrainPanel> boardTiles) {
-                List<GameFrame.TerrainPanel> reversedTiles = new ArrayList<>(boardTiles);
-                Collections.reverse(reversedTiles);
-                return reversedTiles;
-            }
+            final JLabel valueLabel = new JLabel("Enter the timer value in seconds (10 - 100):");
+            JTextField textField = new JTextField(23);
+            final JButton setTimerButton = new JButton("Set Timer");
+            final JButton removeTimer = new JButton("Remove Timer");
+            final JLabel restartLabel = new JLabel("The game will restart once the timer is set.");
 
-            @Override
-            public BoardDirection opposite() {
-                return NORMAL;
-            }
-        };
+            dialog.add(valueLabel);
+            dialog.add(restartLabel);
+            dialog.add(textField);
+            dialog.add(setTimerButton);
+            dialog.add(removeTimer);
+            dialog.add(restartLabel);
 
-        public abstract List<GameFrame.TerrainPanel> traverse(final List<GameFrame.TerrainPanel> boardTiles);
-
-        public abstract BoardDirection opposite();
-    }
-
-    public static void coloringTerrainsAnimationThread() {
-        List<Color> colorList = new ArrayList<>();
-        for (int i = 0; i < BoardUtilities.NUM_TERRAINS / 2 + 1; i++) {
-            Random random = new Random();
-            int red = random.nextInt(256);
-            int green = random.nextInt(256);
-            int blue = random.nextInt(256);
-            Color randomColor = new Color(red, green, blue);
-            colorList.add(randomColor);
-        }
-        List<Color> reversedColorList = new ArrayList<>(colorList);
-        Collections.reverse(reversedColorList);
-        Thread thread1 = new Thread(() -> {
-            for (int i = 0; i < BoardUtilities.NUM_TERRAINS / 2 + 1; i++) {
-                GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setOpaque(true);
-                GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setBackground(colorList.get(i));
+            setTimerButton.addActionListener(e -> {
                 try {
-                    Thread.sleep(30);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+                    int timerValue = Integer.parseInt(textField.getText());
+                    if (timerValue >= 10 && timerValue <= 100) {
+                        GameFrame.get().getPlayerPanel().setInitialTimerSeconds(timerValue);
+                        if (GameFrame.get().getMoveLog().size() == 0) {
+                            GameFrame.get().restartGame();
+                        } else if (GameFrame.get().getMoveLog().size() > 0) {
+                            restartGameWithAnimation();
+                        }
+                        GameFrame.get().getPlayerPanel().setNormalModeWithTimer(true);
+                        GameFrame.get().getPlayerPanel().getTimerNormalMode().start();
+                        System.out.println("Timer value: " + timerValue + " seconds");
+                        dialog.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Invalid input.\nPlease enter an integer value between 10 and 100.");
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Invalid input.\nPlease enter an integer value.");
                 }
-            }
-        });
-        Thread thread2 = new Thread(() -> {
-            for (int i = BoardUtilities.NUM_TERRAINS - 1, colorIndex = BoardUtilities.NUM_TERRAINS / 2; i > BoardUtilities.NUM_TERRAINS / 2; i--, colorIndex--) {
-                GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setOpaque(true);
-                GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setBackground(reversedColorList.get(colorIndex));
-                try {
-                    Thread.sleep(30);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+            });
+
+            removeTimer.addActionListener(e -> {
+                GameFrame.get().getPlayerPanel().setNormalModeWithTimer(false);
+                if (GameFrame.get().getMoveLog().size() == 0) {
+                    GameFrame.get().restartGame();
+                } else if (GameFrame.get().getMoveLog().size() > 0) {
+                    restartGameWithAnimation();
                 }
+                GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
+                System.out.println("Timer removed");
+                dialog.dispose();
+            });
+
+            dialog.setVisible(true);
+        } else {
+            final JDialog dialog = new JDialog();
+            dialog.setTitle("Set Timer");
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            dialog.setSize(380, 280);
+            dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
+            dialog.setLocationRelativeTo(GameFrame.get().getBoardPanel());
+            dialog.setIconImage(GameFrame.get().logo.getImage());
+            dialog.setResizable(false);
+            dialog.setModal(true);
+
+            final JPanel optionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            final JLabel optionLabel = new JLabel("Options:");
+            optionPanel.add(optionLabel);
+
+            final JRadioButton fiveMinutesButton = new JRadioButton("5 minutes");
+            final JRadioButton tenMinutesButton = new JRadioButton("10 minutes");
+            final JRadioButton fifteenMinutesButton = new JRadioButton("15 minutes");
+
+            final ButtonGroup buttonGroup = new ButtonGroup();
+            buttonGroup.add(fiveMinutesButton);
+            buttonGroup.add(tenMinutesButton);
+            buttonGroup.add(fifteenMinutesButton);
+
+            final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            final JButton setTimerButton = new JButton("Set Timer");
+            buttonPanel.add(setTimerButton);
+
+            final JLabel restartLabel = new JLabel("The game will restart once the timer is set.");
+
+            dialog.add(Box.createVerticalGlue());
+            dialog.add(optionPanel);
+            dialog.add(Box.createVerticalGlue());
+            dialog.add(fiveMinutesButton);
+            dialog.add(Box.createVerticalGlue());
+            dialog.add(tenMinutesButton);
+            dialog.add(Box.createVerticalGlue());
+            dialog.add(fifteenMinutesButton);
+            dialog.add(Box.createVerticalGlue());
+            dialog.add(buttonPanel);
+            dialog.add(Box.createVerticalGlue());
+            dialog.add(restartLabel);
+            dialog.add(Box.createVerticalGlue());
+
+            if (GameFrame.get().getPlayerPanel().getInitialTimerSecondsBlitzMode() == 300) {
+                fiveMinutesButton.setSelected(true);
+            } else if (GameFrame.get().getPlayerPanel().getInitialTimerSecondsBlitzMode() == 600) {
+                tenMinutesButton.setSelected(true);
+            } else if (GameFrame.get().getPlayerPanel().getInitialTimerSecondsBlitzMode() == 900) {
+                fifteenMinutesButton.setSelected(true);
             }
-        });
-        thread1.start();
-        thread2.start();
-        try {
-            Thread.sleep(1350);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
+
+            setTimerButton.addActionListener(e -> {
+                if (fiveMinutesButton.isSelected()) {
+                    if (GameFrame.get().getMoveLog().size() == 0) {
+                        GameFrame.get().restartGame();
+                    } else if (GameFrame.get().getMoveLog().size() > 0) {
+                        restartGameWithAnimation();
+                    }
+                    GameFrame.get().getPlayerPanel().setBlitzMode(true);
+                    GameFrame.get().getPlayerPanel().setBlitzModeGameOver(false);
+                    GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
+                    GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
+                    GameFrame.get().getPlayerPanel().setInitialTimerSecondsBlitzMode(300);
+                    GameFrame.get().getPlayerPanel().setBlueInitialTimerSecondsBlitzMode(300);
+                    GameFrame.get().getPlayerPanel().setRedInitialTimerSecondsBlitzMode(300);
+                    GameFrame.get().getPlayerPanel().initTimerForBlueBlitzMode();
+                    GameFrame.get().getPlayerPanel().initTimerForRedBlitzMode();
+                    if (!GameFrame.get().isAnimationInProgress()) {
+                        GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().start();
+                        GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().start();
+                    }
+                    System.out.println("Timer value: 5 minutes");
+                    dialog.dispose();
+                } else if (tenMinutesButton.isSelected()) {
+                    if (GameFrame.get().getMoveLog().size() == 0) {
+                        GameFrame.get().restartGame();
+                    } else if (GameFrame.get().getMoveLog().size() > 0) {
+                        restartGameWithAnimation();
+                    }
+                    GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
+                    GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
+                    GameFrame.get().getPlayerPanel().setBlitzMode(true);
+                    GameFrame.get().getPlayerPanel().setBlitzModeGameOver(false);
+                    GameFrame.get().getPlayerPanel().setInitialTimerSecondsBlitzMode(600);
+                    GameFrame.get().getPlayerPanel().setBlueInitialTimerSecondsBlitzMode(600);
+                    GameFrame.get().getPlayerPanel().setRedInitialTimerSecondsBlitzMode(600);
+                    GameFrame.get().getPlayerPanel().initTimerForBlueBlitzMode();
+                    GameFrame.get().getPlayerPanel().initTimerForRedBlitzMode();
+                    if (!GameFrame.get().isAnimationInProgress()) {
+                        GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().start();
+                        GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().start();
+                    }
+                    System.out.println("Timer value: 10 minutes");
+                    dialog.dispose();
+                } else if (fifteenMinutesButton.isSelected()) {
+                    if (GameFrame.get().getMoveLog().size() == 0) {
+                        GameFrame.get().restartGame();
+                    } else if (GameFrame.get().getMoveLog().size() > 0) {
+                        restartGameWithAnimation();
+                    }
+                    GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
+                    GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
+                    GameFrame.get().getPlayerPanel().setBlitzMode(true);
+                    GameFrame.get().getPlayerPanel().setBlitzModeGameOver(false);
+                    GameFrame.get().getPlayerPanel().setInitialTimerSecondsBlitzMode(900);
+                    GameFrame.get().getPlayerPanel().setBlueInitialTimerSecondsBlitzMode(900);
+                    GameFrame.get().getPlayerPanel().setRedInitialTimerSecondsBlitzMode(900);
+                    GameFrame.get().getPlayerPanel().initTimerForBlueBlitzMode();
+                    GameFrame.get().getPlayerPanel().initTimerForRedBlitzMode();
+                    if (!GameFrame.get().isAnimationInProgress()) {
+                        GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().start();
+                        GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().start();
+                    }
+                    System.out.println("Timer value: 15 minutes");
+                    dialog.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Please select an option.");
+                }
+            });
+
+            dialog.setVisible(true);
         }
     }
 
@@ -631,7 +750,7 @@ public class Controller {
                 GameFrame.get().restartGame();
                 if (!GameFrame.get().getPlayerPanel().isBlitzMode()
                         && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
-                    GameFrame.get().getPlayerPanel().getTimer().start();
+                    GameFrame.get().getPlayerPanel().getTimerNormalMode().start();
                 }
                 System.out.println("Game Restarted");
             }
@@ -639,67 +758,127 @@ public class Controller {
         worker.execute();
     }
 
-    public static void setTimer() {
-        if (!GameFrame.get().getPlayerPanel().isBlitzMode()) {
-            JDialog dialog = new JDialog();
-            dialog.setTitle("Set Timer");
-            dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            dialog.setSize(280, 150);
-            dialog.setLayout(new FlowLayout());
-            dialog.setLocationRelativeTo(GameFrame.get().getBoardPanel());
-            dialog.setIconImage(GameFrame.get().logo.getImage());
-            dialog.setResizable(false);
-
-            JLabel valueLabel = new JLabel("Enter the timer value in seconds (10 - 100):");
-            JTextField textField = new JTextField(23);
-            JButton setTimerButton = new JButton("Set Timer");
-            JButton removeTimer = new JButton("Remove Timer");
-            JLabel restartLabel = new JLabel("The game will restart once the timer is set.");
-
-            dialog.add(valueLabel);
-            dialog.add(restartLabel);
-            dialog.add(textField);
-            dialog.add(setTimerButton);
-            dialog.add(removeTimer);
-            dialog.add(restartLabel);
-
-            setTimerButton.addActionListener(e -> {
-                try {
-                    int timerValue = Integer.parseInt(textField.getText());
-                    if (timerValue >= 10 && timerValue <= 100) {
-                        GameFrame.get().getPlayerPanel().setInitialTimerSeconds(timerValue);
-                        if (GameFrame.get().getMoveLog().size() == 0) {
-                            GameFrame.get().restartGame();
-                        } else if (GameFrame.get().getMoveLog().size() > 0) {
-                            restartGameWithAnimation();
-                        }
-                        GameFrame.get().getPlayerPanel().setNormalModeWithTimer(true);
-                        GameFrame.get().getPlayerPanel().getTimer().start();
-                        System.out.println("Timer value: " + timerValue + " seconds");
-                        dialog.dispose();
-                    } else {
-                        JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Invalid input.\nPlease enter an integer value between 10 and 100.");
+    public static void handleWinningStateForBlitzModeCondition() {
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws InterruptedException {
+                for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                    if (GameFrame.get().getChessBoard().getTerrain(i).isTerrainOccupied()
+                            && GameFrame.get().getChessBoard().getTerrain(i).getPiece().getPieceColor() == GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor()) {
+                        publish();
+                        Thread.sleep(500);
+                        GameFrame.get().getBoardPanel().getBoardTerrains().get(i).removeAll();
+                        GameFrame.get().getBoardPanel().getBoardTerrains().get(i).revalidate();
+                        GameFrame.get().getBoardPanel().getBoardTerrains().get(i).repaint();
                     }
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Invalid input.\nPlease enter an integer value.");
                 }
-            });
+                return null;
+            }
 
-            removeTimer.addActionListener(e -> {
-                GameFrame.get().getPlayerPanel().setNormalModeWithTimer(false);
-                if (GameFrame.get().getMoveLog().size() == 0) {
-                    GameFrame.get().restartGame();
-                } else if (GameFrame.get().getMoveLog().size() > 0) {
-                    restartGameWithAnimation();
+            @Override
+            protected void process(List<Void> chunks) {
+                AudioPlayer.SinglePlayer.playSoundEffect("popping.wav");
+            }
+
+            @Override
+            protected void done() {
+                if (GameFrame.get().getGameConfiguration().getBluePlayerType() == GameFrame.get().getGameConfiguration().getRedPlayerType()
+                        || GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
+                    AudioPlayer.SinglePlayer.playSoundEffect("winning.wav");
+                } else {
+                    AudioPlayer.SinglePlayer.playSoundEffect("losing.wav");
                 }
-                GameFrame.get().getPlayerPanel().getTimer().stop();
-                System.out.println("Timer removed");
-                dialog.dispose();
-            });
+                ImageIcon gameOverIcon = new ImageIcon(defaultImagesPath + "gameover.png");
+                Image resizedImage = gameOverIcon.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT);
+                Icon resizedIcon = new ImageIcon(resizedImage);
+                JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                        "Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
+                                + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + " runs out of time in Blitz Mode!",
+                        "Game Over",
+                        JOptionPane.INFORMATION_MESSAGE,
+                        resizedIcon);
 
-            dialog.setVisible(true);
-        } else {
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(), "Blitz mode is enabled.\nThis function is only for normal mode.");
+                System.out.println("Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
+                        + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + " runs out of time in Blitz Mode!");
+                GameFrame.get().restartGame();
+                System.out.println("Game Restarted");
+            }
+        };
+        worker.execute();
+    }
+
+    public static void coloringTerrainsAnimationThread() {
+        List<Color> colorList = new ArrayList<>();
+        for (int i = 0; i < BoardUtilities.NUM_TERRAINS / 2 + 1; i++) {
+            Random random = new Random();
+            int red = random.nextInt(256);
+            int green = random.nextInt(256);
+            int blue = random.nextInt(256);
+            Color randomColor = new Color(red, green, blue);
+            colorList.add(randomColor);
         }
+        List<Color> reversedColorList = new ArrayList<>(colorList);
+        Collections.reverse(reversedColorList);
+        Thread thread1 = new Thread(() -> {
+            for (int i = 0; i < BoardUtilities.NUM_TERRAINS / 2 + 1; i++) {
+                GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setOpaque(true);
+                GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setBackground(colorList.get(i));
+                try {
+                    Thread.sleep(30);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        Thread thread2 = new Thread(() -> {
+            for (int i = BoardUtilities.NUM_TERRAINS - 1, colorIndex = BoardUtilities.NUM_TERRAINS / 2; i > BoardUtilities.NUM_TERRAINS / 2; i--, colorIndex--) {
+                GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setOpaque(true);
+                GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setBackground(reversedColorList.get(colorIndex));
+                try {
+                    Thread.sleep(30);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        thread1.start();
+        thread2.start();
+        try {
+            Thread.sleep(1350);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public enum BoardDirection {
+        NORMAL {
+            @Override
+            public List<GameFrame.TerrainPanel> traverse(final List<GameFrame.TerrainPanel> boardTiles) {
+                return boardTiles;
+            }
+
+            @Override
+            public BoardDirection opposite() {
+                return FLIPPED;
+            }
+        },
+        FLIPPED {
+            @Override
+            public List<GameFrame.TerrainPanel> traverse(final List<GameFrame.TerrainPanel> boardTiles) {
+                List<GameFrame.TerrainPanel> reversedTiles = new ArrayList<>(boardTiles);
+                Collections.reverse(reversedTiles);
+                return reversedTiles;
+            }
+
+            @Override
+            public BoardDirection opposite() {
+                return NORMAL;
+            }
+        };
+
+        public abstract List<GameFrame.TerrainPanel> traverse(final List<GameFrame.TerrainPanel> boardTiles);
+
+        public abstract BoardDirection opposite();
+
     }
 }
