@@ -13,3 +13,4 @@ ra  **  le  **  wo  **  **
 EL  **  WO  **  LE  **  **
 **  CA  **  **  **  DO  **
 TI  **  **  **  **  **  LI
+normal 60

@@ -547,7 +547,7 @@ public class GameFrame extends Observable {
         @Override
         public void update(final Observable o, final Object arg) {
             if (GameFrame.get().gameConfiguration.isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer()) &&
-                    !GameFrame.get().getChessBoard().getCurrentPlayer().isDenPenetrated()) {
+                    !isGameOverScenario(GameFrame.get().getChessBoard())) {
                 final IntelligenceHub intelligenceHub = new IntelligenceHub();
                 intelligenceHub.execute();
             }
@@ -563,51 +563,43 @@ public class GameFrame extends Observable {
                 isMinimaxRunning = true;
                 final MoveStrategy minimax = new MinimaxAlgorithm(3, PoorBoardEvaluator.get());
                 System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
-                if (!GameFrame.get().isBlitzModeGameOver()) {
-                    return minimax.execute(GameFrame.get().getChessBoard());
-                }
+                return minimax.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.MEDIUM) {
                 isMinimaxRunning = true;
                 final MoveStrategy minimax = new MinimaxAlgorithm(4, PoorBoardEvaluator.get());
                 System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
-                if (!GameFrame.get().isBlitzModeGameOver()) {
-                    return minimax.execute(GameFrame.get().getChessBoard());
-                }
+                return minimax.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.HARD) {
                 isMinimaxRunning = true;
                 final MoveStrategy minimax = new MinimaxAlgorithm(4, ConcreteBoardEvaluator.get());
                 System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
-                if (!GameFrame.get().isBlitzModeGameOver()) {
-                    return minimax.execute(GameFrame.get().getChessBoard());
-                }
+                return minimax.execute(GameFrame.get().getChessBoard());
             }
             return null;
         }
 
         @Override
         public void done() {
-            if (!GameFrame.get().isBlitzModeGameOver()) {
-                try {
-                    final Move optimalMove = get();
-                    if (optimalMove.isCaptureMove()) {
-                        AudioPlayer.SinglePlayer.playAnimalSoundEffect(optimalMove.getMovedPiece());
-                    } else {
-                        AudioPlayer.SinglePlayer.playSoundEffect("click.wav");
-                    }
-                    GameFrame.get().updateComputerMove(optimalMove);
-                    GameFrame.get().updateGameBoard(GameFrame.get().getChessBoard().getCurrentPlayer().makeMove(optimalMove).getTransitionBoard());
-                    GameFrame.get().getMoveLog().addMove(optimalMove);
-                    GameFrame.get().getPlayerPanel().redo(GameFrame.get().chessBoard);
-                    GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
-                    GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-                    GameFrame.get().checkWin();
-                } catch (final Exception e) {
-                    e.printStackTrace();
+            try {
+                final Move optimalMove = get();
+                if (optimalMove.isCaptureMove()) {
+                    AudioPlayer.SinglePlayer.playAnimalSoundEffect(optimalMove.getMovedPiece());
+                } else {
+                    AudioPlayer.SinglePlayer.playSoundEffect("click.wav");
                 }
-                isMinimaxRunning = false;
+                GameFrame.get().updateComputerMove(optimalMove);
+                GameFrame.get().updateGameBoard(GameFrame.get().getChessBoard().getCurrentPlayer().makeMove(optimalMove).getTransitionBoard());
+                GameFrame.get().getMoveLog().addMove(optimalMove);
+                GameFrame.get().getPlayerPanel().redo(GameFrame.get().chessBoard);
+                GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
+                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+                GameFrame.get().checkWin();
+            } catch (final Exception e) {
+                e.printStackTrace();
             }
+            isMinimaxRunning = false;
         }
     }
 
@@ -636,7 +628,7 @@ public class GameFrame extends Observable {
         notifyObservers();
     }
 
-    void checkWin() {
+    public void checkWin() {
         if (GameFrame.get().getChessBoard().getCurrentPlayer().isDenPenetrated()) {
             if (!GameFrame.get().isBlitzMode()) {
                 GameFrame.get().setNormalModeGameOver(true);
@@ -647,8 +639,11 @@ public class GameFrame extends Observable {
             }
             if (GameFrame.get().isBlitzMode()) {
                 GameFrame.get().setBlitzModeGameOver(true);
+                GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
+                GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
             }
             Controller.handleWinningStateForDenPenetratedCondition();
+            return;
         }
         if (GameFrame.get().getChessBoard().getCurrentPlayer().getActivePieces().isEmpty()) {
             if (!GameFrame.get().isBlitzMode()) {
@@ -660,6 +655,8 @@ public class GameFrame extends Observable {
             }
             if (GameFrame.get().isBlitzMode()) {
                 GameFrame.get().setBlitzModeGameOver(true);
+                GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
+                GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
             }
             try {
                 Thread.sleep(1000);
@@ -672,25 +669,32 @@ public class GameFrame extends Observable {
             } else {
                 AudioPlayer.SinglePlayer.playSoundEffect("losing.wav");
             }
-            ImageIcon gameOverIcon = new ImageIcon(defaultImagesPath + "gameover.png");
-            Image resizedImage = gameOverIcon.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT);
-            Icon resizedIcon = new ImageIcon(resizedImage);
-            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
-                    "Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
-                            + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + " has no more pieces!",
-                    "Game Over",
-                    JOptionPane.INFORMATION_MESSAGE,
-                    resizedIcon);
-
-            System.out.println("Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
-                    + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + " has no more pieces!");
-            GameFrame.get().restartGame();
+            Controller.handleWinningStateForHavingNoMoreActivePiecesCondition();
+            return;
+        }
+        if (GameFrame.get().getChessBoard().getCurrentPlayer().getValidMoves().isEmpty()) {
+            if (!GameFrame.get().isBlitzMode()) {
+                GameFrame.get().setNormalModeGameOver(true);
+            }
             if (!GameFrame.get().isBlitzMode()
                     && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
-                GameFrame.get().getPlayerPanel().getTimerNormalMode().start();
+                GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
             }
-            System.out.println("Game Restarted");
+            if (GameFrame.get().isBlitzMode()) {
+                GameFrame.get().setBlitzModeGameOver(true);
+                GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
+                GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
+            }
+            Controller.handleWinningStateForHavingNoMoreValidMovesConditions();
         }
+    }
+
+    public static boolean isGameOverScenario(final Board board) {
+        return board.getCurrentPlayer().isDenPenetrated()
+                || board.getCurrentPlayer().getActivePieces().isEmpty()
+                || board.getCurrentPlayer().getValidMoves().isEmpty()
+                || GameFrame.get().getPlayerPanel().getBlueCurrentTimerSecondsBlitzMode() == 0
+                || GameFrame.get().getPlayerPanel().getRedCurrentTimerSecondsBlitzMode() == 0;
     }
 
     public void setLoadBoard(Board loadBoard, MoveLog loadMoveLog, int roundNumber) {

@@ -3,6 +3,7 @@ package model.artificialintelligence;
 import model.board.Board;
 import model.board.Move;
 import model.board.MoveTransition;
+import view.GameFrame;
 
 public class MinimaxAlgorithm implements MoveStrategy {
     private final GameEvaluator evaluator;
@@ -53,10 +54,10 @@ public class MinimaxAlgorithm implements MoveStrategy {
     }
 
     public int min(final Board board, final int depth) {
-        if (depth == 0 ) {
+        if (depth == 0) {
             return this.evaluator.evaluate(board, depth);
         }
-        if(isGameOverScenario(board)) {
+        if (GameFrame.isGameOverScenario(board)) {
             return this.evaluator.evaluate(board, depth) * 10000000;
         }
         int lowestValue = Integer.MAX_VALUE;
@@ -76,7 +77,7 @@ public class MinimaxAlgorithm implements MoveStrategy {
         if (depth == 0) {
             return this.evaluator.evaluate(board, depth);
         }
-        if(isGameOverScenario(board)) {
+        if (GameFrame.isGameOverScenario(board)) {
             return this.evaluator.evaluate(board, depth) * 1000000;
         }
         int highestValue = Integer.MIN_VALUE;
@@ -92,7 +93,4 @@ public class MinimaxAlgorithm implements MoveStrategy {
         return highestValue;
     }
 
-    private static boolean isGameOverScenario(final Board board) {
-        return board.getCurrentPlayer().isDenPenetrated() || board.getCurrentPlayer().getActivePieces().isEmpty();
-    }
 }

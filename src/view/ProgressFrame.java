@@ -17,12 +17,13 @@ public class ProgressFrame extends JFrame {
     private final List<ProgressListener> progressListeners = new ArrayList<>();
     private final ImageIcon logo = new ImageIcon(defaultImagesPath + "junglechesslogo.jpg");
 
-    public ProgressFrame() {
+    public ProgressFrame(String loadingText) {
         frame = this;
         setBasicProgressFrameAttributes();
         setLoadingTextAndProgressBar();
         setProgressBarUI();
         setVisible(true);
+        this.loadingText = loadingText;
         startProgress();
     }
 
@@ -39,7 +40,6 @@ public class ProgressFrame extends JFrame {
     }
 
     private void setLoadingTextAndProgressBar() {
-        loadingText = "Progress";
         label = new JLabel(loadingText);
         label.setLocation(100, 20);
         label.setSize(100, 40);
@@ -86,7 +86,7 @@ public class ProgressFrame extends JFrame {
                 int numDots = process / 20;
                 StringBuilder dots = new StringBuilder();
                 dots.append(".".repeat(Math.max(0, numDots)));
-                loadingText = "Progress" + dots;
+                loadingText = loadingText + dots;
 
                 SwingUtilities.invokeLater(() -> {
                     label.setText(loadingText);

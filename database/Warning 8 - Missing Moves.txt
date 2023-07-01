@@ -19,3 +19,4 @@ ra  **  **  le  **  **  el
 EL  **  WO  **  LE  **  **
 **  CA  **  **  **  DO  **
 TI  **  **  **  **  **  LI
+normal 60

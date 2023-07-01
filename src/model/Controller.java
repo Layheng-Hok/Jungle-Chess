@@ -2,18 +2,25 @@ package model;
 
 import model.board.*;
 import model.player.PlayerType;
-import view.*;
 import view.MenuBar;
+import view.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.*;
 
 import static view.GameFrame.defaultImagesPath;
 
 public class Controller {
+    private static boolean firstReplay = true;
+    private static boolean callFromSaveReplay = false;
+    private static final ImageIcon gameOverIcon = new ImageIcon(defaultImagesPath + "gameover.png");
+    private static final ImageIcon resizedGameOverIcon = new ImageIcon(gameOverIcon.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT));
+
     private Controller() {
         throw new RuntimeException("You cannot instantiate an object of \"Controller\" class.");
     }
@@ -43,7 +50,8 @@ public class Controller {
         if (!fileName.matches("[^\\\\/:*?\"<>|]+")) {
             JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
                     "A file name cannot contain any illegal characters.",
-                    "Invalid File Name", JOptionPane.ERROR_MESSAGE);
+                    "Invalid File Name",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
         File file = new File(location);
@@ -76,8 +84,16 @@ public class Controller {
             fileWriter.write(GameFrame.get().getChessBoard().toString());
             if (GameFrame.get().isBlitzMode()) {
                 fileWriter.write("blitz ");
-                fileWriter.write(GameFrame.get().getPlayerPanel().getBlueCurrentTimerSecondsBlitzMode() + " " +
-                        GameFrame.get().getPlayerPanel().getRedCurrentTimerSecondsBlitzMode() + "\n");
+                if (GameFrame.get().getPlayerPanel().getBlueCurrentTimerSecondsBlitzMode() <= 0) {
+                    fileWriter.write("0 ");
+                } else {
+                    fileWriter.write(GameFrame.get().getPlayerPanel().getBlueCurrentTimerSecondsBlitzMode() + " ");
+                }
+                if (GameFrame.get().getPlayerPanel().getRedCurrentTimerSecondsBlitzMode() <= 0) {
+                    fileWriter.write("0\n");
+                } else {
+                    fileWriter.write(GameFrame.get().getPlayerPanel().getRedCurrentTimerSecondsBlitzMode() + "\n");
+                }
             } else {
                 fileWriter.write("normal ");
                 if (GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
@@ -87,16 +103,23 @@ public class Controller {
                 }
             }
             fileWriter.close();
-            ProgressFrame progressFrame = new ProgressFrame();
+            ProgressFrame progressFrame = new ProgressFrame("Saving");
             progressFrame.addProgressListener(() -> {
-                int continueResponse = JOptionPane.showOptionDialog(GameFrame.get().getBoardPanel(),
+                String options[] = {"Continue", "Back"};
+                int choice = JOptionPane.showOptionDialog(GameFrame.get().getBoardPanel(),
                         "Game saved successfully.\nWould you like to continue playing or go back to the main menu?",
                         "Game Saved",
-                        JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE,
                         null,
-                        new String[]{"Continue", "Back"},
-                        "Continue");
-                if (continueResponse == JOptionPane.NO_OPTION) {
+                        options,
+                        options[0]);
+                if (callFromSaveReplay && (choice == 0 || choice == JOptionPane.CLOSED_OPTION)) {
+                    restartGameWithAnimation();
+                    callFromSaveReplay = false;
+                    System.out.println("Game Restarted");
+                }
+                if (choice == 1) {
                     GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
                     GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
                     GameFrame.get().restartGame();
@@ -174,6 +197,7 @@ public class Controller {
                             "The file is corrupted.",
                             "File Load Error",
                             JOptionPane.ERROR_MESSAGE);
+                    System.out.println("Error in move " + i);
                     return;
                 }
                 playerList.add(moveTokens[0]);
@@ -184,6 +208,7 @@ public class Controller {
                         "The file is corrupted.",
                         "File Load Error",
                         JOptionPane.ERROR_MESSAGE);
+                System.out.println("Number Format Exception: Error in move " + i);
                 return;
             }
         }
@@ -218,6 +243,7 @@ public class Controller {
                             "File Load Error",
                             JOptionPane.ERROR_MESSAGE);
                     System.out.println("Wrong player turns.");
+                    System.out.println("Should be blue at index " + i + " but it gives " + playerList.get(i));
                     return;
                 }
             } else {
@@ -227,6 +253,7 @@ public class Controller {
                             "File Load Error",
                             JOptionPane.ERROR_MESSAGE);
                     System.out.println("Wrong player turns.");
+                    System.out.println("Should be red at index " + i + " but it gives " + playerList.get(i));
                     return;
                 }
             }
@@ -354,32 +381,146 @@ public class Controller {
                     "File Load Error",
                     JOptionPane.ERROR_MESSAGE);
         } else {
-            System.out.println("Board is correct");
-            ProgressFrame progressFrame = new ProgressFrame();
-            progressFrame.addProgressListener(() -> {
-                MainMenu.get().setVisible(false);
-                GameFrame.get().setVisible(true);
-                if (!MainMenu.get().isGrayScaleBGMButton()) {
-                    AudioPlayer.LoopPlayer.playGameBGM();
-                }
+            if (GameFrame.get().getChessBoard().getCurrentPlayer().isDenPenetrated()
+                    || GameFrame.get().getChessBoard().getCurrentPlayer().getActivePieces().isEmpty()
+                    || GameFrame.get().getChessBoard().getCurrentPlayer().getValidMoves().isEmpty()
+                    || GameFrame.get().getPlayerPanel().getBlueCurrentTimerSecondsBlitzMode() == 0
+                    || GameFrame.get().getPlayerPanel().getRedCurrentTimerSecondsBlitzMode() == 0) {
+                firstReplay = true;
                 if (!GameFrame.get().isBlitzMode()
                         && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
                     GameFrame.get().getPlayerPanel().initTimerForNormalMode();
                     GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(false);
                     GameFrame.get().getPlayerPanel().setCurrentTimerSecondsNormalMode(GameFrame.get().getPlayerPanel().getInitialTimerSecondsNormalMode());
-                    GameFrame.get().getPlayerPanel().getTimerNormalMode().start();
+                    GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
                 } else if (!GameFrame.get().isBlitzMode()
                         && !GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
                     GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(true);
                 } else if (GameFrame.get().isBlitzMode()) {
                     GameFrame.get().getPlayerPanel().initTimerForBlueBlitzMode();
                     GameFrame.get().getPlayerPanel().initTimerForRedBlitzMode();
-                    GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().start();
-                    GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().start();
+                    GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
+                    GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
                 }
-                System.out.println("Load a Saved Game");
-            });
+                ProgressFrame progressFrame = new ProgressFrame("Replay");
+                progressFrame.addProgressListener(() -> {
+                    MainMenu.get().setVisible(false);
+                    GameFrame.get().setVisible(true);
+                    loadReplay();
+                });
+            } else {
+                System.out.println("Board is correct");
+                ProgressFrame progressFrame = new ProgressFrame("Loading");
+                progressFrame.addProgressListener(() -> {
+                    MainMenu.get().setVisible(false);
+                    GameFrame.get().setVisible(true);
+                    if (!GameFrame.get().isBlitzMode()
+                            && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                        GameFrame.get().getPlayerPanel().initTimerForNormalMode();
+                        GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(false);
+                        GameFrame.get().getPlayerPanel().setCurrentTimerSecondsNormalMode(GameFrame.get().getPlayerPanel().getInitialTimerSecondsNormalMode());
+                        GameFrame.get().getPlayerPanel().getTimerNormalMode().start();
+                    } else if (!GameFrame.get().isBlitzMode()
+                            && !GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                        GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(true);
+                    } else if (GameFrame.get().isBlitzMode()) {
+                        GameFrame.get().getPlayerPanel().initTimerForBlueBlitzMode();
+                        GameFrame.get().getPlayerPanel().initTimerForRedBlitzMode();
+                        GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().start();
+                        GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().start();
+                    }
+                    if (!MainMenu.get().isGrayScaleBGMButton()) {
+                        AudioPlayer.LoopPlayer.playGameBGM();
+                    }
+                    System.out.println("Load a Saved Game");
+                });
+            }
         }
+    }
+
+    public static void loadReplay() {
+        if (firstReplay) {
+            if (!MainMenu.get().isGrayScaleBGMButton()) {
+                AudioPlayer.LoopPlayer.playGameBGM();
+            }
+        }
+        GameFrame.get().setReplayMovesInProgress(true);
+        GameFrame.get().setLastMove(null);
+        GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+        GameFrame.get().getPlayerPanel().reset();
+        GameFrame.get().getCapturedPiecesPanel().reset();
+        MoveLog seperateMoveLog = new MoveLog();
+        final int[] choice = new int[1];
+        choice[0] = 2;
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws InterruptedException {
+                for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
+                }
+                GameFrame.get().setLastMove(null);
+                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+                coloringTerrainsAnimationThread();
+                GameFrame.get().setChessBoard(Board.constructStandardBoard());
+                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+                GameFrame.get().getBoardPanel().removeAllBorders();
+                GameFrame.get().getPlayerPanel().reset();
+                Thread.sleep(1000);
+                for (int i = 0; i < GameFrame.get().getMoveLog().size(); i++) {
+                    Move move = GameFrame.get().getMoveLog().getMove(i);
+                    GameFrame.get().setChessBoard(move.execute());
+                    System.out.println(move);
+                    seperateMoveLog.addMove(move);
+                    GameFrame.get().setLastMove(move);
+                    publish();
+                    Thread.sleep(1000);
+                }
+                return null;
+            }
+
+            @Override
+            protected void process(List<Void> chunks) {
+                AudioPlayer.SinglePlayer.playSoundEffect("click.wav");
+                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+                GameFrame.get().getPlayerPanel().redo(GameFrame.get().getChessBoard());
+                GameFrame.get().getCapturedPiecesPanel().redo(seperateMoveLog);
+            }
+
+            @Override
+            protected void done() {
+                if (!GameFrame.get().isBlitzMode()
+                        && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                    GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
+                } else if (GameFrame.get().isBlitzMode()) {
+                    GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
+                    GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
+                }
+                GameFrame.get().setReplayMovesInProgress(false);
+                String[] options = {"Rewatch", "New Game"};
+                choice[0] = JOptionPane.showOptionDialog(GameFrame.get().getBoardPanel(),
+                        "Replay has ended.",
+                        "Replay",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE,
+                        null,
+                        options,
+                        options[0]);
+                if (choice[0] == 0) {
+                    loadReplay();
+                } else if (choice[0] == 1 || choice[0] == JOptionPane.CLOSED_OPTION) {
+                    restartGameWithAnimation();
+                    if (!GameFrame.get().isBlitzMode()
+                            && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                        GameFrame.get().getPlayerPanel().getTimerNormalMode().start();
+                    } else if (GameFrame.get().isBlitzMode()) {
+                        GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().start();
+                        GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().start();
+                    }
+                }
+            }
+        };
+        worker.execute();
+        firstReplay = false;
     }
 
     public static void backToMainMenu() {
@@ -879,27 +1020,63 @@ public class Controller {
                 ImageIcon gameOverIcon = new ImageIcon(defaultImagesPath + "gameover.png");
                 Image resizedImage = gameOverIcon.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT);
                 Icon resizedIcon = new ImageIcon(resizedImage);
-                JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                String[] options = {"Save Replay", "Restart"};
+                int choice = JOptionPane.showOptionDialog(GameFrame.get().getBoardPanel(),
                         "Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
                                 + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + "'s den is penetrated by the enemy!",
                         "Game Over",
+                        JOptionPane.YES_NO_OPTION,
                         JOptionPane.INFORMATION_MESSAGE,
-                        resizedIcon);
-
+                        resizedIcon,
+                        options,
+                        options[0]);
                 System.out.println("Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
                         + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + "'s den is penetrated by the enemy!");
-                GameFrame.get().restartGame();
-                if (!GameFrame.get().isBlitzMode()
-                        && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
-                    GameFrame.get().getPlayerPanel().getTimerNormalMode().start();
+
+                if (choice == 0) {
+                    LocalDateTime currentDateTime = LocalDateTime.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    String formattedDateTime = currentDateTime.format(formatter);
+                    String fileName = "Replay_" + formattedDateTime.replace(":", "-");
+                    callFromSaveReplay = true;
+                    writeGame(fileName);
+                } else if (choice == 1 || choice == JOptionPane.CLOSED_OPTION) {
+                    restartGameWithAnimation();
+                    System.out.println("Game Restarted");
                 }
-                System.out.println("Game Restarted");
             }
         };
         worker.execute();
     }
 
-    public static void handleWinningStateForBlitzModeCondition() {
+    public static void handleWinningStateForHavingNoMoreActivePiecesCondition() {
+        String[] options = {"Save Replay", "Restart"};
+        int choice = JOptionPane.showOptionDialog(GameFrame.get().getBoardPanel(),
+                "Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
+                        + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + " has no more pieces!",
+                "Game Over",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                resizedGameOverIcon,
+                options,
+                options[0]);
+        System.out.println("Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
+                + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + " has no more pieces!");
+
+        if (choice == 0) {
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedDateTime = currentDateTime.format(formatter);
+            String fileName = "Replay_" + formattedDateTime.replace(":", "-");
+            callFromSaveReplay = true;
+            writeGame(fileName);
+        } else if (choice == 1 || choice == JOptionPane.CLOSED_OPTION) {
+            restartGameWithAnimation();
+            System.out.println("Game Restarted");
+        }
+    }
+
+    public static void handleWinningStateForHavingNoMoreValidMovesConditions() {
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws InterruptedException {
@@ -929,20 +1106,92 @@ public class Controller {
                 } else {
                     AudioPlayer.SinglePlayer.playSoundEffect("losing.wav");
                 }
-                ImageIcon gameOverIcon = new ImageIcon(defaultImagesPath + "gameover.png");
-                Image resizedImage = gameOverIcon.getImage().getScaledInstance(35, 35, Image.SCALE_DEFAULT);
-                Icon resizedIcon = new ImageIcon(resizedImage);
-                JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                String[] options = {"Save Replay", "Restart"};
+                int choice = JOptionPane.showOptionDialog(GameFrame.get().getBoardPanel(),
+                        "Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
+                                + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + " has no more valid moves!",
+                        "Game Over",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE,
+                        resizedGameOverIcon,
+                        options,
+                        options[0]);
+                System.out.println("Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
+                        + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + " has no more valid moves!");
+
+                if (choice == 0) {
+                    LocalDateTime currentDateTime = LocalDateTime.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    String formattedDateTime = currentDateTime.format(formatter);
+                    String fileName = "Replay_" + formattedDateTime.replace(":", "-");
+                    callFromSaveReplay = true;
+                    writeGame(fileName);
+                } else if (choice == 1 || choice == JOptionPane.CLOSED_OPTION) {
+                    restartGameWithAnimation();
+                    System.out.println("Game Restarted");
+                }
+            }
+        };
+        worker.execute();
+    }
+
+    public static void handleWinningStateForBlitzModeCondition() {
+        GameFrame.get().setBlitzModeGameOver(true);
+        GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
+        GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws InterruptedException {
+                for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                    if (GameFrame.get().getChessBoard().getTerrain(i).isTerrainOccupied()
+                            && GameFrame.get().getChessBoard().getTerrain(i).getPiece().getPieceColor() == GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor()) {
+                        publish();
+                        Thread.sleep(500);
+                        GameFrame.get().getBoardPanel().getBoardTerrains().get(i).removeAll();
+                        GameFrame.get().getBoardPanel().getBoardTerrains().get(i).revalidate();
+                        GameFrame.get().getBoardPanel().getBoardTerrains().get(i).repaint();
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            protected void process(List<Void> chunks) {
+                AudioPlayer.SinglePlayer.playSoundEffect("popping.wav");
+            }
+
+            @Override
+            protected void done() {
+                if (GameFrame.get().getGameConfiguration().getBluePlayerType() == GameFrame.get().getGameConfiguration().getRedPlayerType()
+                        || GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
+                    AudioPlayer.SinglePlayer.playSoundEffect("winning.wav");
+                } else {
+                    AudioPlayer.SinglePlayer.playSoundEffect("losing.wav");
+                }
+                String[] options = {"Save Replay", "Restart"};
+                int choice = JOptionPane.showOptionDialog(GameFrame.get().getBoardPanel(),
                         "Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
                                 + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + " runs out of time in Blitz Mode!",
                         "Game Over",
+                        JOptionPane.YES_NO_OPTION,
                         JOptionPane.INFORMATION_MESSAGE,
-                        resizedIcon);
-
+                        resizedGameOverIcon,
+                        options,
+                        options[0]);
                 System.out.println("Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins.\n"
                         + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player" + " runs out of time in Blitz Mode!");
-                GameFrame.get().restartGame();
-                System.out.println("Game Restarted");
+
+                if (choice == 0) {
+                    LocalDateTime currentDateTime = LocalDateTime.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    String formattedDateTime = currentDateTime.format(formatter);
+                    String fileName = "Replay_" + formattedDateTime.replace(":", "-");
+                    callFromSaveReplay = true;
+                    writeGame(fileName);
+                } else if (choice == 1 || choice == JOptionPane.CLOSED_OPTION) {
+                    restartGameWithAnimation();
+                    System.out.println("Game Restarted");
+                }
             }
         };
         worker.execute();
