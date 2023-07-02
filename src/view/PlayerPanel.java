@@ -31,7 +31,45 @@ public class PlayerPanel extends JPanel {
     public PlayerPanel() {
         super(new BorderLayout());
         this.topPanelImage = new ImageIcon(defaultImagesPath + "toppanel.png").getImage();
-        setPreferredSize(PLAYER_PANEL_DIMENSION);
+        this.setLayout(null);
+        assignResignButton();
+        this.setPreferredSize(PLAYER_PANEL_DIMENSION);
+    }
+
+    private void assignResignButton() {
+        ImageIcon originalResignIcon = new ImageIcon(defaultImagesPath + "resign.jpg");
+        Image resizedResignImage = originalResignIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+        ImageIcon originalHoverResignIcon = new ImageIcon(defaultImagesPath + "hoverresign.jpg");
+        Image resizedHoverResignImage = originalHoverResignIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+
+        JButton resignButton = new JButton(new ImageIcon(resizedResignImage));
+        resignButton.setBorderPainted(false);
+        resignButton.setContentAreaFilled(false);
+        resignButton.setFocusPainted(false);
+        resignButton.setBounds(244, 70, 25, 25);
+        resignButton.setRolloverIcon(new ImageIcon(resizedHoverResignImage));
+
+        resignButton.addActionListener(e -> {
+            if (!GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
+                AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+                if (!GameFrame.get().isBlitzMode()) {
+                    GameFrame.get().setNormalModeGameOver(true);
+                }
+                if (!GameFrame.get().isBlitzMode()
+                        && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                    GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
+                }
+                if (GameFrame.get().isBlitzMode()) {
+                    GameFrame.get().setBlitzModeGameOver(true);
+                    GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
+                    GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
+                }
+                Controller.handleWinningStateForGameResignedCondition();
+                System.out.println("Resign button clicked");
+            }
+        });
+
+        this.add(resignButton);
     }
 
     @Override
@@ -258,7 +296,7 @@ public class PlayerPanel extends JPanel {
         });
     }
 
-    public void initBlitzMode(){
+    public void initBlitzMode() {
         blueCurrentTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
         redCurrentTimerSecondsBlitzMode = initialTimerSecondsBlitzMode;
         initTimerForBlueBlitzMode();
@@ -343,10 +381,6 @@ public class PlayerPanel extends JPanel {
 
     public void setInitialTimerSecondsNormalMode(int initialTimerSecondsNormalMode) {
         this.initialTimerSecondsNormalMode = initialTimerSecondsNormalMode;
-    }
-
-    public boolean isStopTimerInNormalMode() {
-        return stopTimerInNormalMode;
     }
 
     public void setStopTimerInNormalMode(boolean stopTimerInNormalMode) {

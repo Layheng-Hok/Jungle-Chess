@@ -68,6 +68,7 @@ public class DifficultyFrame extends JFrame {
                     GameFrame.get().setBlitzModeGameOver(false);
                     GameFrame.get().getPlayerPanel().initBlitzMode();
                 }
+                AudioPlayer.LoopPlayer.playGameBGM();
                 this.setVisible(false);
                 GameFrame.get().setVisible(true);
             }
@@ -95,6 +96,7 @@ public class DifficultyFrame extends JFrame {
                     GameFrame.get().setBlitzModeGameOver(false);
                     GameFrame.get().getPlayerPanel().initBlitzMode();
                 }
+                AudioPlayer.LoopPlayer.playGameBGM();
                 this.setVisible(false);
                 GameFrame.get().setVisible(true);
             }
@@ -122,6 +124,7 @@ public class DifficultyFrame extends JFrame {
                     GameFrame.get().setBlitzModeGameOver(false);
                     GameFrame.get().getPlayerPanel().initBlitzMode();
                 }
+                AudioPlayer.LoopPlayer.playGameBGM();
                 this.setVisible(false);
                 GameFrame.get().setVisible(true);
             }

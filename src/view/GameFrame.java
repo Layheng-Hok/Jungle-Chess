@@ -53,6 +53,7 @@ public class GameFrame extends Observable {
     boolean firstGlitchModeEncountered = true;
     private boolean blitzMode = false;
     private boolean blitzModeGameOver = false;
+    private boolean gameResigned = false;
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(500, 650);
     private static final Dimension TERRAIN_PANEL_DIMENSION = new Dimension(10, 10);
@@ -216,8 +217,7 @@ public class GameFrame extends Observable {
                         sourceTerrain = null;
                         humanMovedPiece = null;
                     } else if (isLeftMouseButton(e)) {
-                        if (GameFrame.get().isBlitzMode() && GameFrame.get().isBlitzModeGameOver()
-                                || !GameFrame.get().isBlitzMode() && GameFrame.get().isNormalModeGameOver()) {
+                        if (isGameOverScenario(GameFrame.get().getChessBoard())) {
                             deselectLeftMouseButton();
                             return;
                         }
@@ -615,6 +615,7 @@ public class GameFrame extends Observable {
         chessBoard = Board.constructStandardBoard();
         GameFrame.get().setNormalModeGameOver(false);
         GameFrame.get().setBlitzModeGameOver(false);
+        gameResigned = false;
         moveLog.clear();
         lastMove = null;
         computerMove = null;
@@ -694,7 +695,8 @@ public class GameFrame extends Observable {
                 || board.getCurrentPlayer().getActivePieces().isEmpty()
                 || board.getCurrentPlayer().getValidMoves().isEmpty()
                 || GameFrame.get().getPlayerPanel().getBlueCurrentTimerSecondsBlitzMode() == 0
-                || GameFrame.get().getPlayerPanel().getRedCurrentTimerSecondsBlitzMode() == 0;
+                || GameFrame.get().getPlayerPanel().getRedCurrentTimerSecondsBlitzMode() == 0
+                || GameFrame.get().isGameResigned();
     }
 
     public void setLoadBoard(Board loadBoard, MoveLog loadMoveLog, int roundNumber) {
@@ -839,6 +841,14 @@ public class GameFrame extends Observable {
 
     public void setBlitzModeGameOver(boolean blitzModeGameOver) {
         this.blitzModeGameOver = blitzModeGameOver;
+    }
+
+    public boolean isGameResigned() {
+        return gameResigned;
+    }
+
+    public void setGameResigned(boolean gameResigned) {
+        this.gameResigned = gameResigned;
     }
 
     public static GameFrame get() {
