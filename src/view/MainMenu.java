@@ -134,10 +134,12 @@ public class MainMenu extends JFrame {
             isGrayScaleSoundEffectButton = !isGrayScaleSoundEffectButton;
             if (isGrayScaleSoundEffectButton) {
                 soundEffectButton.setIcon(graySoundEffectIcon);
+                MenuBar.soundEffectAudioControlMenuItem.setSelected(false);
                 System.out.println("Sound Effect is muted");
             } else {
                 AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
                 soundEffectButton.setIcon(soundEffectIcon);
+                MenuBar.soundEffectAudioControlMenuItem.setSelected(true);
                 System.out.println("Sound Effect is on");
             }
         });
@@ -158,11 +160,13 @@ public class MainMenu extends JFrame {
             isGrayScaleBGMButton = !isGrayScaleBGMButton;
             if (isGrayScaleBGMButton) {
                 bgmButton.setIcon(grayBGMIcon);
+                MenuBar.bgmAudioControlMenuItem.setSelected(false);
                 AudioPlayer.LoopPlayer.setMenuBGMPlaying(false);
                 AudioPlayer.LoopPlayer.stopLoopAudio();
                 System.out.println("BGM is muted");
             } else {
                 bgmButton.setIcon(bgmIcon);
+                MenuBar.bgmAudioControlMenuItem.setSelected(true);
                 AudioPlayer.LoopPlayer.playMenuBGM();
                 System.out.println("BGM is on");
             }

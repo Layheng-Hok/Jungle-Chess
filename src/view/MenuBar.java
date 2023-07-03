@@ -6,9 +6,12 @@ import model.board.BoardUtilities;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import java.awt.*;
 
 public class MenuBar {
     public static JCheckBoxMenuItem blitzModeCheckBoxMenuItem;
+    static JMenuItem bgmAudioControlMenuItem;
+    static JMenuItem soundEffectAudioControlMenuItem;
 
     static JMenuBar createGameFrameMenuBar() {
         final JMenuBar gameFrameMenuBar = new JMenuBar();
@@ -40,6 +43,7 @@ public class MenuBar {
             Controller.saveGame();
         });
         settingMenu.add(saveMenuItem);
+
 
         final JMenu gameModeMenu = new JMenu("\uD83D\uDCDA  Game Mode");
         final JMenu secretDevModeMenuItem = new JMenu("㊙  Secret Dev Mode");
@@ -112,7 +116,8 @@ public class MenuBar {
         question8.add(i8);
         i8.add(glitchEffectCheckBoxMenuItem);
 
-        final JMenuItem bgmAudioControlMenuItem = new JMenuItem("\uD83C\uDFB5  Mute/Unmute BGM");
+       bgmAudioControlMenuItem = new JCheckBoxMenuItem("\uD83C\uDFB5  Background Music");
+       bgmAudioControlMenuItem.setSelected(true);
         bgmAudioControlMenuItem.addActionListener(e -> {
             MainMenu.get().bgmButton.doClick();
             if (!MainMenu.get().isGrayScaleBGMButton()) {
@@ -121,7 +126,8 @@ public class MenuBar {
         });
         settingMenu.add(bgmAudioControlMenuItem);
 
-        final JMenuItem soundEffectAudioControlMenuItem = new JMenuItem("\uD83D\uDD0A  Mute/Unmute Sound Effect");
+        soundEffectAudioControlMenuItem = new JCheckBoxMenuItem("\uD83D\uDD0A  Sound Effect");
+        soundEffectAudioControlMenuItem.setSelected(true);
         soundEffectAudioControlMenuItem.addActionListener(e -> MainMenu.get().soundEffectButton.doClick());
         settingMenu.add(soundEffectAudioControlMenuItem);
 
