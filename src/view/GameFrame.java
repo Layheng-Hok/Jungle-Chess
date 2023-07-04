@@ -29,7 +29,7 @@ import static model.board.Move.NULL_MOVE;
 import static view.MenuBar.createGameFrameMenuBar;
 
 public class GameFrame extends Observable {
-    private final JFrame gameFrame;
+    public final JFrame gameFrame;
     private final LeftPanel leftPanel;
     private final RightPanel rightPanel;
     private final PlayerPanel playerPanel;
@@ -62,7 +62,7 @@ public class GameFrame extends Observable {
     private static final GameFrame INSTANCE = new GameFrame();
 
     public GameFrame() {
-        this.gameFrame = new JFrame("Jungle Chess (斗兽棋) - Game");
+        this.gameFrame = new JFrame("Jungle Chess (斗兽棋)");
         setBasicGameFrameAttributes();
         initGameState();
         this.leftPanel = new LeftPanel();

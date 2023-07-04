@@ -527,6 +527,51 @@ public class Controller {
         firstReplay = false;
     }
 
+    public static void setUITheme(int themeIndex) {
+        String[] themes = {"com.formdev.flatlaf.intellijthemes.FlatArcDarkIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatArcDarkOrangeIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatArcIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatCobalt2IJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatDarkFlatIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatDraculaIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatGradiantoDarkFuchsiaIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatGradiantoDeepOceanIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatGradiantoMidnightBlueIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatGradiantoNatureGreenIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkHardIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkMediumIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkSoftIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatHiberbeeDarkIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatHighContrastIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatLightFlatIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatMaterialDesignDarkIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatMonocaiIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatMonokaiProIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatNordIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatSolarizedLightIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatSpacegrayIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatVuesionIJTheme",
+                "com.formdev.flatlaf.intellijthemes.FlatXcodeDarkIJTheme",
+        };
+        try {
+            UIManager.setLookAndFeel(themes[themeIndex]);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        SwingUtilities.updateComponentTreeUI(GameFrame.get().gameFrame);
+        SwingUtilities.updateComponentTreeUI(MainMenu.get());
+        SwingUtilities.updateComponentTreeUI(DifficultyFrame.get());
+        SwingUtilities.updateComponentTreeUI(GameFrame.get().getGameConfiguration());
+        System.out.println("Theme: " + themes[themeIndex]);
+    }
+
     public static void backToMainMenu() {
         if (GameFrame.get().isReplayMovesInProgress()) {
             JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),

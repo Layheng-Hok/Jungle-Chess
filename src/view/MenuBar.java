@@ -7,11 +7,13 @@ import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class MenuBar {
     public static JCheckBoxMenuItem blitzModeCheckBoxMenuItem;
-    static JMenuItem bgmAudioControlMenuItem;
-    static JMenuItem soundEffectAudioControlMenuItem;
+    static JCheckBoxMenuItem bgmAudioControlMenuItem;
+    static JCheckBoxMenuItem soundEffectAudioControlMenuItem;
 
     static JMenuBar createGameFrameMenuBar() {
         final JMenuBar gameFrameMenuBar = new JMenuBar();
@@ -43,7 +45,6 @@ public class MenuBar {
             Controller.saveGame();
         });
         settingMenu.add(saveMenuItem);
-
 
         final JMenu gameModeMenu = new JMenu("\uD83D\uDCDA  Game Mode");
         final JMenu secretDevModeMenuItem = new JMenu("㊙  Secret Dev Mode");
@@ -116,8 +117,230 @@ public class MenuBar {
         question8.add(i8);
         i8.add(glitchEffectCheckBoxMenuItem);
 
-       bgmAudioControlMenuItem = new JCheckBoxMenuItem("\uD83C\uDFB5  Background Music");
-       bgmAudioControlMenuItem.setSelected(true);
+        final JMenu uiThemeMenu = new JMenu("\uD83C\uDFA8  UI Theme");
+        final JRadioButtonMenuItem arcDarkRadioButtonMenuItem = new JRadioButtonMenuItem("Arc Dark");
+        final JRadioButtonMenuItem arcDarkOrangeRadioButtonMenuItem = new JRadioButtonMenuItem("Arc Dark Orange");
+        final JRadioButtonMenuItem arcRadioButtonMenuItem = new JRadioButtonMenuItem("Arc");
+        final JRadioButtonMenuItem arcOrangeRadioButtonMenuItem = new JRadioButtonMenuItem("Arc Orange");
+        final JRadioButtonMenuItem carbonRadioButtonMenuItem = new JRadioButtonMenuItem("Carbon");
+        final JRadioButtonMenuItem cobalt2RadioButtonMenuItem = new JRadioButtonMenuItem("Cobalt 2");
+        final JRadioButtonMenuItem cyanLightRadioButtonMenuItem = new JRadioButtonMenuItem("Cyan Light");
+        final JRadioButtonMenuItem darkFlatRadioButtonMenuItem = new JRadioButtonMenuItem("Dark Flat");
+        final JRadioButtonMenuItem darkPurpleRadioButtonMenuItem = new JRadioButtonMenuItem("Dark Purple");
+        final JRadioButtonMenuItem draculaRadioButtonMenuItem = new JRadioButtonMenuItem("Dracula");
+        final JRadioButtonMenuItem gradiantoDarkFuchsiaRadioButtonMenuItem = new JRadioButtonMenuItem("Gradianto Dark Fuchsia");
+        final JRadioButtonMenuItem gradiantoDeepOceanRadioButtonMenuItem = new JRadioButtonMenuItem("Gradianto Deep Ocean");
+        final JRadioButtonMenuItem gradiantoMidnightBlueRadioButtonMenuItem = new JRadioButtonMenuItem("Gradianto Midnight Blue");
+        final JRadioButtonMenuItem gradiantoNatureGreenRadioButtonMenuItem = new JRadioButtonMenuItem("Gradianto Nature Green");
+        final JRadioButtonMenuItem grayRadioButtonMenuItem = new JRadioButtonMenuItem("Gray");
+        final JRadioButtonMenuItem gruvboxDarkHardRadioButtonMenuItem = new JRadioButtonMenuItem("Gruvbox Dark Hard");
+        final JRadioButtonMenuItem gruvboxDarkMediumRadioButtonMenuItem = new JRadioButtonMenuItem("Gruvbox Dark Medium");
+        final JRadioButtonMenuItem gruvboxDarkSoftRadioButtonMenuItem = new JRadioButtonMenuItem("Gruvbox Dark Soft");
+        final JRadioButtonMenuItem hiberbeeDarkRadioButtonMenuItem = new JRadioButtonMenuItem("Hiberbee Dark");
+        final JRadioButtonMenuItem highContrastRadioButtonMenuItem = new JRadioButtonMenuItem("High Contrast");
+        final JRadioButtonMenuItem lightFlatRadioButtonMenuItem = new JRadioButtonMenuItem("Light Flat");
+        final JRadioButtonMenuItem materialDesignDarkRadioButtonMenuItem = new JRadioButtonMenuItem("Material Design Dark");
+        final JRadioButtonMenuItem monokaiRadioButtonMenuItem = new JRadioButtonMenuItem("Monokai");
+        final JRadioButtonMenuItem monokaiProRadioButtonMenuItem = new JRadioButtonMenuItem("Monokai Pro");
+        final JRadioButtonMenuItem nordRadioButtonMenuItem = new JRadioButtonMenuItem("Nord");
+        final JRadioButtonMenuItem oneDarkRadioButtonMenuItem = new JRadioButtonMenuItem("One Dark");
+        final JRadioButtonMenuItem solarizedDarkRadioButtonMenuItem = new JRadioButtonMenuItem("Solarized Dark");
+        final JRadioButtonMenuItem solarizedLightRadioButtonMenuItem = new JRadioButtonMenuItem("Solarized Light");
+        final JRadioButtonMenuItem spacegrayRadioButtonMenuItem = new JRadioButtonMenuItem("Space Gray");
+        final JRadioButtonMenuItem vuesionRadioButtonMenuItem = new JRadioButtonMenuItem("Vuesion");
+        final JRadioButtonMenuItem xcodeDarkRadioButtonMenuItem = new JRadioButtonMenuItem("Xcode Dark");
+        gradiantoNatureGreenRadioButtonMenuItem.setSelected(true);
+        final ButtonGroup uiThemeButtonGroup = new ButtonGroup();
+        uiThemeButtonGroup.add(arcDarkRadioButtonMenuItem);
+        uiThemeButtonGroup.add(arcDarkOrangeRadioButtonMenuItem);
+        uiThemeButtonGroup.add(arcRadioButtonMenuItem);
+        uiThemeButtonGroup.add(arcOrangeRadioButtonMenuItem);
+        uiThemeButtonGroup.add(carbonRadioButtonMenuItem);
+        uiThemeButtonGroup.add(cobalt2RadioButtonMenuItem);
+        uiThemeButtonGroup.add(cyanLightRadioButtonMenuItem);
+        uiThemeButtonGroup.add(darkFlatRadioButtonMenuItem);
+        uiThemeButtonGroup.add(darkPurpleRadioButtonMenuItem);
+        uiThemeButtonGroup.add(draculaRadioButtonMenuItem);
+        uiThemeButtonGroup.add(gradiantoDarkFuchsiaRadioButtonMenuItem);
+        uiThemeButtonGroup.add(gradiantoDeepOceanRadioButtonMenuItem);
+        uiThemeButtonGroup.add(gradiantoMidnightBlueRadioButtonMenuItem);
+        uiThemeButtonGroup.add(gradiantoNatureGreenRadioButtonMenuItem);
+        uiThemeButtonGroup.add(grayRadioButtonMenuItem);
+        uiThemeButtonGroup.add(gruvboxDarkHardRadioButtonMenuItem);
+        uiThemeButtonGroup.add(gruvboxDarkMediumRadioButtonMenuItem);
+        uiThemeButtonGroup.add(gruvboxDarkSoftRadioButtonMenuItem);
+        uiThemeButtonGroup.add(hiberbeeDarkRadioButtonMenuItem);
+        uiThemeButtonGroup.add(highContrastRadioButtonMenuItem);
+        uiThemeButtonGroup.add(lightFlatRadioButtonMenuItem);
+        uiThemeButtonGroup.add(materialDesignDarkRadioButtonMenuItem);
+        uiThemeButtonGroup.add(monokaiRadioButtonMenuItem);
+        uiThemeButtonGroup.add(monokaiProRadioButtonMenuItem);
+        uiThemeButtonGroup.add(nordRadioButtonMenuItem);
+        uiThemeButtonGroup.add(oneDarkRadioButtonMenuItem);
+        uiThemeButtonGroup.add(solarizedDarkRadioButtonMenuItem);
+        uiThemeButtonGroup.add(solarizedLightRadioButtonMenuItem);
+        uiThemeButtonGroup.add(spacegrayRadioButtonMenuItem);
+        uiThemeButtonGroup.add(vuesionRadioButtonMenuItem);
+        uiThemeButtonGroup.add(xcodeDarkRadioButtonMenuItem);
+        uiThemeMenu.add(arcDarkRadioButtonMenuItem);
+        uiThemeMenu.add(arcDarkOrangeRadioButtonMenuItem);
+        uiThemeMenu.add(arcRadioButtonMenuItem);
+        uiThemeMenu.add(arcOrangeRadioButtonMenuItem);
+        uiThemeMenu.add(carbonRadioButtonMenuItem);
+        uiThemeMenu.add(cobalt2RadioButtonMenuItem);
+        uiThemeMenu.add(cyanLightRadioButtonMenuItem);
+        uiThemeMenu.add(darkFlatRadioButtonMenuItem);
+        uiThemeMenu.add(darkPurpleRadioButtonMenuItem);
+        uiThemeMenu.add(draculaRadioButtonMenuItem);
+        uiThemeMenu.add(gradiantoDarkFuchsiaRadioButtonMenuItem);
+        uiThemeMenu.add(gradiantoDeepOceanRadioButtonMenuItem);
+        uiThemeMenu.add(gradiantoMidnightBlueRadioButtonMenuItem);
+        uiThemeMenu.add(gradiantoNatureGreenRadioButtonMenuItem);
+        uiThemeMenu.add(grayRadioButtonMenuItem);
+        uiThemeMenu.add(gruvboxDarkHardRadioButtonMenuItem);
+        uiThemeMenu.add(gruvboxDarkMediumRadioButtonMenuItem);
+        uiThemeMenu.add(gruvboxDarkSoftRadioButtonMenuItem);
+        uiThemeMenu.add(hiberbeeDarkRadioButtonMenuItem);
+        uiThemeMenu.add(highContrastRadioButtonMenuItem);
+        uiThemeMenu.add(lightFlatRadioButtonMenuItem);
+        uiThemeMenu.add(materialDesignDarkRadioButtonMenuItem);
+        uiThemeMenu.add(monokaiRadioButtonMenuItem);
+        uiThemeMenu.add(monokaiProRadioButtonMenuItem);
+        uiThemeMenu.add(nordRadioButtonMenuItem);
+        uiThemeMenu.add(oneDarkRadioButtonMenuItem);
+        uiThemeMenu.add(solarizedDarkRadioButtonMenuItem);
+        uiThemeMenu.add(solarizedLightRadioButtonMenuItem);
+        uiThemeMenu.add(spacegrayRadioButtonMenuItem);
+        uiThemeMenu.add(vuesionRadioButtonMenuItem);
+        uiThemeMenu.add(xcodeDarkRadioButtonMenuItem);
+        arcDarkRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(0);
+        });
+        arcDarkOrangeRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(1);
+        });
+        arcRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(2);
+        });
+        arcOrangeRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(3);
+        });
+        carbonRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(4);
+        });
+        cobalt2RadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(5);
+        });
+        cyanLightRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(6);
+        });
+        darkFlatRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(7);
+        });
+        darkPurpleRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(8);
+        });
+        draculaRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(9);
+        });
+        gradiantoDarkFuchsiaRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(10);
+        });
+        gradiantoDeepOceanRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(11);
+        });
+        gradiantoMidnightBlueRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(12);
+        });
+        gradiantoNatureGreenRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(13);
+        });
+        grayRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(14);
+        });
+        gruvboxDarkHardRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(15);
+        });
+        gruvboxDarkMediumRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(16);
+        });
+        gruvboxDarkSoftRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(17);
+        });
+        hiberbeeDarkRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(18);
+        });
+        highContrastRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(19);
+        });
+        lightFlatRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(20);
+        });
+        materialDesignDarkRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(21);
+        });
+        monokaiRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(22);
+        });
+        monokaiProRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(23);
+        });
+        nordRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(24);
+        });
+        oneDarkRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(25);
+        });
+        solarizedDarkRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(26);
+        });
+        solarizedLightRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(27);
+        });
+        spacegrayRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(28);
+        });
+        vuesionRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(29);
+        });
+        xcodeDarkRadioButtonMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.setUITheme(30);
+        });
+        settingMenu.add(uiThemeMenu);
+
+        bgmAudioControlMenuItem = new JCheckBoxMenuItem("\uD83C\uDFB5  Background Music");
+        bgmAudioControlMenuItem.setSelected(true);
         bgmAudioControlMenuItem.addActionListener(e -> {
             MainMenu.get().bgmButton.doClick();
             if (!MainMenu.get().isGrayScaleBGMButton()) {

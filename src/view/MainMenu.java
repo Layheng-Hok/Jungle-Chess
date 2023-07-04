@@ -17,19 +17,19 @@ public class MainMenu extends JFrame {
     private static final MainMenu INSTANCE = new MainMenu();
 
     public MainMenu() {
-        setTitle("Jungle Chess (斗兽棋) - Main Menu");
+        this.setTitle("Jungle Chess (斗兽棋) - Main Menu");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(null);
         this.setBounds(630, 180, 530, 850);
         this.setIconImage(GameFrame.get().logo.getImage());
         this.getContentPane().setBackground(Color.GRAY);
-        createOnePlayerButton();
-        createTwoPlayerButton();
-        createSavedGamesButton();
-        createGoOnlineButton();
-        createSoundEffectButton();
-        createBackgroundMusicButton();
-        setBackground();
+        this.createOnePlayerButton();
+        this.createTwoPlayerButton();
+        this.createSavedGamesButton();
+        this.createGoOnlineButton();
+        this.createSoundEffectButton();
+        this.createBackgroundMusicButton();
+        this.setBackground();
         AudioPlayer.LoopPlayer.playMenuBGM();
         this.setLocationRelativeTo(null);
         this.setResizable(false);
