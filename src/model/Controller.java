@@ -527,41 +527,150 @@ public class Controller {
         firstReplay = false;
     }
 
-    public static void setUITheme(int themeIndex) {
-        String[] themes = {"com.formdev.flatlaf.intellijthemes.FlatArcDarkIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatArcDarkOrangeIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatArcIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatCobalt2IJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatDarkFlatIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatDraculaIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatGradiantoDarkFuchsiaIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatGradiantoDeepOceanIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatGradiantoMidnightBlueIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatGradiantoNatureGreenIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkHardIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkMediumIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkSoftIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatHiberbeeDarkIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatHighContrastIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatLightFlatIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatMaterialDesignDarkIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatMonocaiIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatMonokaiProIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatNordIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatSolarizedLightIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatSpacegrayIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatVuesionIJTheme",
-                "com.formdev.flatlaf.intellijthemes.FlatXcodeDarkIJTheme",
-        };
+    public static void updateGameSetting(int themeIndex) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("database/setting.txt"))) {
+            if (MainMenu.get().isGrayScaleSoundEffectButton()) {
+                writer.write("off");
+            } else {
+                writer.write("on");
+            }
+            writer.newLine();
+            if (MainMenu.get().isGrayScaleBGMButton()) {
+                writer.write("off");
+            } else {
+                writer.write("on");
+            }
+            writer.newLine();
+            writer.write(String.valueOf(themeIndex));
+        } catch (IOException e) {
+            System.out.println("Setting file not found");
+        }
+    }
+
+    public static void updateGameSetting() {
+        String[] setting = new String[3];
+        int themeIndex = 13;
+        try (BufferedReader reader = new BufferedReader(new FileReader("database/setting.txt"))) {
+            for (int i = 0; i < 3; i++) {
+                setting[i] = reader.readLine();
+            }
+        } catch (IOException ignored) {
+            System.out.println("Setting file not found");
+        }
         try {
-            UIManager.setLookAndFeel(themes[themeIndex]);
+            if (setting[2] == null) {
+                setUITheme(13);
+            }
+            assert setting[2] != null;
+            themeIndex = Integer.parseInt(setting[2]);
+            if (themeIndex < 0 || themeIndex > 30) {
+                setUITheme(13);
+            }
+            setUITheme(themeIndex);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid theme index: " + setting[2]);
+        } catch (NullPointerException e) {
+            System.out.println("Look and feel not found");
+        }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("database/setting.txt"))) {
+            if (MainMenu.get().isGrayScaleSoundEffectButton()) {
+                writer.write("off");
+            } else {
+                writer.write("on");
+            }
+            writer.newLine();
+            if (MainMenu.get().isGrayScaleBGMButton()) {
+                writer.write("off");
+            } else {
+                writer.write("on");
+            }
+            writer.newLine();
+            writer.write(String.valueOf(themeIndex));
+        } catch (IOException e) {
+            System.out.println("Setting file not found");
+        }
+    }
+
+    public static void loadGameSetting() {
+        String[] setting = new String[3];
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ignored) {
+        }
+        try {
+            UIManager.setLookAndFeel("com.formdev.flatlaf.intellijthemes.FlatGradiantoNatureGreenIJTheme");
+            MenuBar.gradiantoNatureGreenRadioButtonMenuItem.setSelected(true);
+        } catch (Exception ignored) {
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader("database/setting.txt"))) {
+            for (int i = 0; i < 3; i++) {
+                setting[i] = reader.readLine();
+            }
+        } catch (IOException ignored) {
+            System.out.println("Setting file not found");
+        }
+        try {
+            if (setting[0].equals("on")) {
+                MainMenu.get().setGrayScaleSoundEffectButton(false);
+                MainMenu.get().soundEffectButton.setIcon(MainMenu.get().soundEffectIcon);
+                MenuBar.soundEffectAudioControlMenuItem.setSelected(true);
+                Controller.updateGameSetting();
+                System.out.println("Sound Effect is on");
+            } else if (setting[0].equals("off")) {
+                MainMenu.get().setGrayScaleSoundEffectButton(true);
+                MainMenu.get().soundEffectButton.setIcon(MainMenu.get().graySoundEffectIcon);
+                MenuBar.soundEffectAudioControlMenuItem.setSelected(false);
+                Controller.updateGameSetting();
+                System.out.println("Sound Effect is off");
+            }
+            if (setting[1].equals("on")) {
+                MainMenu.get().setGrayScaleBGMButton(false);
+                MainMenu.get().bgmButton.setIcon(MainMenu.get().bgmIcon);
+                MenuBar.bgmAudioControlMenuItem.setSelected(true);
+                AudioPlayer.LoopPlayer.playMenuBGM();
+                Controller.updateGameSetting();
+                System.out.println("BGM is on");
+            } else if (setting[1].equals("off")) {
+                MainMenu.get().setGrayScaleBGMButton(true);
+                MainMenu.get().bgmButton.setIcon(MainMenu.get().grayBGMIcon);
+                MenuBar.bgmAudioControlMenuItem.setSelected(false);
+                Controller.updateGameSetting();
+                System.out.println("BGM is off");
+            }
+        } catch (NullPointerException ignored) {
+            MainMenu.get().setGrayScaleSoundEffectButton(false);
+            MainMenu.get().soundEffectButton.setIcon(MainMenu.get().soundEffectIcon);
+            MenuBar.soundEffectAudioControlMenuItem.setSelected(true);
+            Controller.updateGameSetting();
+            System.out.println("Sound Effect is on");
+            MainMenu.get().setGrayScaleBGMButton(false);
+            MainMenu.get().bgmButton.setIcon(MainMenu.get().bgmIcon);
+            MenuBar.bgmAudioControlMenuItem.setSelected(true);
+            AudioPlayer.LoopPlayer.playMenuBGM();
+            Controller.updateGameSetting();
+            System.out.println("BGM is on");
+        }
+        try {
+            if (setting[2] == null) {
+                setUITheme(13);
+            }
+            assert setting[2] != null;
+            int themeIndex = Integer.parseInt(setting[2]);
+            if (themeIndex < 0 || themeIndex > 30) {
+                setUITheme(13);
+            }
+            setUITheme(themeIndex);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid theme index: " + setting[2]);
+        } catch (NullPointerException e) {
+            System.out.println("Look and feel not found");
+        }
+    }
+
+    public static void setUITheme(int themeIndex) {
+        try {
+            Themes theme = Themes.values()[themeIndex];
+            UIManager.setLookAndFeel(theme.getThemeClassName());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -569,7 +678,41 @@ public class Controller {
         SwingUtilities.updateComponentTreeUI(MainMenu.get());
         SwingUtilities.updateComponentTreeUI(DifficultyFrame.get());
         SwingUtilities.updateComponentTreeUI(GameFrame.get().getGameConfiguration());
-        System.out.println("Theme: " + themes[themeIndex]);
+        switch (themeIndex) {
+            case 0 -> MenuBar.arcDarkRadioButtonMenuItem.setSelected(true);
+            case 1 -> MenuBar.arcDarkOrangeRadioButtonMenuItem.setSelected(true);
+            case 2 -> MenuBar.arcRadioButtonMenuItem.setSelected(true);
+            case 3 -> MenuBar.arcOrangeRadioButtonMenuItem.setSelected(true);
+            case 4 -> MenuBar.carbonRadioButtonMenuItem.setSelected(true);
+            case 5 -> MenuBar.cobalt2RadioButtonMenuItem.setSelected(true);
+            case 6 -> MenuBar.cyanLightRadioButtonMenuItem.setSelected(true);
+            case 7 -> MenuBar.darkFlatRadioButtonMenuItem.setSelected(true);
+            case 8 -> MenuBar.darkPurpleRadioButtonMenuItem.setSelected(true);
+            case 9 -> MenuBar.draculaRadioButtonMenuItem.setSelected(true);
+            case 10 -> MenuBar.gradiantoDarkFuchsiaRadioButtonMenuItem.setSelected(true);
+            case 11 -> MenuBar.gradiantoDeepOceanRadioButtonMenuItem.setSelected(true);
+            case 12 -> MenuBar.gradiantoMidnightBlueRadioButtonMenuItem.setSelected(true);
+            case 13 -> MenuBar.gradiantoNatureGreenRadioButtonMenuItem.setSelected(true);
+            case 14 -> MenuBar.grayRadioButtonMenuItem.setSelected(true);
+            case 15 -> MenuBar.gruvboxDarkHardRadioButtonMenuItem.setSelected(true);
+            case 16 -> MenuBar.gruvboxDarkMediumRadioButtonMenuItem.setSelected(true);
+            case 17 -> MenuBar.gruvboxDarkSoftRadioButtonMenuItem.setSelected(true);
+            case 18 -> MenuBar.hiberbeeDarkRadioButtonMenuItem.setSelected(true);
+            case 19 -> MenuBar.highContrastRadioButtonMenuItem.setSelected(true);
+            case 20 -> MenuBar.lightFlatRadioButtonMenuItem.setSelected(true);
+            case 21 -> MenuBar.materialDesignDarkRadioButtonMenuItem.setSelected(true);
+            case 22 -> MenuBar.monokaiRadioButtonMenuItem.setSelected(true);
+            case 23 -> MenuBar.monokaiProRadioButtonMenuItem.setSelected(true);
+            case 24 -> MenuBar.nordRadioButtonMenuItem.setSelected(true);
+            case 25 -> MenuBar.oneDarkRadioButtonMenuItem.setSelected(true);
+            case 26 -> MenuBar.solarizedDarkRadioButtonMenuItem.setSelected(true);
+            case 27 -> MenuBar.solarizedLightRadioButtonMenuItem.setSelected(true);
+            case 28 -> MenuBar.spacegrayRadioButtonMenuItem.setSelected(true);
+            case 29 -> MenuBar.vuesionRadioButtonMenuItem.setSelected(true);
+            case 30 -> MenuBar.xcodeDarkRadioButtonMenuItem.setSelected(true);
+        }
+        updateGameSetting(themeIndex);
+        System.out.println("Theme: " + Themes.values()[themeIndex]);
     }
 
     public static void backToMainMenu() {
@@ -860,6 +1003,19 @@ public class Controller {
     }
 
     public static void setTimer() {
+        if (GameFrame.get().isReplayMovesInProgress()) {
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "Replay is in progress. Please wait.");
+            return;
+        }
+        if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "AI is still thinking. Please wait.");
+            return;
+        }
+        if (GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
+            return;
+        }
         if (!GameFrame.get().isBlitzMode()) {
             final JDialog dialog = new JDialog();
             dialog.setTitle("Set Timer");
@@ -872,7 +1028,7 @@ public class Controller {
             dialog.setModal(true);
 
             final JLabel valueLabel = new JLabel("Enter the timer value in seconds (10 - 100):");
-            JTextField textField = new JTextField(23);
+            JTextField textField = new JTextField(16);
             final JButton setTimerButton = new JButton("Set Timer");
             final JButton removeTimer = new JButton("Remove Timer");
             final JLabel restartLabel = new JLabel("The game will restart once the timer is set.");
@@ -1258,6 +1414,14 @@ public class Controller {
     }
 
     public static void handleWinningStateForGameResignedCondition() {
+        if (GameFrame.get().isReplayMovesInProgress()) {
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "Replay is in progress. Please wait.");
+            return;
+        }
+        if (GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
+            return;
+        }
         GameFrame.get().setGameResigned(true);
         final String[] message = new String[1];
         final String[] soundPath = new String[1];
@@ -1422,6 +1586,5 @@ public class Controller {
         public abstract List<GameFrame.TerrainPanel> traverse(final List<GameFrame.TerrainPanel> boardTiles);
 
         public abstract BoardDirection opposite();
-
     }
 }

@@ -811,10 +811,6 @@ public class GameFrame extends Observable {
         this.reversedBlueSide = reversedBlueSide;
     }
 
-    public boolean isNormalModeGameOver() {
-        return normalModeGameOver;
-    }
-
     public void setNormalModeGameOver(boolean normalModeGameOver) {
         this.normalModeGameOver = normalModeGameOver;
     }
@@ -833,10 +829,6 @@ public class GameFrame extends Observable {
 
     public void setBlitzMode(boolean blitzMode) {
         this.blitzMode = blitzMode;
-    }
-
-    public boolean isBlitzModeGameOver() {
-        return blitzModeGameOver;
     }
 
     public void setBlitzModeGameOver(boolean blitzModeGameOver) {

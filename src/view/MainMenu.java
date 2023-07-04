@@ -10,10 +10,18 @@ import java.awt.image.BufferedImage;
 import static view.GameFrame.defaultImagesPath;
 
 public class MainMenu extends JFrame {
-    JButton bgmButton;
-    JButton soundEffectButton;
-    private static boolean isGrayScaleSoundEffectButton = false;
-    private static boolean isGrayScaleBGMButton = false;
+    public JButton bgmButton;
+    public JButton soundEffectButton;
+    public final ImageIcon soundEffectIcon = new ImageIcon(new ImageIcon(defaultImagesPath + "soundeffect.png").getImage().getScaledInstance
+            (107, 48, Image.SCALE_DEFAULT));
+    private final Image graySoundEffectImage = toGrayScale(soundEffectIcon.getImage());
+    public final ImageIcon graySoundEffectIcon = new ImageIcon(graySoundEffectImage);
+    public final ImageIcon bgmIcon = new ImageIcon(new ImageIcon(defaultImagesPath + "music.png").getImage().getScaledInstance
+            (107, 48, Image.SCALE_DEFAULT));
+    private final Image grayBGMImage = toGrayScale(bgmIcon.getImage());
+    public final ImageIcon grayBGMIcon = new ImageIcon(grayBGMImage);
+    private boolean grayScaleSoundEffectButton = true;
+    private boolean grayScaleBGMButton = true;
     private static final MainMenu INSTANCE = new MainMenu();
 
     public MainMenu() {
@@ -30,7 +38,9 @@ public class MainMenu extends JFrame {
         this.createSoundEffectButton();
         this.createBackgroundMusicButton();
         this.setBackground();
-        AudioPlayer.LoopPlayer.playMenuBGM();
+        if (!grayScaleBGMButton) {
+            AudioPlayer.LoopPlayer.playMenuBGM();
+        }
         this.setLocationRelativeTo(null);
         this.setResizable(false);
     }
@@ -121,53 +131,47 @@ public class MainMenu extends JFrame {
     }
 
     private void createSoundEffectButton() {
-        final String soundEffectImagePath = defaultImagesPath + "soundeffect.png";
-        final ImageIcon soundEffectIcon = new ImageIcon(new ImageIcon(soundEffectImagePath).getImage().getScaledInstance
-                (107, 48, Image.SCALE_DEFAULT));
-        final Image graySoundEffectImage = toGrayScale(soundEffectIcon.getImage());
-        final ImageIcon graySoundEffectIcon = new ImageIcon(graySoundEffectImage);
         soundEffectButton = new JButton(soundEffectIcon);
         soundEffectButton.setBounds(25, 745, 107, 48);
         this.add(soundEffectButton);
-        soundEffectButton.setIcon(soundEffectIcon);
+        soundEffectButton.setIcon(graySoundEffectIcon);
         soundEffectButton.addActionListener(e -> {
-            isGrayScaleSoundEffectButton = !isGrayScaleSoundEffectButton;
-            if (isGrayScaleSoundEffectButton) {
+            grayScaleSoundEffectButton = !grayScaleSoundEffectButton;
+            if (grayScaleSoundEffectButton) {
                 soundEffectButton.setIcon(graySoundEffectIcon);
                 MenuBar.soundEffectAudioControlMenuItem.setSelected(false);
+                Controller.updateGameSetting();
                 System.out.println("Sound Effect is muted");
             } else {
                 AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
                 soundEffectButton.setIcon(soundEffectIcon);
                 MenuBar.soundEffectAudioControlMenuItem.setSelected(true);
+                Controller.updateGameSetting();
                 System.out.println("Sound Effect is on");
             }
         });
     }
 
     private void createBackgroundMusicButton() {
-        final String bgmIconPath = defaultImagesPath + "music.png";
-        final ImageIcon bgmIcon = new ImageIcon(new ImageIcon(bgmIconPath).getImage().getScaledInstance
-                (107, 48, Image.SCALE_DEFAULT));
-        final Image grayBGMImage = toGrayScale(bgmIcon.getImage());
-        final ImageIcon grayBGMIcon = new ImageIcon(grayBGMImage);
         bgmButton = new JButton(bgmIcon);
         bgmButton.setBounds(385, 745, 107, 48);
         this.add(bgmButton);
-        bgmButton.setIcon(bgmIcon);
+        bgmButton.setIcon(grayBGMIcon);
         bgmButton.addActionListener(e -> {
             AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
-            isGrayScaleBGMButton = !isGrayScaleBGMButton;
-            if (isGrayScaleBGMButton) {
+            grayScaleBGMButton = !grayScaleBGMButton;
+            if (grayScaleBGMButton) {
                 bgmButton.setIcon(grayBGMIcon);
                 MenuBar.bgmAudioControlMenuItem.setSelected(false);
                 AudioPlayer.LoopPlayer.setMenuBGMPlaying(false);
                 AudioPlayer.LoopPlayer.stopLoopAudio();
+                Controller.updateGameSetting();
                 System.out.println("BGM is muted");
             } else {
                 bgmButton.setIcon(bgmIcon);
                 MenuBar.bgmAudioControlMenuItem.setSelected(true);
                 AudioPlayer.LoopPlayer.playMenuBGM();
+                Controller.updateGameSetting();
                 System.out.println("BGM is on");
             }
         });
@@ -185,11 +189,19 @@ public class MainMenu extends JFrame {
     }
 
     public boolean isGrayScaleSoundEffectButton() {
-        return isGrayScaleSoundEffectButton;
+        return grayScaleSoundEffectButton;
+    }
+
+    public void setGrayScaleSoundEffectButton(boolean grayScaleSoundEffectButton) {
+        this.grayScaleSoundEffectButton = grayScaleSoundEffectButton;
     }
 
     public boolean isGrayScaleBGMButton() {
-        return isGrayScaleBGMButton;
+        return grayScaleBGMButton;
+    }
+
+    public void setGrayScaleBGMButton(boolean grayScaleBGMButton) {
+        this.grayScaleBGMButton = grayScaleBGMButton;
     }
 
     public static MainMenu get() {

@@ -12,8 +12,39 @@ import java.awt.event.ActionListener;
 
 public class MenuBar {
     public static JCheckBoxMenuItem blitzModeCheckBoxMenuItem;
-    static JCheckBoxMenuItem bgmAudioControlMenuItem;
-    static JCheckBoxMenuItem soundEffectAudioControlMenuItem;
+    public static JCheckBoxMenuItem bgmAudioControlMenuItem;
+    public static JCheckBoxMenuItem soundEffectAudioControlMenuItem;
+    public static JRadioButtonMenuItem arcDarkRadioButtonMenuItem;
+    public static JRadioButtonMenuItem arcDarkOrangeRadioButtonMenuItem;
+    public static JRadioButtonMenuItem arcRadioButtonMenuItem;
+    public static JRadioButtonMenuItem arcOrangeRadioButtonMenuItem;
+    public static JRadioButtonMenuItem carbonRadioButtonMenuItem;
+    public static JRadioButtonMenuItem cobalt2RadioButtonMenuItem;
+    public static JRadioButtonMenuItem cyanLightRadioButtonMenuItem;
+    public static JRadioButtonMenuItem darkFlatRadioButtonMenuItem;
+    public static JRadioButtonMenuItem darkPurpleRadioButtonMenuItem;
+    public static JRadioButtonMenuItem draculaRadioButtonMenuItem;
+    public static JRadioButtonMenuItem gradiantoDarkFuchsiaRadioButtonMenuItem;
+    public static JRadioButtonMenuItem gradiantoDeepOceanRadioButtonMenuItem;
+    public static JRadioButtonMenuItem gradiantoMidnightBlueRadioButtonMenuItem;
+    public static JRadioButtonMenuItem gradiantoNatureGreenRadioButtonMenuItem;
+    public static JRadioButtonMenuItem grayRadioButtonMenuItem;
+    public static JRadioButtonMenuItem gruvboxDarkHardRadioButtonMenuItem;
+    public static JRadioButtonMenuItem gruvboxDarkMediumRadioButtonMenuItem;
+    public static JRadioButtonMenuItem gruvboxDarkSoftRadioButtonMenuItem;
+    public static JRadioButtonMenuItem hiberbeeDarkRadioButtonMenuItem;
+    public static JRadioButtonMenuItem highContrastRadioButtonMenuItem;
+    public static JRadioButtonMenuItem lightFlatRadioButtonMenuItem;
+    public static JRadioButtonMenuItem materialDesignDarkRadioButtonMenuItem;
+    public static JRadioButtonMenuItem monokaiRadioButtonMenuItem;
+    public static JRadioButtonMenuItem monokaiProRadioButtonMenuItem;
+    public static JRadioButtonMenuItem nordRadioButtonMenuItem;
+    public static JRadioButtonMenuItem oneDarkRadioButtonMenuItem;
+    public static JRadioButtonMenuItem solarizedDarkRadioButtonMenuItem;
+    public static JRadioButtonMenuItem solarizedLightRadioButtonMenuItem;
+    public static JRadioButtonMenuItem spacegrayRadioButtonMenuItem;
+    public static JRadioButtonMenuItem vuesionRadioButtonMenuItem;
+    public static JRadioButtonMenuItem xcodeDarkRadioButtonMenuItem;
 
     static JMenuBar createGameFrameMenuBar() {
         final JMenuBar gameFrameMenuBar = new JMenuBar();
@@ -67,6 +98,19 @@ public class MenuBar {
         blitzModeCheckBoxMenuItem = new JCheckBoxMenuItem("⏱   Blitz Mode");
         blitzModeCheckBoxMenuItem.addActionListener(e -> {
             AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            if (GameFrame.get().isReplayMovesInProgress()) {
+                JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                        "Replay is in progress. Please wait.");
+                return;
+            }
+            if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
+                JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                        "AI is still thinking. Please wait.");
+                return;
+            }
+            if (GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
+                return;
+            }
             if (blitzModeCheckBoxMenuItem.isSelected()) {
                 GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(true);
                 GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
@@ -91,6 +135,19 @@ public class MenuBar {
         final JCheckBoxMenuItem glitchEffectCheckBoxMenuItem = new JCheckBoxMenuItem("\uD83C\uDF0C  Glitch in the Matrix");
         glitchEffectCheckBoxMenuItem.addActionListener(e -> {
             AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            if (GameFrame.get().isReplayMovesInProgress()) {
+                JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                        "Replay is in progress. Please wait.");
+                return;
+            }
+            if (GameFrame.get().getGameConfiguration().isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer())) {
+                JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                        "AI is still thinking. Please wait.");
+                return;
+            }
+            if (GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
+                return;
+            }
             for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
                 GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
             }
@@ -118,38 +175,37 @@ public class MenuBar {
         i8.add(glitchEffectCheckBoxMenuItem);
 
         final JMenu uiThemeMenu = new JMenu("\uD83C\uDFA8  UI Theme");
-        final JRadioButtonMenuItem arcDarkRadioButtonMenuItem = new JRadioButtonMenuItem("Arc Dark");
-        final JRadioButtonMenuItem arcDarkOrangeRadioButtonMenuItem = new JRadioButtonMenuItem("Arc Dark Orange");
-        final JRadioButtonMenuItem arcRadioButtonMenuItem = new JRadioButtonMenuItem("Arc");
-        final JRadioButtonMenuItem arcOrangeRadioButtonMenuItem = new JRadioButtonMenuItem("Arc Orange");
-        final JRadioButtonMenuItem carbonRadioButtonMenuItem = new JRadioButtonMenuItem("Carbon");
-        final JRadioButtonMenuItem cobalt2RadioButtonMenuItem = new JRadioButtonMenuItem("Cobalt 2");
-        final JRadioButtonMenuItem cyanLightRadioButtonMenuItem = new JRadioButtonMenuItem("Cyan Light");
-        final JRadioButtonMenuItem darkFlatRadioButtonMenuItem = new JRadioButtonMenuItem("Dark Flat");
-        final JRadioButtonMenuItem darkPurpleRadioButtonMenuItem = new JRadioButtonMenuItem("Dark Purple");
-        final JRadioButtonMenuItem draculaRadioButtonMenuItem = new JRadioButtonMenuItem("Dracula");
-        final JRadioButtonMenuItem gradiantoDarkFuchsiaRadioButtonMenuItem = new JRadioButtonMenuItem("Gradianto Dark Fuchsia");
-        final JRadioButtonMenuItem gradiantoDeepOceanRadioButtonMenuItem = new JRadioButtonMenuItem("Gradianto Deep Ocean");
-        final JRadioButtonMenuItem gradiantoMidnightBlueRadioButtonMenuItem = new JRadioButtonMenuItem("Gradianto Midnight Blue");
-        final JRadioButtonMenuItem gradiantoNatureGreenRadioButtonMenuItem = new JRadioButtonMenuItem("Gradianto Nature Green");
-        final JRadioButtonMenuItem grayRadioButtonMenuItem = new JRadioButtonMenuItem("Gray");
-        final JRadioButtonMenuItem gruvboxDarkHardRadioButtonMenuItem = new JRadioButtonMenuItem("Gruvbox Dark Hard");
-        final JRadioButtonMenuItem gruvboxDarkMediumRadioButtonMenuItem = new JRadioButtonMenuItem("Gruvbox Dark Medium");
-        final JRadioButtonMenuItem gruvboxDarkSoftRadioButtonMenuItem = new JRadioButtonMenuItem("Gruvbox Dark Soft");
-        final JRadioButtonMenuItem hiberbeeDarkRadioButtonMenuItem = new JRadioButtonMenuItem("Hiberbee Dark");
-        final JRadioButtonMenuItem highContrastRadioButtonMenuItem = new JRadioButtonMenuItem("High Contrast");
-        final JRadioButtonMenuItem lightFlatRadioButtonMenuItem = new JRadioButtonMenuItem("Light Flat");
-        final JRadioButtonMenuItem materialDesignDarkRadioButtonMenuItem = new JRadioButtonMenuItem("Material Design Dark");
-        final JRadioButtonMenuItem monokaiRadioButtonMenuItem = new JRadioButtonMenuItem("Monokai");
-        final JRadioButtonMenuItem monokaiProRadioButtonMenuItem = new JRadioButtonMenuItem("Monokai Pro");
-        final JRadioButtonMenuItem nordRadioButtonMenuItem = new JRadioButtonMenuItem("Nord");
-        final JRadioButtonMenuItem oneDarkRadioButtonMenuItem = new JRadioButtonMenuItem("One Dark");
-        final JRadioButtonMenuItem solarizedDarkRadioButtonMenuItem = new JRadioButtonMenuItem("Solarized Dark");
-        final JRadioButtonMenuItem solarizedLightRadioButtonMenuItem = new JRadioButtonMenuItem("Solarized Light");
-        final JRadioButtonMenuItem spacegrayRadioButtonMenuItem = new JRadioButtonMenuItem("Space Gray");
-        final JRadioButtonMenuItem vuesionRadioButtonMenuItem = new JRadioButtonMenuItem("Vuesion");
-        final JRadioButtonMenuItem xcodeDarkRadioButtonMenuItem = new JRadioButtonMenuItem("Xcode Dark");
-        gradiantoNatureGreenRadioButtonMenuItem.setSelected(true);
+        arcDarkRadioButtonMenuItem = new JRadioButtonMenuItem("Arc Dark");
+        arcDarkOrangeRadioButtonMenuItem = new JRadioButtonMenuItem("Arc Dark Orange");
+        arcRadioButtonMenuItem = new JRadioButtonMenuItem("Arc");
+        arcOrangeRadioButtonMenuItem = new JRadioButtonMenuItem("Arc Orange");
+        carbonRadioButtonMenuItem = new JRadioButtonMenuItem("Carbon");
+        cobalt2RadioButtonMenuItem = new JRadioButtonMenuItem("Cobalt 2");
+        cyanLightRadioButtonMenuItem = new JRadioButtonMenuItem("Cyan Light");
+        darkFlatRadioButtonMenuItem = new JRadioButtonMenuItem("Dark Flat");
+        darkPurpleRadioButtonMenuItem = new JRadioButtonMenuItem("Dark Purple");
+        draculaRadioButtonMenuItem = new JRadioButtonMenuItem("Dracula");
+        gradiantoDarkFuchsiaRadioButtonMenuItem = new JRadioButtonMenuItem("Gradianto Dark Fuchsia");
+        gradiantoDeepOceanRadioButtonMenuItem = new JRadioButtonMenuItem("Gradianto Deep Ocean");
+        gradiantoMidnightBlueRadioButtonMenuItem = new JRadioButtonMenuItem("Gradianto Midnight Blue");
+        gradiantoNatureGreenRadioButtonMenuItem = new JRadioButtonMenuItem("Gradianto Nature Green");
+        grayRadioButtonMenuItem = new JRadioButtonMenuItem("Gray");
+        gruvboxDarkHardRadioButtonMenuItem = new JRadioButtonMenuItem("Gruvbox Dark Hard");
+        gruvboxDarkMediumRadioButtonMenuItem = new JRadioButtonMenuItem("Gruvbox Dark Medium");
+        gruvboxDarkSoftRadioButtonMenuItem = new JRadioButtonMenuItem("Gruvbox Dark Soft");
+        hiberbeeDarkRadioButtonMenuItem = new JRadioButtonMenuItem("Hiberbee Dark");
+        highContrastRadioButtonMenuItem = new JRadioButtonMenuItem("High Contrast");
+        lightFlatRadioButtonMenuItem = new JRadioButtonMenuItem("Light Flat");
+        materialDesignDarkRadioButtonMenuItem = new JRadioButtonMenuItem("Material Design Dark");
+        monokaiRadioButtonMenuItem = new JRadioButtonMenuItem("Monokai");
+        monokaiProRadioButtonMenuItem = new JRadioButtonMenuItem("Monokai Pro");
+        nordRadioButtonMenuItem = new JRadioButtonMenuItem("Nord");
+        oneDarkRadioButtonMenuItem = new JRadioButtonMenuItem("One Dark");
+        solarizedDarkRadioButtonMenuItem = new JRadioButtonMenuItem("Solarized Dark");
+        solarizedLightRadioButtonMenuItem = new JRadioButtonMenuItem("Solarized Light");
+        spacegrayRadioButtonMenuItem = new JRadioButtonMenuItem("Space Gray");
+        vuesionRadioButtonMenuItem = new JRadioButtonMenuItem("Vuesion");
+        xcodeDarkRadioButtonMenuItem = new JRadioButtonMenuItem("Xcode Dark");
         final ButtonGroup uiThemeButtonGroup = new ButtonGroup();
         uiThemeButtonGroup.add(arcDarkRadioButtonMenuItem);
         uiThemeButtonGroup.add(arcDarkOrangeRadioButtonMenuItem);
@@ -339,8 +395,13 @@ public class MenuBar {
         });
         settingMenu.add(uiThemeMenu);
 
+        soundEffectAudioControlMenuItem = new JCheckBoxMenuItem("\uD83D\uDD0A  Sound Effect");
+        soundEffectAudioControlMenuItem.setSelected(false);
+        soundEffectAudioControlMenuItem.addActionListener(e -> MainMenu.get().soundEffectButton.doClick());
+        settingMenu.add(soundEffectAudioControlMenuItem);
+
         bgmAudioControlMenuItem = new JCheckBoxMenuItem("\uD83C\uDFB5  Background Music");
-        bgmAudioControlMenuItem.setSelected(true);
+        bgmAudioControlMenuItem.setSelected(false);
         bgmAudioControlMenuItem.addActionListener(e -> {
             MainMenu.get().bgmButton.doClick();
             if (!MainMenu.get().isGrayScaleBGMButton()) {
@@ -348,11 +409,6 @@ public class MenuBar {
             }
         });
         settingMenu.add(bgmAudioControlMenuItem);
-
-        soundEffectAudioControlMenuItem = new JCheckBoxMenuItem("\uD83D\uDD0A  Sound Effect");
-        soundEffectAudioControlMenuItem.setSelected(true);
-        soundEffectAudioControlMenuItem.addActionListener(e -> MainMenu.get().soundEffectButton.doClick());
-        settingMenu.add(soundEffectAudioControlMenuItem);
 
         final JMenuItem backMenuItem = new JMenuItem("\uD83D\uDD19  Back To Main Menu");
         backMenuItem.addActionListener(e -> {
