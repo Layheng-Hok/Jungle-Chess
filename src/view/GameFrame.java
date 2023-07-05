@@ -561,7 +561,7 @@ public class GameFrame extends Observable {
         protected Move doInBackground() {
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.EASY) {
                 isMinimaxRunning = true;
-                final MoveStrategy minimax = new MinimaxAlgorithm(3, PoorBoardEvaluator.get());
+                final MoveStrategy minimax = new MinimaxAlgorithm(4, PoorBoardEvaluator.get());
                 System.out.println(PoorBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
                 return minimax.execute(GameFrame.get().getChessBoard());
             }
