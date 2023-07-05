@@ -562,12 +562,12 @@ public class GameFrame extends Observable {
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.EASY) {
                 isMinimaxRunning = true;
                 final MoveStrategy minimax = new MinimaxAlgorithm(3, PoorBoardEvaluator.get());
-                System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
+                System.out.println(PoorBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
                 return minimax.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.MEDIUM) {
                 isMinimaxRunning = true;
-                final MoveStrategy minimax = new MinimaxAlgorithm(4, PoorBoardEvaluator.get());
+                final MoveStrategy minimax = new MinimaxAlgorithm(3, ConcreteBoardEvaluator.get());
                 System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
                 return minimax.execute(GameFrame.get().getChessBoard());
             }
