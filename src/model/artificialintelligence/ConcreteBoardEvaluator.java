@@ -8,7 +8,7 @@ import model.player.PlayerColor;
 
 public final class ConcreteBoardEvaluator implements BoardEvaluator {
     private final static int DEPTH_BONUS = 100;
-    private final static int VERSATILITY_MULTIPLIER = 5;
+    private final static int MOBILITY_MULTIPLIER = 5;
     private final static int NEAR_ENEMY_DEN_WITHOUT_ENEMY_BONUS = 5000;
     private final static int NEAR_ENEMY_DEN_WITH_ENEMY_PENALTY = -1000;
     private final static int PENETRATE_ENEMY_DEN_BONUS = 50000;
@@ -30,7 +30,7 @@ public final class ConcreteBoardEvaluator implements BoardEvaluator {
 
     private int scorePlayer(final Player player, final int depth) {
         return pieceValue(player)
-                + versatility(player)
+                + mobility(player)
                 + nearEnemyDenWithoutEnemy(player, depth)
                 + nearEnemyDenWithEnemy(player)
                 + isEnemyDenPenetrated(player, depth)
@@ -40,7 +40,7 @@ public final class ConcreteBoardEvaluator implements BoardEvaluator {
     public String evaluationDetails(final Board board, final int depth) {
         return ("Blue Piece Evaluation" + " \n" +
                 "Piece Value: " + pieceValue(board.bluePlayer()) + "\n" +
-                "Versatility: " + versatility(board.bluePlayer()) + "\n" +
+                "Mobility: " + mobility(board.bluePlayer()) + "\n" +
                 "Near Enemy Den Without Enemy: " + nearEnemyDenWithoutEnemy(board.bluePlayer(), depth) + "\n" +
                 "Near Enemy Den With Enemy: " + nearEnemyDenWithEnemy(board.bluePlayer()) + "\n" +
                 "Is Enemy Den Penetrated: " + isEnemyDenPenetrated(board.bluePlayer(), depth) + "\n" +
@@ -48,7 +48,7 @@ public final class ConcreteBoardEvaluator implements BoardEvaluator {
                 "-------------------------------\n" +
                 "Red Piece Evaluation" + " \n" +
                 "Piece Value: " + pieceValue(board.redPlayer()) + "\n" +
-                "Versatility: " + versatility(board.redPlayer()) + "\n" +
+                "Mobility: " + mobility(board.redPlayer()) + "\n" +
                 "Near Enemy Den Without Enemy: " + nearEnemyDenWithoutEnemy(board.redPlayer(), depth) + "\n" +
                 "Near Enemy Den With Enemy: " + nearEnemyDenWithEnemy(board.redPlayer()) + "\n" +
                 "Is Enemy Den Penetrated: " + isEnemyDenPenetrated(board.redPlayer(), depth) + "\n" +
@@ -66,11 +66,11 @@ public final class ConcreteBoardEvaluator implements BoardEvaluator {
         return pieceValueScore;
     }
 
-    private static int versatility(Player player) {
-        return VERSATILITY_MULTIPLIER * versatilityRatio(player);
+    private static int mobility(Player player) {
+        return MOBILITY_MULTIPLIER * mobilityRatio(player);
     }
 
-    private static int versatilityRatio(Player player) {
+    private static int mobilityRatio(Player player) {
         return (int) ((player.getValidMoves().size() * 10.0f) / player.getEnemyPlayer().getValidMoves().size());
     }
 
