@@ -185,12 +185,20 @@ public class Controller {
             playerTypeList = new ArrayList<>(Arrays.asList(playerTypeLine.split(" ")));
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(MainMenu.get(),
-                    "The file is corrupted.",
+                    "The file is either corrupted or invalid.",
                     "File Load Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        numMoves = Integer.parseInt(readList.remove(0));
+        try {
+            numMoves = Integer.parseInt(readList.remove(0));
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(MainMenu.get(),
+                    "The file is either corrupted or invalid.",
+                    "File Load Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         for (int i = 0; i < numMoves; i++) {
             String moveLine = readList.remove(0);
@@ -198,18 +206,34 @@ public class Controller {
             try {
                 if (moveTokens.length != 3) {
                     JOptionPane.showMessageDialog(MainMenu.get(),
-                            "The file is corrupted.",
+                            "The file is either corrupted or invalid.",
                             "File Load Error",
                             JOptionPane.ERROR_MESSAGE);
                     System.out.println("Error in move " + i);
                     return;
                 }
                 playerList.add(moveTokens[0]);
-                currentCoordinateList.add(Integer.parseInt(moveTokens[1]));
-                destinationCoordinateList.add(Integer.parseInt(moveTokens[2]));
+                try {
+                    currentCoordinateList.add(Integer.parseInt(moveTokens[1]));
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(MainMenu.get(),
+                            "The file is either corrupted or invalid.",
+                            "File Load Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                try {
+                    destinationCoordinateList.add(Integer.parseInt(moveTokens[2]));
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(MainMenu.get(),
+                            "The file is either corrupted or invalid.",
+                            "File Load Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(MainMenu.get(),
-                        "The file is corrupted.",
+                        "The file is either corrupted or invalid.",
                         "File Load Error",
                         JOptionPane.ERROR_MESSAGE);
                 System.out.println("Number Format Exception: Error in move " + i);
@@ -230,7 +254,7 @@ public class Controller {
             }
         } else {
             JOptionPane.showMessageDialog(MainMenu.get(),
-                    "The file is corrupted.",
+                    "The file is either corrupted or invalid.",
                     "File Load Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
@@ -243,7 +267,7 @@ public class Controller {
             if (i % 2 == 0) {
                 if (!playerList.get(i).equals("bl")) {
                     JOptionPane.showMessageDialog(MainMenu.get(),
-                            "The file is corrupted.",
+                            "The file is either corrupted or invalid.",
                             "File Load Error",
                             JOptionPane.ERROR_MESSAGE);
                     System.out.println("Wrong player turns.");
@@ -253,7 +277,7 @@ public class Controller {
             } else {
                 if (!playerList.get(i).equals("re")) {
                     JOptionPane.showMessageDialog(MainMenu.get(),
-                            "The file is corrupted.",
+                            "The file is either corrupted or invalid.",
                             "File Load Error",
                             JOptionPane.ERROR_MESSAGE);
                     System.out.println("Wrong player turns.");
@@ -287,7 +311,7 @@ public class Controller {
             GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
         } else {
             JOptionPane.showMessageDialog(MainMenu.get(),
-                    "The file is corrupted.",
+                    "The file is either corrupted or invalid.",
                     "File Load Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
@@ -303,7 +327,7 @@ public class Controller {
                 String[] tokens = line.split("\\s+");
                 if (tokens.length != 2 && tokens.length != 3) {
                     JOptionPane.showMessageDialog(MainMenu.get(),
-                            "The file is corrupted.",
+                            "The file is either corrupted or invalid.",
                             "File Load Error",
                             JOptionPane.ERROR_MESSAGE);
                     return;
@@ -315,14 +339,14 @@ public class Controller {
                         timer = Integer.parseInt(tokens[1]);
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(MainMenu.get(),
-                                "The file is corrupted.",
+                                "The file is either corrupted or invalid.",
                                 "File Load Error",
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     if (!mode.equals("normal") || (timer < 10 && timer != 0) || timer > 100) {
                         JOptionPane.showMessageDialog(MainMenu.get(),
-                                "The file is corrupted.",
+                                "The file is either corrupted or invalid.",
                                 "File Load Error",
                                 JOptionPane.ERROR_MESSAGE);
                         return;
@@ -342,17 +366,25 @@ public class Controller {
                     int redTimer;
                     try {
                         blueTimer = Integer.parseInt(tokens[1]);
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(MainMenu.get(),
+                                "The file is either corrupted or invalid.",
+                                "File Load Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    try {
                         redTimer = Integer.parseInt(tokens[2]);
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(MainMenu.get(),
-                                "The file is corrupted.",
+                                "The file is either corrupted or invalid.",
                                 "File Load Error",
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     if (!mode.equals("blitz") || blueTimer < 0 || blueTimer > 900 || redTimer < 0 || redTimer > 900) {
                         JOptionPane.showMessageDialog(MainMenu.get(),
-                                "The file is corrupted.",
+                                "The file is either corrupted or invalid.",
                                 "File Load Error",
                                 JOptionPane.ERROR_MESSAGE);
                         return;
@@ -381,15 +413,11 @@ public class Controller {
         if (!expectedBoard.equals(loadedBoard)) {
             System.out.println("Board is incorrect");
             JOptionPane.showMessageDialog(MainMenu.get(),
-                    "The file is corrupted.",
+                    "The file is either corrupted or invalid.",
                     "File Load Error",
                     JOptionPane.ERROR_MESSAGE);
         } else {
-            if (GameFrame.get().getChessBoard().getCurrentPlayer().isDenPenetrated()
-                    || GameFrame.get().getChessBoard().getCurrentPlayer().getActivePieces().isEmpty()
-                    || GameFrame.get().getChessBoard().getCurrentPlayer().getValidMoves().isEmpty()
-                    || GameFrame.get().getPlayerPanel().getBlueCurrentTimerSecondsBlitzMode() == 0
-                    || GameFrame.get().getPlayerPanel().getRedCurrentTimerSecondsBlitzMode() == 0) {
+            if (GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
                 firstReplay = true;
                 if (!GameFrame.get().isBlitzMode()
                         && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
@@ -562,7 +590,11 @@ public class Controller {
                 setUITheme(13);
             }
             assert setting[2] != null;
-            themeIndex = Integer.parseInt(setting[2]);
+            try {
+                themeIndex = Integer.parseInt(setting[2]);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid theme index: " + setting[2]);
+            }
             if (themeIndex < 0 || themeIndex > 30) {
                 setUITheme(13);
             }
@@ -655,7 +687,12 @@ public class Controller {
                 setUITheme(13);
             }
             assert setting[2] != null;
-            int themeIndex = Integer.parseInt(setting[2]);
+            int themeIndex = 13;
+            try {
+                themeIndex = Integer.parseInt(setting[2]);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid theme index: " + setting[2]);
+            }
             if (themeIndex < 0 || themeIndex > 30) {
                 setUITheme(13);
             }
