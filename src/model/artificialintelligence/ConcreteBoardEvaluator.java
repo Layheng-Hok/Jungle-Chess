@@ -6,7 +6,7 @@ import model.piece.Piece;
 import model.player.Player;
 import model.player.PlayerColor;
 
-public final class ConcreteBoardEvaluator implements GameEvaluator {
+public final class ConcreteBoardEvaluator implements BoardEvaluator {
     private final static int DEPTH_BONUS = 100;
     private final static int VERSATILITY_MULTIPLIER = 5;
     private final static int NEAR_ENEMY_DEN_WITHOUT_ENEMY_BONUS = 5000;

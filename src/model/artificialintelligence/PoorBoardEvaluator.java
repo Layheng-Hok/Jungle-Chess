@@ -5,7 +5,7 @@ import model.board.Move;
 import model.piece.Piece;
 import model.player.Player;
 
-public final class PoorBoardEvaluator implements GameEvaluator {
+public final class PoorBoardEvaluator implements BoardEvaluator {
     private final static int DEPTH_BONUS = 100;
     private final static int PENETRATE_ENEMY_DEN_BONUS = 50000;
     private final static int CAPTURE_MOVE_MULTIPLIER = 2;

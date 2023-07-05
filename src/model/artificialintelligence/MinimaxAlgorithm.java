@@ -6,10 +6,10 @@ import model.board.MoveTransition;
 import view.GameFrame;
 
 public class MinimaxAlgorithm implements MoveStrategy {
-    private final GameEvaluator evaluator;
+    private final BoardEvaluator evaluator;
     private final int depth;
 
-    public MinimaxAlgorithm(final int searchDepth, final GameEvaluator evaluator) {
+    public MinimaxAlgorithm(final int searchDepth, final BoardEvaluator evaluator) {
         this.evaluator = evaluator;
         this.depth = searchDepth;
     }
