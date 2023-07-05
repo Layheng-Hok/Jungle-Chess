@@ -20,18 +20,18 @@ public abstract class Player {
 
     public abstract Player getEnemyPlayer();
 
-    public boolean isMoveValid (final Move move) {
+    public boolean isMoveValid(final Move move) {
         return this.validMoves.contains(move);
     }
 
     public abstract boolean isDenPenetrated();
 
-    public MoveTransition makeMove (final Move move) {
+    public MoveTransition makeMove(final Move move) {
         if (!isMoveValid(move)) {
-            return new MoveTransition(this.board, move, MoveStatus.INVALID_MOVE);
+            return new MoveTransition(this.board, this.board, move, MoveStatus.INVALID_MOVE);
         }
         final Board transitionBoard = move.execute();
-        return new MoveTransition(transitionBoard, move, MoveStatus.DONE);
+        return new MoveTransition(this.board, transitionBoard, move, MoveStatus.DONE);
     }
 
     public Collection<Move> getValidMoves() {

@@ -7,11 +7,11 @@ import view.GameFrame;
 
 public class MinimaxAlgorithm implements MoveStrategy {
     private final BoardEvaluator evaluator;
-    private final int depth;
+    private final int searchDepth;
 
     public MinimaxAlgorithm(final int searchDepth, final BoardEvaluator evaluator) {
         this.evaluator = evaluator;
-        this.depth = searchDepth;
+        this.searchDepth = searchDepth;
     }
 
     @Override
@@ -23,24 +23,24 @@ public class MinimaxAlgorithm implements MoveStrategy {
     public Move execute(Board board) {
         final double startTime = System.currentTimeMillis();
         Move optimalMove = Move.MoveFactory.getNullMove();
-        int highestValue = Integer.MIN_VALUE;
-        int lowestValue = Integer.MAX_VALUE;
+        int highestSeenValue = Integer.MIN_VALUE;
+        int lowestSeenValue = Integer.MAX_VALUE;
         int currentValue;
-        System.out.println(board.getCurrentPlayer() + " is thinking with a depth of " + depth);
+        System.out.println(board.getCurrentPlayer() + " is thinking with a depth of " + searchDepth);
         int moveCounter = 1;
         int numMoves = board.getCurrentPlayer().getValidMoves().size();
         for (final Move move : board.getCurrentPlayer().getValidMoves()) {
             final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
                 currentValue = board.getCurrentPlayer().getAllyColor().isBlue() ?
-                        min(moveTransition.getTransitionBoard(), this.depth - 1) :
-                        max(moveTransition.getTransitionBoard(), this.depth - 1);
+                        min(moveTransition.getToBoard(), this.searchDepth - 1) :
+                        max(moveTransition.getToBoard(), this.searchDepth - 1);
                 System.out.println(this + " is analyzing move (" + moveCounter + "/" + numMoves + ") " + move + " scores " + currentValue);
-                if (board.getCurrentPlayer().getAllyColor().isBlue() && currentValue >= highestValue) {
-                    highestValue = currentValue;
+                if (board.getCurrentPlayer().getAllyColor().isBlue() && currentValue >= highestSeenValue) {
+                    highestSeenValue = currentValue;
                     optimalMove = move;
-                } else if (board.getCurrentPlayer().getAllyColor().isRed() && currentValue <= lowestValue) {
-                    lowestValue = currentValue;
+                } else if (board.getCurrentPlayer().getAllyColor().isRed() && currentValue <= lowestSeenValue) {
+                    lowestSeenValue = currentValue;
                     optimalMove = move;
                 }
             } else {
@@ -53,44 +53,44 @@ public class MinimaxAlgorithm implements MoveStrategy {
         return optimalMove;
     }
 
-    public int min(final Board board, final int depth) {
+    private int min(final Board board, final int depth) {
         if (depth == 0) {
             return this.evaluator.evaluate(board, depth);
         }
         if (GameFrame.isGameOverScenario(board)) {
             return this.evaluator.evaluate(board, depth) * 10000000;
         }
-        int lowestValue = Integer.MAX_VALUE;
+        int lowestSeenValue = Integer.MAX_VALUE;
         for (final Move move : board.getCurrentPlayer().getValidMoves()) {
             final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
-                final int currentValue = max(moveTransition.getTransitionBoard(), depth - 1);
-                if (currentValue <= lowestValue) {
-                    lowestValue = currentValue;
+                final int currentValue = max(moveTransition.getToBoard(), depth - 1);
+                if (currentValue <= lowestSeenValue) {
+                    lowestSeenValue = currentValue;
                 }
             }
         }
-        return lowestValue;
+        return lowestSeenValue;
     }
 
-    public int max(final Board board, final int depth) {
+    private int max(final Board board, final int depth) {
         if (depth == 0) {
             return this.evaluator.evaluate(board, depth);
         }
         if (GameFrame.isGameOverScenario(board)) {
             return this.evaluator.evaluate(board, depth) * 1000000;
         }
-        int highestValue = Integer.MIN_VALUE;
+        int highestSeenValue = Integer.MIN_VALUE;
         for (final Move move : board.getCurrentPlayer().getValidMoves()) {
             final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
-                final int currentValue = min(moveTransition.getTransitionBoard(), depth - 1);
-                if (currentValue >= highestValue) {
-                    highestValue = currentValue;
+                final int currentValue = min(moveTransition.getToBoard(), depth - 1);
+                if (currentValue >= highestSeenValue) {
+                    highestSeenValue = currentValue;
                 }
             }
         }
-        return highestValue;
+        return highestSeenValue;
     }
 
 }

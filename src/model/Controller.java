@@ -224,7 +224,7 @@ public class Controller {
                 Move move = Move.MoveFactory.createMove(loadedBoard, currentCoordinateList.get(i), destinationCoordinateList.get(i));
                 MoveTransition transition = loadedBoard.getCurrentPlayer().makeMove(move);
                 if (transition.getMoveStatus().isDone()) {
-                    loadedBoard = transition.getTransitionBoard();
+                    loadedBoard = transition.getToBoard();
                     moveLog.addMove(move);
                 }
             }

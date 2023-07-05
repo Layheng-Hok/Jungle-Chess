@@ -247,7 +247,7 @@ public class GameFrame extends Observable {
                             }
                             final MoveTransition transition = chessBoard.getCurrentPlayer().makeMove(move);
                             if (transition.getMoveStatus().isDone()) {
-                                chessBoard = transition.getTransitionBoard();
+                                chessBoard = transition.getToBoard();
                                 playerPanel.redo(chessBoard);
                                 moveLog.addMove(move);
                             }
@@ -590,7 +590,7 @@ public class GameFrame extends Observable {
                     AudioPlayer.SinglePlayer.playSoundEffect("click.wav");
                 }
                 GameFrame.get().updateComputerMove(optimalMove);
-                GameFrame.get().updateGameBoard(GameFrame.get().getChessBoard().getCurrentPlayer().makeMove(optimalMove).getTransitionBoard());
+                GameFrame.get().updateGameBoard(GameFrame.get().getChessBoard().getCurrentPlayer().makeMove(optimalMove).getToBoard());
                 GameFrame.get().getMoveLog().addMove(optimalMove);
                 GameFrame.get().getPlayerPanel().redo(GameFrame.get().chessBoard);
                 GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
