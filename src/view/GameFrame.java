@@ -561,19 +561,19 @@ public class GameFrame extends Observable {
         protected Move doInBackground() {
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.EASY) {
                 isMinimaxRunning = true;
-                final MoveStrategy minimax = new MinimaxAlgorithm(4, PoorBoardEvaluator.get());
+                final MoveStrategy minimax = new MinimaxAlgorithm(PoorBoardEvaluator.get(), 4);
                 System.out.println(PoorBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
                 return minimax.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.MEDIUM) {
                 isMinimaxRunning = true;
-                final MoveStrategy minimax = new MinimaxAlgorithm(3, ConcreteBoardEvaluator.get());
+                final MoveStrategy minimax = new MinimaxAlgorithm(ConcreteBoardEvaluator.get(), 3);
                 System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
                 return minimax.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.HARD) {
                 isMinimaxRunning = true;
-                final MoveStrategy minimax = new MinimaxAlgorithm(4, ConcreteBoardEvaluator.get());
+                final MoveStrategy minimax = new MinimaxAlgorithm(ConcreteBoardEvaluator.get(), 4);
                 System.out.println(ConcreteBoardEvaluator.get().evaluationDetails(GameFrame.get().getChessBoard(), GameFrame.get().gameConfiguration.getSearchDepth()));
                 return minimax.execute(GameFrame.get().getChessBoard());
             }
@@ -613,6 +613,9 @@ public class GameFrame extends Observable {
 
     public void restartGame() {
         chessBoard = Board.constructStandardBoard();
+        for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+            GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
+        }
         GameFrame.get().setNormalModeGameOver(false);
         GameFrame.get().setBlitzModeGameOver(false);
         gameResigned = false;

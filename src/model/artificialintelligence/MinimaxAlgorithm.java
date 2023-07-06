@@ -9,7 +9,7 @@ public class MinimaxAlgorithm implements MoveStrategy {
     private final BoardEvaluator evaluator;
     private final int searchDepth;
 
-    public MinimaxAlgorithm(final int searchDepth, final BoardEvaluator evaluator) {
+    public MinimaxAlgorithm(final BoardEvaluator evaluator, final int searchDepth) {
         this.evaluator = evaluator;
         this.searchDepth = searchDepth;
     }

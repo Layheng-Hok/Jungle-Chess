@@ -806,9 +806,6 @@ public class Controller {
             return;
         }
         if (GameFrame.get().getMoveLog().size() == 0) {
-            for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
-                GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
-            }
             GameFrame.get().restartGame();
             System.out.println("Game Restarted");
             return;
@@ -864,6 +861,9 @@ public class Controller {
         if (GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
             return;
         }
+        for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+            GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
+        }
         if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.AI &&
                 GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
             if (GameFrame.get().getMoveLog().size() > 1) {
@@ -879,9 +879,6 @@ public class Controller {
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
             } else if (GameFrame.get().getMoveLog().size() == 1) {
-                for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
-                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
-                }
                 GameFrame.get().setLastMove(null);
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 GameFrame.get().restartGame();
@@ -920,9 +917,6 @@ public class Controller {
                 GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
                 System.out.println("Undo");
             } else if (GameFrame.get().getMoveLog().size() == 1) {
-                for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
-                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
-                }
                 GameFrame.get().setLastMove(null);
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 GameFrame.get().restartGame();
