@@ -260,9 +260,9 @@ public class Controller {
             return;
         }
 
-        String lastTurn = readList.get(0);
+        String nextPlayer = readList.get(0);
         readList.remove(0);
-        playerList.add(lastTurn);
+        playerList.add(nextPlayer);
         for (int i = 0; i < playerList.size(); i++) {
             if (i % 2 == 0) {
                 if (!playerList.get(i).equals("bl")) {
@@ -314,6 +314,15 @@ public class Controller {
                     "The file is either corrupted or invalid.",
                     "File Load Error",
                     JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (playerTypeList.get(0).equals("ai") && nextPlayer.equals("bl")
+                || playerTypeList.get(1).equals("ai") && nextPlayer.equals("re")) {
+            JOptionPane.showMessageDialog(MainMenu.get(),
+                    "The file is either corrupted or invalid.",
+                    "File Load Error",
+                    JOptionPane.ERROR_MESSAGE);
+            System.out.println("AI player is not supposed to move first after loading a game board.");
             return;
         }
 
@@ -407,7 +416,7 @@ public class Controller {
             index++;
         }
 
-        Board expectedBoard = Board.constructSpecificBoard(animalList, coordinateList, lastTurn);
+        Board expectedBoard = Board.constructSpecificBoard(animalList, coordinateList, nextPlayer);
         System.out.println(loadedBoard);
         System.out.println(expectedBoard);
         if (!expectedBoard.equals(loadedBoard)) {
