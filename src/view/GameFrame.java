@@ -534,10 +534,6 @@ public class GameFrame extends Observable {
         notifyObservers(playerType);
     }
 
-    void updateGameBoard(final Board board) {
-        this.chessBoard = board;
-    }
-
     private void updateComputerMove(final Move move) {
         this.lastMove = move;
         this.computerMove = move;
@@ -590,7 +586,7 @@ public class GameFrame extends Observable {
                     AudioPlayer.SinglePlayer.playSoundEffect("click.wav");
                 }
                 GameFrame.get().updateComputerMove(optimalMove);
-                GameFrame.get().updateGameBoard(GameFrame.get().getChessBoard().getCurrentPlayer().makeMove(optimalMove).getToBoard());
+                GameFrame.get().setChessBoard(GameFrame.get().getChessBoard().getCurrentPlayer().makeMove(optimalMove).getToBoard());
                 GameFrame.get().getMoveLog().addMove(optimalMove);
                 GameFrame.get().getPlayerPanel().redo(GameFrame.get().chessBoard);
                 GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
@@ -711,15 +707,6 @@ public class GameFrame extends Observable {
         playerPanel.setRoundNumber(roundNumber);
         playerPanel.repaint();
         System.out.println("Game Loaded");
-    }
-
-    public void setGameBoard(final Board chessBoard) {
-        this.chessBoard = chessBoard;
-        boardPanel.drawBoard(chessBoard);
-        capturedPiecesPanel.redo(moveLog);
-        if (GameFrame.get().getGameConfiguration().isAIPlayer(chessBoard.getCurrentPlayer())) {
-            moveMadeUpdate(PlayerType.HUMAN);
-        }
     }
 
     public void setVisible(boolean b) {

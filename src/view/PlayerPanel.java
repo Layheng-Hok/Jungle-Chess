@@ -243,7 +243,12 @@ public class PlayerPanel extends JPanel {
                     chessBoard = selectedMove.execute();
                     GameFrame.get().setLastMove(selectedMove);
                     GameFrame.get().getMoveLog().addMove(selectedMove);
-                    GameFrame.get().setGameBoard(chessBoard);
+                    GameFrame.get().setChessBoard(chessBoard);
+                    GameFrame.get().getBoardPanel().drawBoard(chessBoard);
+                    GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
+                    if (GameFrame.get().getGameConfiguration().isAIPlayer(chessBoard.getCurrentPlayer())) {
+                        GameFrame.get().moveMadeUpdate(PlayerType.HUMAN);
+                    }
                 }
                 timerNormalMode.stop();
                 if (!GameFrame.get().isBlitzMode() && normalModeWithTimer && !stopTimerInNormalMode) {
