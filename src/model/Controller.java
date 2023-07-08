@@ -106,6 +106,9 @@ public class Controller {
                     fileWriter.write("0\n");
                 }
             }
+            if (callFromSaveReplay && GameFrame.get().isGameResigned()) {
+                fileWriter.write("resign\n");
+            }
             fileWriter.close();
             ProgressFrame progressFrame = new ProgressFrame("Saving");
             progressFrame.addProgressListener(() -> {
@@ -316,8 +319,8 @@ public class Controller {
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if (playerTypeList.get(0).equals("ai") && nextPlayer.equals("bl")
-                || playerTypeList.get(1).equals("ai") && nextPlayer.equals("re")) {
+        if (!GameFrame.isGameOverScenario(loadedBoard) && (playerTypeList.get(0).equals("ai") && nextPlayer.equals("bl")
+                || playerTypeList.get(1).equals("ai") && nextPlayer.equals("re"))) {
             JOptionPane.showMessageDialog(MainMenu.get(),
                     "The file is either corrupted or invalid.",
                     "File Load Error",
@@ -402,6 +405,19 @@ public class Controller {
                     MenuBar.blitzModeCheckBoxMenuItem.setSelected(true);
                     GameFrame.get().getPlayerPanel().setBlueCurrentTimerSecondsBlitzMode(blueTimer);
                     GameFrame.get().getPlayerPanel().setRedCurrentTimerSecondsBlitzMode(redTimer);
+                }
+            }
+            if (index == 10) {
+                if (line == null) {
+                    break;
+                } else if (line.equals("resign")) {
+                    GameFrame.get().setGameResigned(true);
+                } else {
+                    JOptionPane.showMessageDialog(MainMenu.get(),
+                            "The file is either corrupted or invalid.",
+                            "File Load Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
                 break;
             }
