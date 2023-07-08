@@ -25,8 +25,6 @@ import java.util.*;
 
 import static javax.swing.SwingUtilities.isLeftMouseButton;
 import static javax.swing.SwingUtilities.isRightMouseButton;
-import static model.board.Move.NULL_MOVE;
-import static view.MenuBar.createGameFrameMenuBar;
 
 public class GameFrame extends Observable {
     public final JFrame gameFrame;
@@ -85,7 +83,7 @@ public class GameFrame extends Observable {
     }
 
     private void setMenuBarAndPanels() {
-        final JMenuBar gameFrameMenuBar = createGameFrameMenuBar();
+        final JMenuBar gameFrameMenuBar = MenuBar.createGameFrameMenuBar();
         this.gameFrame.setJMenuBar(gameFrameMenuBar);
         this.gameFrame.add(this.leftPanel, BorderLayout.WEST);
         this.gameFrame.add(this.rightPanel, BorderLayout.EAST);
@@ -239,7 +237,7 @@ public class GameFrame extends Observable {
                             }
                         } else {
                             final Move move = Move.MoveFactory.createMove(chessBoard, sourceTerrain.getPieceCoordinate(), terrainCoordinate);
-                            if (!(move.equals(NULL_MOVE))) {
+                            if (!(move.equals(Move.NULL_MOVE))) {
                                 lastMove = move;
                             }
                             if (move.isCaptureMove()) {
