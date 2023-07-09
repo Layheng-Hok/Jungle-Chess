@@ -46,11 +46,9 @@ public class GameFrame extends Observable {
     private boolean animationInProgress = false;
     private boolean reversedRedSide = true;
     private boolean reversedBlueSide = false;
-    private boolean normalModeGameOver = false;
     private boolean glitchMode = false;
     boolean firstGlitchModeEncountered = true;
     private boolean blitzMode = false;
-    private boolean blitzModeGameOver = false;
     private boolean gameResigned = false;
     private static final Dimension OUTER_FRAME_DIMENSION = new Dimension(530, 850);
     private static final Dimension BOARD_PANEL_DIMENSION = new Dimension(500, 650);
@@ -800,7 +798,6 @@ public class GameFrame extends Observable {
     }
 
     public void setNormalModeGameOver(boolean normalModeGameOver) {
-        this.normalModeGameOver = normalModeGameOver;
     }
 
     public void setGlitchMode(boolean glitchMode) {
@@ -820,7 +817,6 @@ public class GameFrame extends Observable {
     }
 
     public void setBlitzModeGameOver(boolean blitzModeGameOver) {
-        this.blitzModeGameOver = blitzModeGameOver;
     }
 
     public boolean isGameResigned() {
