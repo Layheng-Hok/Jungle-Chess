@@ -1,17 +1,24 @@
 package model.artificialintelligence;
 
 import model.board.Board;
+import model.board.BoardUtilities;
 import model.board.Move;
 import model.board.MoveTransition;
 import view.GameFrame;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 public class MinimaxAlgorithm implements MoveStrategy {
     private final BoardEvaluator evaluator;
     private final int searchDepth;
+    private long numEvaluatedBoards;
+    private FreqTableRow[] freqTable;
+    private int freqTableIndex;
 
     public MinimaxAlgorithm(final BoardEvaluator evaluator, final int searchDepth) {
         this.evaluator = evaluator;
         this.searchDepth = searchDepth;
+        this.numEvaluatedBoards = 0;
     }
 
     @Override
@@ -20,22 +27,33 @@ public class MinimaxAlgorithm implements MoveStrategy {
     }
 
     @Override
+    public long getNumEvaluatedBoards() {
+        return this.numEvaluatedBoards;
+    }
+
+    @Override
     public Move execute(Board board) {
-        final double startTime = System.currentTimeMillis();
+        final long startTime = System.currentTimeMillis();
         Move optimalMove = Move.MoveFactory.getNullMove();
         int highestSeenValue = Integer.MIN_VALUE;
         int lowestSeenValue = Integer.MAX_VALUE;
         int currentValue;
         System.out.println(board.getCurrentPlayer() + " is thinking with a depth of " + searchDepth);
+        this.freqTable = new FreqTableRow[board.getCurrentPlayer().getValidMoves().size()];
+        this.freqTableIndex = 0;
         int moveCounter = 1;
-        int numMoves = board.getCurrentPlayer().getValidMoves().size();
+        final int numMoves = board.getCurrentPlayer().getValidMoves().size();
         for (final Move move : board.getCurrentPlayer().getValidMoves()) {
             final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
+                final FreqTableRow row = new FreqTableRow(move);
+                this.freqTable[this.freqTableIndex] = row;
                 currentValue = board.getCurrentPlayer().getAllyColor().isBlue() ?
                         min(moveTransition.getToBoard(), this.searchDepth - 1) :
                         max(moveTransition.getToBoard(), this.searchDepth - 1);
-                System.out.println(this + " is analyzing move (" + moveCounter + "/" + numMoves + ") " + move + " scores " + currentValue);
+                System.out.println("\t" + this + " is analyzing move (" + moveCounter + "/" + numMoves + ") " + move +
+                        " scores " + currentValue + " " + this.freqTable[this.freqTableIndex]);
+                this.freqTableIndex++;
                 if (board.getCurrentPlayer().getAllyColor().isBlue() && currentValue >= highestSeenValue) {
                     highestSeenValue = currentValue;
                     optimalMove = move;
@@ -48,17 +66,29 @@ public class MinimaxAlgorithm implements MoveStrategy {
             }
             moveCounter++;
         }
-        final double executionTime = System.currentTimeMillis() - startTime;
-        System.out.println("Execution time: " + executionTime / 1000 + "s");
+        final long executionTime = System.currentTimeMillis() - startTime;
+        System.out.printf("%s selects %s [#total boards = %d, time taken = %dms, rate = %.1fboards/second]\n",
+                board.getCurrentPlayer(), optimalMove, this.numEvaluatedBoards, executionTime, (1000 * ((double) this.numEvaluatedBoards / executionTime)));
+        long total = 0;
+        for (final FreqTableRow row : this.freqTable) {
+            if(row != null) {
+                total += row.getCount();
+            }
+        }
+        if(this.numEvaluatedBoards != total) {
+            System.out.println("Something is wrong with the # of boards evaluated!");
+        }
         return optimalMove;
     }
 
     private int min(final Board board, final int depth) {
         if (depth == 0) {
+            this.numEvaluatedBoards++;
+            this.freqTable[this.freqTableIndex].increment();
             return this.evaluator.evaluate(board, depth);
         }
         if (GameFrame.isGameOverScenario(board)) {
-            return this.evaluator.evaluate(board, depth) * 10000000;
+            return this.evaluator.evaluate(board, depth);
         }
         int lowestSeenValue = Integer.MAX_VALUE;
         for (final Move move : board.getCurrentPlayer().getValidMoves()) {
@@ -75,10 +105,12 @@ public class MinimaxAlgorithm implements MoveStrategy {
 
     private int max(final Board board, final int depth) {
         if (depth == 0) {
+            this.numEvaluatedBoards++;
+            this.freqTable[this.freqTableIndex].increment();
             return this.evaluator.evaluate(board, depth);
         }
         if (GameFrame.isGameOverScenario(board)) {
-            return this.evaluator.evaluate(board, depth) * 1000000;
+            return this.evaluator.evaluate(board, depth);
         }
         int highestSeenValue = Integer.MIN_VALUE;
         for (final Move move : board.getCurrentPlayer().getValidMoves()) {
@@ -93,4 +125,27 @@ public class MinimaxAlgorithm implements MoveStrategy {
         return highestSeenValue;
     }
 
+    private static class FreqTableRow {
+        private final Move move;
+        private final AtomicLong count;
+
+        FreqTableRow(final Move move) {
+            this.count = new AtomicLong();
+            this.move = move;
+        }
+
+        long getCount() {
+            return this.count.get();
+        }
+
+        void increment() {
+            this.count.incrementAndGet();
+        }
+
+        @Override
+        public String toString() {
+            return BoardUtilities.getPositionAtCoordinate(this.move.getCurrentCoordinate()) +
+                    BoardUtilities.getPositionAtCoordinate(this.move.getDestinationCoordinate()) + " with frequency of " + this.count;
+        }
+    }
 }

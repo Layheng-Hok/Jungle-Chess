@@ -5,4 +5,5 @@ import model.board.Move;
 
 public interface MoveStrategy {
     Move execute(Board board);
+    long getNumEvaluatedBoards();
 }
