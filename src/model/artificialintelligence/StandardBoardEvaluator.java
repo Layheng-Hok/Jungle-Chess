@@ -1,22 +1,23 @@
 package model.artificialintelligence;
 
+import com.google.common.annotations.VisibleForTesting;
 import model.board.Board;
 import model.board.Move;
 import model.piece.Piece;
 import model.player.Player;
 
-public final class ConcreteBoardEvaluator implements BoardEvaluator {
+public final class StandardBoardEvaluator implements BoardEvaluator {
     private final static int DEPTH_MULTIPLIER = 100;
     private final static int MOBILITY_MULTIPLIER = 5;
     private final static int CAPTURE_MOVES_MULTIPLIER = 10;
-    private final static int NEAR_ENEMY_DEN_WITH_ENEMY_PENALTY = -10000;
-    private final static int NEAR_ENEMY_DEN_WITHOUT_ENEMY_BONUS = 50000;
+    private final static int INTO_ENEMY_TRAP_WITH_ENEMY_NEARBY_PENALTY = -10000;
+    private final static int INTO_ENEMY_TRAP_WITHOUT_ENEMY_NEARBY_BONUS = 50000;
     private final static int ENEMY_DEN_PENETRATED_MULTIPLIER = 50000;
     private static final int ENEMY_RUNNING_OUT_OF_VALID_MOVES_MULTIPLIER = 50000;
     private static final int ENEMY_RUNNING_OUT_OF_PIECES_MULTIPLIER = 50000;
-    private static final ConcreteBoardEvaluator INSTANCE = new ConcreteBoardEvaluator();
+    private static final StandardBoardEvaluator INSTANCE = new StandardBoardEvaluator();
 
-    public static ConcreteBoardEvaluator get() {
+    public static StandardBoardEvaluator get() {
         return INSTANCE;
     }
 
@@ -25,12 +26,13 @@ public final class ConcreteBoardEvaluator implements BoardEvaluator {
         return scorePlayer(board.bluePlayer(), depth) - scorePlayer(board.redPlayer(), depth);
     }
 
+    @VisibleForTesting
     private int scorePlayer(final Player player, final int depth) {
         return pieceValue(player)
                 + mobility(player)
                 + captureMoves(player)
-                + getNearEnemyDenWithEnemyNearby(player)
-                + getNearEnemyDenWithoutEnemyNearby(player, depth)
+                + getIntoEnemyTrapWithEnemyNearby(player)
+                + getIntoEnemyTrapWithoutEnemyNearby(player, depth)
                 + isEnemyDenPenetrated(player, depth)
                 + isEnemyRunningOutOfValidMoves(player, depth)
                 + isEnemyRunningOutOfPieces(player, depth);
@@ -41,8 +43,8 @@ public final class ConcreteBoardEvaluator implements BoardEvaluator {
                 "Piece Value: " + pieceValue(board.bluePlayer()) + "\n" +
                 "Mobility: " + mobility(board.bluePlayer()) + "\n" +
                 "Capture Move: " + captureMoves(board.bluePlayer()) + "\n" +
-                "Get Near Enemy Den With Enemy Nearby: " + getNearEnemyDenWithEnemyNearby(board.bluePlayer()) + "\n" +
-                "Get Near Enemy Den Without Enemy Nearby: " + getNearEnemyDenWithoutEnemyNearby(board.bluePlayer(), depth) + "\n" +
+                "Get Into Enemy's Trap With Enemy Nearby: " + getIntoEnemyTrapWithEnemyNearby(board.bluePlayer()) + "\n" +
+                "Get Into Enemy's Trap Without Enemy Nearby: " + getIntoEnemyTrapWithoutEnemyNearby(board.bluePlayer(), depth) + "\n" +
                 "Is Enemy Den Penetrated: " + isEnemyDenPenetrated(board.bluePlayer(), depth) + "\n" +
                 "Is Enemy Running Out Of Valid Moves: " + isEnemyRunningOutOfValidMoves(board.bluePlayer(), depth) + "\n" +
                 "Is Enemy Running Out Of Pieces: " + isEnemyRunningOutOfPieces(board.bluePlayer(), depth) + "\n" +
@@ -51,8 +53,8 @@ public final class ConcreteBoardEvaluator implements BoardEvaluator {
                 "Piece Value: " + pieceValue(board.redPlayer()) + "\n" +
                 "Mobility: " + mobility(board.redPlayer()) + "\n" +
                 "Capture Move: " + captureMoves(board.redPlayer()) + "\n" +
-                "Get Near Enemy Den With Enemy Nearby: " + getNearEnemyDenWithEnemyNearby(board.redPlayer()) + "\n" +
-                "Get Near Enemy Den Without Enemy Nearyby: " + getNearEnemyDenWithoutEnemyNearby(board.redPlayer(), depth) + "\n" +
+                "Get Into Enemy's Trap With Enemy Nearby: " + getIntoEnemyTrapWithEnemyNearby(board.redPlayer()) + "\n" +
+                "Get Into Enemy's Trap Without Enemy Nearyby: " + getIntoEnemyTrapWithoutEnemyNearby(board.redPlayer(), depth) + "\n" +
                 "Is Enemy Den Penetrated: " + isEnemyDenPenetrated(board.redPlayer(), depth) + "\n" +
                 "Is Enemy Running Out Of Valid Moves: " + isEnemyRunningOutOfValidMoves(board.bluePlayer(), depth) + "\n" +
                 "Is Enemy Running Out Of Pieces: " + isEnemyRunningOutOfPieces(board.bluePlayer(), depth) + "\n" +
@@ -86,28 +88,28 @@ public final class ConcreteBoardEvaluator implements BoardEvaluator {
         return captureScore * CAPTURE_MOVES_MULTIPLIER;
     }
 
-    private static int getNearEnemyDenWithEnemyNearby(Player player) {
-        int getNearEnemyDenPenalty = 0;
+    private static int getIntoEnemyTrapWithEnemyNearby(Player player) {
+        int getIntoEnemyTrapPenalty = 0;
         if (player.getAllyColor().isBlue()) {
             for (final Piece piece : player.getActivePieces()) {
                 if (piece.getPieceCoordinate() == 2) {
                     for (final Piece enemyPiece : player.getEnemyPlayer().getActivePieces()) {
                         if (enemyPiece.getPieceCoordinate() == 1 || enemyPiece.getPieceCoordinate() == 9) {
-                            getNearEnemyDenPenalty += NEAR_ENEMY_DEN_WITH_ENEMY_PENALTY;
+                            getIntoEnemyTrapPenalty += INTO_ENEMY_TRAP_WITH_ENEMY_NEARBY_PENALTY;
                         }
                     }
                 }
                 if (piece.getPieceCoordinate() == 4) {
                     for (final Piece enemyPiece : player.getEnemyPlayer().getActivePieces()) {
                         if (enemyPiece.getPieceCoordinate() == 5 || enemyPiece.getPieceCoordinate() == 11) {
-                            getNearEnemyDenPenalty += NEAR_ENEMY_DEN_WITH_ENEMY_PENALTY;
+                            getIntoEnemyTrapPenalty += INTO_ENEMY_TRAP_WITH_ENEMY_NEARBY_PENALTY;
                         }
                     }
                 }
                 if (piece.getPieceCoordinate() == 10) {
                     for (final Piece enemyPiece : player.getEnemyPlayer().getActivePieces()) {
                         if (enemyPiece.getPieceCoordinate() == 9 || enemyPiece.getPieceCoordinate() == 11 || enemyPiece.getPieceCoordinate() == 17) {
-                            getNearEnemyDenPenalty += NEAR_ENEMY_DEN_WITH_ENEMY_PENALTY;
+                            getIntoEnemyTrapPenalty += INTO_ENEMY_TRAP_WITH_ENEMY_NEARBY_PENALTY;
                         }
                     }
                 }
@@ -117,111 +119,111 @@ public final class ConcreteBoardEvaluator implements BoardEvaluator {
                 if (piece.getPieceCoordinate() == 52) {
                     for (final Piece enemyPiece : player.getEnemyPlayer().getActivePieces()) {
                         if (enemyPiece.getPieceCoordinate() == 45 || enemyPiece.getPieceCoordinate() == 51 || enemyPiece.getPieceCoordinate() == 53) {
-                            getNearEnemyDenPenalty += NEAR_ENEMY_DEN_WITH_ENEMY_PENALTY;
+                            getIntoEnemyTrapPenalty += INTO_ENEMY_TRAP_WITH_ENEMY_NEARBY_PENALTY;
                         }
                     }
                 }
                 if (piece.getPieceCoordinate() == 58) {
                     for (final Piece enemyPiece : player.getEnemyPlayer().getActivePieces()) {
                         if (enemyPiece.getPieceCoordinate() == 51 || enemyPiece.getPieceCoordinate() == 57) {
-                            getNearEnemyDenPenalty += NEAR_ENEMY_DEN_WITH_ENEMY_PENALTY;
+                            getIntoEnemyTrapPenalty += INTO_ENEMY_TRAP_WITH_ENEMY_NEARBY_PENALTY;
                         }
                     }
                 }
                 if (piece.getPieceCoordinate() == 60) {
                     for (final Piece enemyPiece : player.getEnemyPlayer().getActivePieces()) {
                         if (enemyPiece.getPieceCoordinate() == 53 || enemyPiece.getPieceCoordinate() == 61) {
-                            getNearEnemyDenPenalty += NEAR_ENEMY_DEN_WITH_ENEMY_PENALTY;
+                            getIntoEnemyTrapPenalty += INTO_ENEMY_TRAP_WITH_ENEMY_NEARBY_PENALTY;
                         }
                     }
                 }
             }
         }
-        return getNearEnemyDenPenalty;
+        return getIntoEnemyTrapPenalty;
     }
 
-    private static int getNearEnemyDenWithoutEnemyNearby(Player player, int depth) {
-        int getNearEnemyDenScore = 0;
+    private static int getIntoEnemyTrapWithoutEnemyNearby(Player player, int depth) {
+        int getIntoEnemyTrapScore = 0;
         if (player.getAllyColor().isBlue()) {
             for (final Piece piece : player.getActivePieces()) {
                 if (piece.getPieceCoordinate() == 2) {
-                    boolean isEnemyNearDen = false;
+                    boolean isEnemyNearTrap = false;
                     for (final Piece enemyPiece : player.getEnemyPlayer().getActivePieces()) {
                         if (enemyPiece.getPieceCoordinate() == 1 || enemyPiece.getPieceCoordinate() == 9) {
-                            isEnemyNearDen = true;
+                            isEnemyNearTrap = true;
                             break;
                         }
                     }
-                    if (!isEnemyNearDen) {
-                        getNearEnemyDenScore += NEAR_ENEMY_DEN_WITHOUT_ENEMY_BONUS;
+                    if (!isEnemyNearTrap) {
+                        getIntoEnemyTrapScore += INTO_ENEMY_TRAP_WITHOUT_ENEMY_NEARBY_BONUS;
                     }
                 }
                 if (piece.getPieceCoordinate() == 4) {
-                    boolean isEnemyNearDen = false;
+                    boolean isEnemyNearTrap = false;
                     for (final Piece enemyPiece : player.getEnemyPlayer().getActivePieces()) {
                         if (enemyPiece.getPieceCoordinate() == 5 || enemyPiece.getPieceCoordinate() == 11) {
-                            isEnemyNearDen = true;
+                            isEnemyNearTrap = true;
                             break;
                         }
                     }
-                    if (!isEnemyNearDen) {
-                        getNearEnemyDenScore += NEAR_ENEMY_DEN_WITHOUT_ENEMY_BONUS;
+                    if (!isEnemyNearTrap) {
+                        getIntoEnemyTrapScore += INTO_ENEMY_TRAP_WITHOUT_ENEMY_NEARBY_BONUS;
                     }
                 }
                 if (piece.getPieceCoordinate() == 10) {
-                    boolean isEnemyNearDen = false;
+                    boolean isEnemyNearTrap = false;
                     for (final Piece enemyPiece : player.getEnemyPlayer().getActivePieces()) {
                         if (enemyPiece.getPieceCoordinate() == 9 || enemyPiece.getPieceCoordinate() == 11 || enemyPiece.getPieceCoordinate() == 17) {
-                            isEnemyNearDen = true;
+                            isEnemyNearTrap = true;
                             break;
                         }
                     }
-                    if (!isEnemyNearDen) {
-                        getNearEnemyDenScore += NEAR_ENEMY_DEN_WITHOUT_ENEMY_BONUS;
+                    if (!isEnemyNearTrap) {
+                        getIntoEnemyTrapScore += INTO_ENEMY_TRAP_WITHOUT_ENEMY_NEARBY_BONUS;
                     }
                 }
             }
         } else if (player.getAllyColor().isRed()) {
             for (final Piece piece : player.getActivePieces()) {
                 if (piece.getPieceCoordinate() == 52) {
-                    boolean isEnemyNearDen = false;
+                    boolean isEnemyNearTrap = false;
                     for (final Piece enemyPiece : player.getEnemyPlayer().getActivePieces()) {
                         if (enemyPiece.getPieceCoordinate() == 45 || enemyPiece.getPieceCoordinate() == 51 || enemyPiece.getPieceCoordinate() == 53) {
-                            isEnemyNearDen = true;
+                            isEnemyNearTrap = true;
                             break;
                         }
                     }
-                    if (!isEnemyNearDen) {
-                        getNearEnemyDenScore += NEAR_ENEMY_DEN_WITHOUT_ENEMY_BONUS;
+                    if (!isEnemyNearTrap) {
+                        getIntoEnemyTrapScore += INTO_ENEMY_TRAP_WITHOUT_ENEMY_NEARBY_BONUS;
                     }
                 }
                 if (piece.getPieceCoordinate() == 58) {
-                    boolean isEnemyNearDen = false;
+                    boolean isEnemyNearTrap = false;
                     for (final Piece enemyPiece : player.getEnemyPlayer().getActivePieces()) {
                         if (enemyPiece.getPieceCoordinate() == 51 || enemyPiece.getPieceCoordinate() == 57) {
-                            isEnemyNearDen = true;
+                            isEnemyNearTrap = true;
                             break;
                         }
                     }
-                    if (!isEnemyNearDen) {
-                        getNearEnemyDenScore += NEAR_ENEMY_DEN_WITHOUT_ENEMY_BONUS;
+                    if (!isEnemyNearTrap) {
+                        getIntoEnemyTrapScore += INTO_ENEMY_TRAP_WITHOUT_ENEMY_NEARBY_BONUS;
                     }
                 }
                 if (piece.getPieceCoordinate() == 60) {
-                    boolean isEnemyNearDen = false;
+                    boolean isEnemyNearTrap = false;
                     for (final Piece enemyPiece : player.getEnemyPlayer().getActivePieces()) {
                         if (enemyPiece.getPieceCoordinate() == 53 || enemyPiece.getPieceCoordinate() == 61) {
-                            isEnemyNearDen = true;
+                            isEnemyNearTrap = true;
                             break;
                         }
                     }
-                    if (!isEnemyNearDen) {
-                        getNearEnemyDenScore += NEAR_ENEMY_DEN_WITHOUT_ENEMY_BONUS;
+                    if (!isEnemyNearTrap) {
+                        getIntoEnemyTrapScore += INTO_ENEMY_TRAP_WITHOUT_ENEMY_NEARBY_BONUS;
                     }
                 }
             }
         }
-        return getNearEnemyDenScore * depthBonus(depth);
+        return getIntoEnemyTrapScore * depthBonus(depth);
     }
 
     static int isEnemyDenPenetrated(Player player, int depth) {

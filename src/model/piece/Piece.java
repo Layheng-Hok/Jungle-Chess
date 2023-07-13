@@ -70,6 +70,10 @@ public abstract class Piece {
         return this.pieceType;
     }
 
+    public int getPiecePower() {
+        return this.pieceType.getPiecePower();
+    }
+
     public PlayerColor getPieceColor() {
         return this.pieceColor;
     }
@@ -85,8 +89,6 @@ public abstract class Piece {
     public void setPieceDefenseRank(int pieceDefenseRank) {
         this.pieceDefenseRank = pieceDefenseRank;
     }
-
-    public abstract int getPiecePower();
 
     public Piece undoMove(Move move) {
         return move.getMovedPiece();

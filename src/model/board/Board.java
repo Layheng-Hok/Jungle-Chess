@@ -8,6 +8,8 @@ import model.player.PlayerColor;
 import model.player.RedPlayer;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Board {
     private final List<Terrain> chessboard;
@@ -17,6 +19,7 @@ public class Board {
     private final BluePlayer bluePlayer;
     private final RedPlayer redPlayer;
     private final Player currentPlayer;
+    private final Move transitionMove;
 
     private Board(Builder builder) {
         this.chessboard = constructChessboard(builder);
@@ -28,6 +31,7 @@ public class Board {
         this.bluePlayer = new BluePlayer(this, blueValidMoves, redValidMoves);
         this.redPlayer = new RedPlayer(this, blueValidMoves, redValidMoves);
         this.currentPlayer = getPlayer(builder.nextMovePlayer, this.bluePlayer, this.redPlayer);
+        this.transitionMove = builder.transitionMove != null ? builder.transitionMove : Move.MoveFactory.getNullMove();
     }
 
     @Override
@@ -91,6 +95,10 @@ public class Board {
 
     public Collection<Piece> getRedPieces() {
         return this.redPieces;
+    }
+
+    public Collection<Piece> getAllPieces() {
+        return Stream.concat(this.bluePieces.stream(), this.redPieces.stream()).collect(Collectors.toList());
     }
 
     private Collection<Move> determineValidMoves(Collection<Piece> pieces) {
@@ -212,9 +220,14 @@ public class Board {
         }
     }
 
+    public Move getTransitionMove() {
+        return this.transitionMove;
+    }
+
     public static class Builder {
         Map<Integer, Piece> boardConfig;
         PlayerColor nextMovePlayer;
+        Move transitionMove;
 
         public Builder() {
             this.boardConfig = new HashMap<>();
@@ -232,6 +245,11 @@ public class Board {
 
         public Builder setNextMovePlayer(final PlayerColor nextPlayerColor) {
             this.nextMovePlayer = nextPlayerColor;
+            return this;
+        }
+
+        public Builder setMoveTransition(final Move transitionMove) {
+            this.transitionMove = transitionMove;
             return this;
         }
 

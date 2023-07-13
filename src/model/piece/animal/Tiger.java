@@ -22,9 +22,4 @@ public class Tiger extends SpecialPiece {
     public Tiger movePiece(Move move) {
         return new Tiger(move.getDestinationCoordinate(), move.getMovedPiece().getPieceColor());
     }
-
-    @Override
-    public int getPiecePower() {
-        return Animal.TIGER.getPiecePower();
-    }
 }

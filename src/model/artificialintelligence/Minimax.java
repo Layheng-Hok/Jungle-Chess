@@ -8,15 +8,15 @@ import view.GameFrame;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-public class MinimaxAlgorithm implements MoveStrategy {
+public class Minimax implements MoveStrategy {
     private final BoardEvaluator evaluator;
     private final int searchDepth;
     private long numEvaluatedBoards;
     private FreqTableRow[] freqTable;
     private int freqTableIndex;
 
-    public MinimaxAlgorithm(final BoardEvaluator evaluator, final int searchDepth) {
-        this.evaluator = evaluator;
+    public Minimax(final int searchDepth) {
+        this.evaluator = StandardBoardEvaluator.get();
         this.searchDepth = searchDepth;
         this.numEvaluatedBoards = 0;
     }
@@ -67,7 +67,7 @@ public class MinimaxAlgorithm implements MoveStrategy {
             moveCounter++;
         }
         final long executionTime = System.currentTimeMillis() - startTime;
-        System.out.printf("%s selects %s [#total boards = %d, time taken = %dms, rate = %.1fboards/second]\n",
+        System.out.printf("%s selects %s [#total boards evaluated = %d, time taken = %dms, evaluation rate = %.1fboards/second]\n",
                 board.getCurrentPlayer(), optimalMove, this.numEvaluatedBoards, executionTime, (1000 * ((double) this.numEvaluatedBoards / executionTime)));
         long total = 0;
         for (final FreqTableRow row : this.freqTable) {

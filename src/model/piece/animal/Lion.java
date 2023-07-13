@@ -22,9 +22,4 @@ public class Lion extends SpecialPiece {
     public Lion movePiece(Move move) {
         return new Lion(move.getDestinationCoordinate(), move.getMovedPiece().getPieceColor());
     }
-
-    @Override
-    public int getPiecePower() {
-        return Animal.LION.getPiecePower();
-    }
 }

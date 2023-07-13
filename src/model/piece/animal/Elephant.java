@@ -34,11 +34,6 @@ public class Elephant extends Piece {
     }
 
     @Override
-    public int getPiecePower() {
-        return Animal.ELEPHANT.getPiecePower();
-    }
-
-    @Override
     public Collection<Move> determineValidMoves(final Board board) {
         final List<Move> validMoves = new ArrayList<>();
         for (final int currentPotentialOffset : POTENTIAL_MOVE_COORDINATES) {

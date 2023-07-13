@@ -1,10 +1,7 @@
 package view;
 
 import model.Controller;
-import model.artificialintelligence.ConcreteBoardEvaluator;
-import model.artificialintelligence.MinimaxAlgorithm;
-import model.artificialintelligence.MoveStrategy;
-import model.artificialintelligence.PoorBoardEvaluator;
+import model.artificialintelligence.*;
 import model.board.*;
 import model.piece.Piece;
 import model.player.PlayerColor;
@@ -547,24 +544,24 @@ public class GameFrame extends Observable {
     }
 
     public static class IntelligenceHub extends SwingWorker<Move, String> {
-        boolean isMinimaxRunning = false;
+        boolean isAIThinking = false;
 
         @Override
         protected Move doInBackground() {
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.EASY) {
-                isMinimaxRunning = true;
-                final MoveStrategy minimax = new MinimaxAlgorithm(PoorBoardEvaluator.get(), 4);
+                isAIThinking = true;
+                final MoveStrategy minimax = new Minimax(4);
                 return minimax.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.MEDIUM) {
-                isMinimaxRunning = true;
-                final MoveStrategy minimax = new MinimaxAlgorithm(ConcreteBoardEvaluator.get(), 3);
-                return minimax.execute(GameFrame.get().getChessBoard());
+                isAIThinking = true;
+                final MoveStrategy alphaBeta = new AlphaBetaPruningWithMoveOrdering(5);
+                return alphaBeta.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.HARD) {
-                isMinimaxRunning = true;
-                final MoveStrategy minimax = new MinimaxAlgorithm(ConcreteBoardEvaluator.get(), 4);
-                return minimax.execute(GameFrame.get().getChessBoard());
+                isAIThinking = true;
+                final MoveStrategy alphaBeta = new AlphaBetaPruningWithMoveOrdering(6);
+                return alphaBeta.execute(GameFrame.get().getChessBoard());
             }
             return null;
         }
@@ -588,7 +585,7 @@ public class GameFrame extends Observable {
             } catch (final Exception e) {
                 e.printStackTrace();
             }
-            isMinimaxRunning = false;
+            isAIThinking = false;
         }
     }
 

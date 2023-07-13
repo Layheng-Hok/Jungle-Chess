@@ -22,9 +22,4 @@ public class Dog extends CommonPiece {
     public Dog movePiece(Move move) {
         return new Dog(move.getDestinationCoordinate(), move.getMovedPiece().getPieceColor());
     }
-
-    @Override
-    public int getPiecePower() {
-        return Animal.DOG.getPiecePower();
-    }
 }

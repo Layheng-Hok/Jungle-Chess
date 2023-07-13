@@ -37,11 +37,6 @@ public class Rat extends Piece {
     }
 
     @Override
-    public int getPiecePower() {
-        return Animal.RAT.getPiecePower();
-    }
-
-    @Override
     public Collection<Move> determineValidMoves(final Board board) {
         final List<Move> validMoves = new ArrayList<>();
         for (final int currentPotentialOffset : POTENTIAL_MOVE_COORDINATES) {

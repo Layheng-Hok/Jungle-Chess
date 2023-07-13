@@ -47,6 +47,37 @@ public abstract class Move {
                 && this.getMovedPiece().equals(otherMove.getMovedPiece());
     }
 
+    public Board execute() {
+        final Board.Builder builder = new Board.Builder();
+        this.board.getCurrentPlayer().getActivePieces().stream().filter(piece -> !this.movedPiece.equals(piece)).forEach(builder::setPiece);
+        this.board.getCurrentPlayer().getEnemyPlayer().getActivePieces().forEach(builder::setPiece);
+        builder.setPiece(this.movedPiece.movePiece(this));
+        builder.setNextMovePlayer(this.board.getCurrentPlayer().getEnemyPlayer().getAllyColor());
+        builder.setMoveTransition(this);
+        return builder.build();
+    }
+
+    public Board undo() {
+        final Board.Builder builder = new Board.Builder();
+        this.board.getAllPieces().forEach(builder::setPiece);
+        builder.setNextMovePlayer(this.board.getCurrentPlayer().getAllyColor());
+        return builder.build();
+    }
+
+    String disambiguationFile() {
+        for (final Move move : this.board.getCurrentPlayer().getValidMoves()) {
+            if (move.getDestinationCoordinate() == this.destinationCoordinate && !this.equals(move) &&
+                    this.movedPiece.getPieceType().equals(move.getMovedPiece().getPieceType())) {
+                return BoardUtilities.getPositionAtCoordinate(this.movedPiece.getPieceCoordinate()).substring(0, 1);
+            }
+        }
+        return "";
+    }
+
+    public Board getBoard() {
+        return this.board;
+    }
+
     public int getCurrentCoordinate() {
         return this.getMovedPiece().getPieceCoordinate();
     }
@@ -65,44 +96,6 @@ public abstract class Move {
 
     public Piece getCapturedPiece() {
         return null;
-    }
-
-    public Board execute() {
-        final Board.Builder builder = new Board.Builder();
-        for (final Piece piece : this.board.getCurrentPlayer().getActivePieces()) {
-            if (!this.movedPiece.equals(piece)) {
-                builder.setPiece(piece);
-            }
-        }
-        for (final Piece piece : this.board.getCurrentPlayer().getEnemyPlayer().getActivePieces()) {
-            builder.setPiece(piece);
-        }
-        builder.setPiece(this.movedPiece.movePiece(this));
-        builder.setNextMovePlayer(this.board.getCurrentPlayer().getEnemyPlayer().getAllyColor());
-        return builder.build();
-    }
-
-    String disambiguationFile() {
-        for (final Move move : this.board.getCurrentPlayer().getValidMoves()) {
-            if (move.getDestinationCoordinate() == this.destinationCoordinate && !this.equals(move) &&
-                    this.movedPiece.getPieceType().equals(move.getMovedPiece().getPieceType())) {
-                return BoardUtilities.getPositionAtCoordinate(this.movedPiece.getPieceCoordinate()).substring(0, 1);
-            }
-        }
-        return "";
-    }
-
-    public Board undo() {
-        final Board.Builder builder = new Board.Builder();
-        for (final Piece piece : this.board.getCurrentPlayer().getActivePieces()) {
-            builder.setPiece(piece);
-        }
-        for (final Piece piece : this.board.getCurrentPlayer().getEnemyPlayer().getActivePieces()) {
-            builder.setPiece(piece);
-        }
-        builder.setPiece(this.movedPiece.undoMove(this));
-        builder.setNextMovePlayer(this.board.getCurrentPlayer().getAllyColor());
-        return builder.build();
     }
 
     public static final class StandardMove extends Move {

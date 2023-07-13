@@ -11,7 +11,7 @@ public class BoardUtilities {
     public static final boolean[] COLUMN_ZERO = populateColumn(0);
     public static final boolean[] COLUMN_SIX = populateColumn(6);
     public static final List<String> ALGEBRAIC_NOTATION = initializeAlgebraicNotation();
-    public static final  Map<String, Integer> POSITION_TO_COORDINATE = initializePositionToCoordinateMap();
+    public static final Map<String, Integer> POSITION_TO_COORDINATE = initializePositionToCoordinateMap();
 
 
     private BoardUtilities() {
@@ -39,9 +39,9 @@ public class BoardUtilities {
     }
 
     public static boolean isDen(final int coordinate, PlayerColor pieceColor) {
-        if (pieceColor == PlayerColor.BLUE) {
+        if (pieceColor.isBlue()) {
             return (coordinate == 59);
-        } else if (pieceColor == PlayerColor.RED) {
+        } else if (pieceColor.isRed()) {
             return (coordinate == 3);
         } else {
             return false;
@@ -53,9 +53,9 @@ public class BoardUtilities {
     }
 
     public static boolean isEnemyTrap(final int coordinate, PlayerColor pieceColor) {
-        if (pieceColor == PlayerColor.BLUE) {
+        if (pieceColor.isBlue()) {
             return (coordinate == 2 || coordinate == 4 || coordinate == 10);
-        } else if (pieceColor == PlayerColor.RED) {
+        } else if (pieceColor.isRed()) {
             return (coordinate == 52 || coordinate == 58 || coordinate == 60);
         } else {
             return false;
@@ -90,6 +90,18 @@ public class BoardUtilities {
                 "(6,0)", "(6,1)", "(6,2)", "(6,3)", "(6,4)", "(6,5)", "(6,6)",
                 "(7,0)", "(7,1)", "(7,2)", "(7,3)", "(7,4)", "(7,5)", "(7,6)",
                 "(8,0)", "(8,1)", "(8,2)", "(8,3)", "(8,4)", "(8,5)", "(8,6)"));
+    }
+
+    public static List<Move> lastNMoves(final Board board, int N) {
+        final List<Move> moveHistory = new ArrayList<>();
+        Move currentMove = board.getTransitionMove();
+        int i = 0;
+        while(currentMove != Move.MoveFactory.getNullMove() && i < N) {
+            moveHistory.add(currentMove);
+            currentMove = currentMove.getBoard().getTransitionMove();
+            i++;
+        }
+        return Collections.unmodifiableList(moveHistory);
     }
 
     public int getCoordinateAtPosition(final String position) {
