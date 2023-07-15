@@ -46,8 +46,8 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
         int moveCounter = 1;
         final int numMoves = board.getCurrentPlayer().getValidMoves().size();
         System.out.println(board.getCurrentPlayer() + " is thinking with with a depth of " + this.searchDepth);
-        System.out.println("\tOrdered moves : " + MoveSorter.SIMPLE.sort(board.getCurrentPlayer().getValidMoves()));
-        for (final Move move : MoveSorter.SIMPLE.sort(board.getCurrentPlayer().getValidMoves())) {
+        System.out.println("\tOrdered moves : " + MoveSorter.EXPENSIVE.sort(board.getCurrentPlayer().getValidMoves()));
+        for (final Move move : MoveSorter.EXPENSIVE.sort(board.getCurrentPlayer().getValidMoves())) {
             final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
             this.quiescenceCount = 0;
             final String s;
@@ -73,8 +73,8 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
                         break;
                     }
                 }
-                final String quiescenceInfo = " " + score(currentPlayer, highestSeenValue, lowestSeenValue) + ", q: " + this.quiescenceCount;
-                s = "\t" + this + "(" + this.searchDepth + "), m: (" + moveCounter + "/" + numMoves + ") " + move + ", best move: " + optimalMove
+                final String quiescenceInfo = " " + score(currentPlayer, highestSeenValue, lowestSeenValue) + " q: " + this.quiescenceCount;
+                s = "\t" + this + "(" + this.searchDepth + "), m: (" + moveCounter + "/" + numMoves + ") " + move + ", best:  " + optimalMove
 
                         + quiescenceInfo + ", t: " + calculateTimeTaken(potentialMoveStartTime, System.nanoTime());
             } else {
@@ -91,7 +91,7 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
                         " cut-off count = %d, prune percent = %.2f]\n",
                 board.getCurrentPlayer(), optimalMove, this.numEvaluatedBoards,
                 executionTime, (1000 * ((double) this.numEvaluatedBoards / executionTime)),
-                this.cutOffsProduced, 100 * ((double) this.cutOffsProduced / this.numEvaluatedBoards));
+                this.cutOffsProduced, 100 * ((double) this.cutOffsProduced / (this.numEvaluatedBoards + this.cutOffsProduced)));
         System.out.print(result);
         setChanged();
         notifyObservers(result);
@@ -104,7 +104,7 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
             return this.evaluator.evaluate(board, depth);
         }
         int currentHighest = highest;
-        for (final Move move : MoveSorter.SIMPLE.sort((board.getCurrentPlayer().getValidMoves()))) {
+        for (final Move move : MoveSorter.STANDARD.sort((board.getCurrentPlayer().getValidMoves()))) {
             final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
                 currentHighest = Math.max(currentHighest,
@@ -113,7 +113,7 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
                                 currentHighest, lowest));
                 if (currentHighest >= lowest) {
                     this.cutOffsProduced++;
-                    return currentHighest;
+                    return lowest;
                 }
             }
         }
@@ -126,7 +126,7 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
             return this.evaluator.evaluate(board, depth);
         }
         int currentLowest = lowest;
-        for (final Move move : MoveSorter.SIMPLE.sort((board.getCurrentPlayer().getValidMoves()))) {
+        for (final Move move : MoveSorter.STANDARD.sort((board.getCurrentPlayer().getValidMoves()))) {
             final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
             if (moveTransition.getMoveStatus().isDone()) {
                 currentLowest = Math.min(currentLowest,
@@ -135,7 +135,7 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
                                 highest, currentLowest));
                 if (currentLowest <= highest) {
                     this.cutOffsProduced++;
-                    return currentLowest;
+                    return highest;
                 }
             }
         }
@@ -156,7 +156,7 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
             int activityMeasure = 0;
             for (final Move move : BoardUtilities.lastNMoves(toBoard, 2)) {
                 if (move.isCaptureMove()) {
-                    activityMeasure++;
+                    activityMeasure += 1;
                 }
             }
             if (activityMeasure >= 2) {

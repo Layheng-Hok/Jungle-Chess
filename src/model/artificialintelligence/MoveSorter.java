@@ -21,7 +21,7 @@ enum MoveSorter {
         }
     },
 
-    COMPLEX {
+    EXPENSIVE {
         @Override
         Collection<Move> sort(final Collection<Move> moves) {
             return Ordering.from((Comparator<Move>) (move1, move2) -> ComparisonChain.start()
@@ -36,16 +36,10 @@ enum MoveSorter {
         @Override
         Collection<Move> sort(final Collection<Move> moves) {
             return Ordering.from((Comparator<Move>) (move1, move2) -> ComparisonChain.start()
+                    .compareTrueFirst(getIntoEnemyDen(move1), getIntoEnemyDen(move2))
                     .compareTrueFirst(move1.isCaptureMove(), move2.isCaptureMove())
                     .compare(move2.getMovedPiece().getPiecePower(), move1.getMovedPiece().getPiecePower())
                     .result()).immutableSortedCopy(moves);
-        }
-    },
-
-    NONE {
-        @Override
-        Collection<Move> sort(final Collection<Move> moves) {
-            return moves;
         }
     };
 
@@ -162,7 +156,7 @@ enum MoveSorter {
         final Piece movedPiece = move.getMovedPiece();
         if (move.isCaptureMove()) {
             final Piece capturedPiece = move.getCapturedPiece();
-            return (capturedPiece.getPiecePower() - movedPiece.getPiecePower() + Animal.LION.getPiecePower()) * 100;
+            return (capturedPiece.getPiecePower() - movedPiece.getPiecePower()) + Animal.LION.getPiecePower() * 100;
         }
         return Animal.LION.getPiecePower() - movedPiece.getPiecePower();
     }
