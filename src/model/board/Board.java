@@ -230,7 +230,7 @@ public class Board {
         Move transitionMove;
 
         public Builder() {
-            this.boardConfig = new HashMap<>();
+            this.boardConfig = new HashMap<>(16, 1.0f);
         }
 
         public Builder setPiece(final Piece piece) {
