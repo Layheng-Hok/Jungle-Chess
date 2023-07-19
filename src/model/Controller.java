@@ -37,7 +37,7 @@ public class Controller {
                     "AI is still thinking. Please wait.");
             return;
         }
-        if (GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
+        if (BoardUtils.isGameOverScenario(GameFrame.get().getChessBoard())) {
             return;
         }
         String fileName = JOptionPane.showInputDialog("File Name");
@@ -319,7 +319,7 @@ public class Controller {
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if (!GameFrame.isGameOverScenario(loadedBoard) && (playerTypeList.get(0).equals("ai") && nextPlayer.equals("bl")
+        if (!BoardUtils.isGameOverScenario(loadedBoard) && (playerTypeList.get(0).equals("ai") && nextPlayer.equals("bl")
                 || playerTypeList.get(1).equals("ai") && nextPlayer.equals("re"))) {
             JOptionPane.showMessageDialog(MainMenu.get(),
                     "The file is either corrupted or invalid.",
@@ -442,7 +442,7 @@ public class Controller {
                     "File Load Error",
                     JOptionPane.ERROR_MESSAGE);
         } else {
-            if (GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
+            if (BoardUtils.isGameOverScenario(GameFrame.get().getChessBoard())) {
                 firstReplay = true;
                 if (!GameFrame.get().isBlitzMode()
                         && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
@@ -512,7 +512,7 @@ public class Controller {
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws InterruptedException {
-                for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                     GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
                 }
                 GameFrame.get().setLastMove(null);
@@ -788,7 +788,7 @@ public class Controller {
                     "AI is still thinking. Please wait.");
             return;
         }
-        if (GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
+        if (BoardUtils.isGameOverScenario(GameFrame.get().getChessBoard())) {
             return;
         }
         GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
@@ -827,7 +827,7 @@ public class Controller {
                     "AI is still thinking. Please wait.");
             return;
         }
-        if (GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
+        if (BoardUtils.isGameOverScenario(GameFrame.get().getChessBoard())) {
             return;
         }
         if (GameFrame.get().getMoveLog().size() == 0) {
@@ -843,7 +843,7 @@ public class Controller {
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() {
-                for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                     GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
                 }
                 GameFrame.get().setLastMove(null);
@@ -883,10 +883,10 @@ public class Controller {
                     "AI is still thinking. Please wait.");
             return;
         }
-        if (GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
+        if (BoardUtils.isGameOverScenario(GameFrame.get().getChessBoard())) {
             return;
         }
-        for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+        for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
             GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
         }
         if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.AI &&
@@ -965,7 +965,7 @@ public class Controller {
                     "No moves to replay.");
             return;
         }
-        if (GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
+        if (BoardUtils.isGameOverScenario(GameFrame.get().getChessBoard())) {
             return;
         }
         GameFrame.get().setReplayMovesInProgress(true);
@@ -977,7 +977,7 @@ public class Controller {
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
-                for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                     GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
                 }
                 GameFrame.get().setLastMove(null);
@@ -1069,7 +1069,7 @@ public class Controller {
                     "AI is still thinking. Please wait.");
             return;
         }
-        if (GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
+        if (BoardUtils.isGameOverScenario(GameFrame.get().getChessBoard())) {
             return;
         }
         if (!GameFrame.get().isBlitzMode()) {
@@ -1263,7 +1263,7 @@ public class Controller {
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws InterruptedException {
-                for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                     if (GameFrame.get().getChessBoard().getTerrain(i).isTerrainOccupied()
                             && GameFrame.get().getChessBoard().getTerrain(i).getPiece().getPieceColor() == GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor()) {
                         publish();
@@ -1352,7 +1352,7 @@ public class Controller {
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws InterruptedException {
-                for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                     if (GameFrame.get().getChessBoard().getTerrain(i).isTerrainOccupied()
                             && GameFrame.get().getChessBoard().getTerrain(i).getPiece().getPieceColor() == GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor()) {
                         publish();
@@ -1414,7 +1414,7 @@ public class Controller {
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws InterruptedException {
-                for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                     if (GameFrame.get().getChessBoard().getTerrain(i).isTerrainOccupied()
                             && GameFrame.get().getChessBoard().getTerrain(i).getPiece().getPieceColor() == GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor()) {
                         publish();
@@ -1475,7 +1475,7 @@ public class Controller {
                     "Replay is in progress. Please wait.");
             return;
         }
-        if (GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
+        if (BoardUtils.isGameOverScenario(GameFrame.get().getChessBoard())) {
             return;
         }
         GameFrame.get().setGameResigned(true);
@@ -1489,7 +1489,7 @@ public class Controller {
                     message[0] = "Game Over: " + GameFrame.get().getChessBoard().getCurrentPlayer().getEnemyPlayer() + " Player wins!\n"
                             + GameFrame.get().getChessBoard().getCurrentPlayer() + " Player has resigned!";
                     soundPath[0] = "winning.wav";
-                    for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                    for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                         if (GameFrame.get().getChessBoard().getTerrain(i).isTerrainOccupied()
                                 && GameFrame.get().getChessBoard().getTerrain(i).getPiece().getPieceColor() == GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor()) {
                             publish();
@@ -1505,7 +1505,7 @@ public class Controller {
                     message[0] = "Game Over: Red Player wins!\n"
                             + "Blue Player has resigned!";
                     soundPath[0] = "losing.wav";
-                    for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                    for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                         if (GameFrame.get().getChessBoard().getTerrain(i).isTerrainOccupied()
                                 && GameFrame.get().getChessBoard().getTerrain(i).getPiece().getPieceColor() == PlayerColor.BLUE) {
                             publish();
@@ -1521,7 +1521,7 @@ public class Controller {
                     message[0] = "Game Over: Blue Player wins!\n"
                             + "Red Player has resigned!";
                     soundPath[0] = "losing.wav";
-                    for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                    for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                         if (GameFrame.get().getChessBoard().getTerrain(i).isTerrainOccupied()
                                 && GameFrame.get().getChessBoard().getTerrain(i).getPiece().getPieceColor() == PlayerColor.RED) {
                             publish();
@@ -1572,7 +1572,7 @@ public class Controller {
 
     public static void coloringTerrainsAnimationThread() {
         List<Color> colorList = new ArrayList<>();
-        for (int i = 0; i < BoardUtilities.NUM_TERRAINS / 2 + 1; i++) {
+        for (int i = 0; i < BoardUtils.NUM_TERRAINS / 2 + 1; i++) {
             Random random = new Random();
             int red = random.nextInt(256);
             int green = random.nextInt(256);
@@ -1583,7 +1583,7 @@ public class Controller {
         List<Color> reversedColorList = new ArrayList<>(colorList);
         Collections.reverse(reversedColorList);
         Thread thread1 = new Thread(() -> {
-            for (int i = 0; i < BoardUtilities.NUM_TERRAINS / 2 + 1; i++) {
+            for (int i = 0; i < BoardUtils.NUM_TERRAINS / 2 + 1; i++) {
                 GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setOpaque(true);
                 GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setBackground(colorList.get(i));
                 try {
@@ -1594,7 +1594,7 @@ public class Controller {
             }
         });
         Thread thread2 = new Thread(() -> {
-            for (int i = BoardUtilities.NUM_TERRAINS - 1, colorIndex = BoardUtilities.NUM_TERRAINS / 2; i > BoardUtilities.NUM_TERRAINS / 2; i--, colorIndex--) {
+            for (int i = BoardUtils.NUM_TERRAINS - 1, colorIndex = BoardUtils.NUM_TERRAINS / 2; i > BoardUtils.NUM_TERRAINS / 2; i--, colorIndex--) {
                 GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setOpaque(true);
                 GameFrame.get().getBoardPanel().getBoardTerrains().get(i).setBackground(reversedColorList.get(colorIndex));
                 try {

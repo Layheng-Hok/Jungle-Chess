@@ -1,11 +1,10 @@
 package model.artificialintelligence;
 
 import model.board.Board;
-import model.board.BoardUtilities;
+import model.board.BoardUtils;
 import model.board.Move;
 import model.board.MoveTransition;
 import model.player.Player;
-import view.GameFrame;
 
 import java.util.Observable;
 
@@ -99,7 +98,7 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
     }
 
     public int max(final Board board, final int depth, final int highest, final int lowest) {
-        if (depth == 0 || GameFrame.isGameOverScenario(board)) {
+        if (depth == 0 || BoardUtils.isGameOverScenario(board)) {
             this.numEvaluatedBoards++;
             return this.evaluator.evaluate(board, depth);
         }
@@ -121,7 +120,7 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
     }
 
     public int min(final Board board, final int depth, final int highest, final int lowest) {
-        if (depth == 0 || GameFrame.isGameOverScenario(board)) {
+        if (depth == 0 || BoardUtils.isGameOverScenario(board)) {
             this.numEvaluatedBoards++;
             return this.evaluator.evaluate(board, depth);
         }
@@ -154,7 +153,7 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
     private int calculateQuiescenceDepth(final Board toBoard, final int depth) {
         if (depth == 1 && this.quiescenceCount < MAX_QUIESCENCE) {
             int activityMeasure = 0;
-            for (final Move move : BoardUtilities.lastNMoves(toBoard, 2)) {
+            for (final Move move : BoardUtils.lastNMoves(toBoard, 2)) {
                 if (move.isCaptureMove()) {
                     activityMeasure += 1;
                 }

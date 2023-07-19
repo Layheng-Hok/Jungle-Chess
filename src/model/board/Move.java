@@ -68,7 +68,7 @@ public abstract class Move {
         for (final Move move : this.board.getCurrentPlayer().getValidMoves()) {
             if (move.getDestinationCoordinate() == this.destinationCoordinate && !this.equals(move) &&
                     this.movedPiece.getPieceType().equals(move.getMovedPiece().getPieceType())) {
-                return BoardUtilities.getPositionAtCoordinate(this.movedPiece.getPieceCoordinate()).substring(0, 1);
+                return BoardUtils.getPositionAtCoordinate(this.movedPiece.getPieceCoordinate()).substring(0, 1);
             }
         }
         return "";

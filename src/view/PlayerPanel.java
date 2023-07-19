@@ -2,7 +2,7 @@ package view;
 
 import model.Controller;
 import model.board.Board;
-import model.board.BoardUtilities;
+import model.board.BoardUtils;
 import model.board.Move;
 import model.player.PlayerType;
 
@@ -50,7 +50,7 @@ public class PlayerPanel extends JPanel {
         resignButton.setRolloverIcon(new ImageIcon(resizedHoverResignImage));
 
         resignButton.addActionListener(e -> {
-            if (!GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
+            if (!BoardUtils.isGameOverScenario(GameFrame.get().getChessBoard())) {
                 AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
                 if (!GameFrame.get().isBlitzMode()) {
                     GameFrame.get().setNormalModeGameOver(true);
@@ -269,7 +269,7 @@ public class PlayerPanel extends JPanel {
                     GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
                     GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
                     GameFrame.get().setBlitzModeGameOver(true);
-                    for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                    for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                         GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
                     }
                     GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
@@ -290,7 +290,7 @@ public class PlayerPanel extends JPanel {
                     GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
                     GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
                     GameFrame.get().setBlitzModeGameOver(true);
-                    for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+                    for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                         GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
                     }
                     GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());

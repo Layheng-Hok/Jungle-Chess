@@ -1,10 +1,9 @@
 package model.artificialintelligence;
 
 import model.board.Board;
-import model.board.BoardUtilities;
+import model.board.BoardUtils;
 import model.board.Move;
 import model.board.MoveTransition;
-import view.GameFrame;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -87,7 +86,7 @@ public class Minimax implements MoveStrategy {
             this.freqTable[this.freqTableIndex].increment();
             return this.evaluator.evaluate(board, depth);
         }
-        if (GameFrame.isGameOverScenario(board)) {
+        if (BoardUtils.isGameOverScenario(board)) {
             return this.evaluator.evaluate(board, depth);
         }
         int lowestSeenValue = Integer.MAX_VALUE;
@@ -109,7 +108,7 @@ public class Minimax implements MoveStrategy {
             this.freqTable[this.freqTableIndex].increment();
             return this.evaluator.evaluate(board, depth);
         }
-        if (GameFrame.isGameOverScenario(board)) {
+        if (BoardUtils.isGameOverScenario(board)) {
             return this.evaluator.evaluate(board, depth);
         }
         int highestSeenValue = Integer.MIN_VALUE;
@@ -144,8 +143,8 @@ public class Minimax implements MoveStrategy {
 
         @Override
         public String toString() {
-            return BoardUtilities.getPositionAtCoordinate(this.move.getCurrentCoordinate()) +
-                    BoardUtilities.getPositionAtCoordinate(this.move.getDestinationCoordinate()) + " with frequency of " + this.count;
+            return BoardUtils.getPositionAtCoordinate(this.move.getCurrentCoordinate()) +
+                    BoardUtils.getPositionAtCoordinate(this.move.getDestinationCoordinate()) + " with frequency of " + this.count;
         }
     }
 }

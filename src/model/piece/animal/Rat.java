@@ -1,7 +1,7 @@
 package model.piece.animal;
 
 import model.board.Board;
-import model.board.BoardUtilities;
+import model.board.BoardUtils;
 import model.board.Move;
 import model.board.Terrain;
 import model.piece.Piece;
@@ -41,7 +41,7 @@ public class Rat extends Piece {
         final List<Move> validMoves = new ArrayList<>();
         for (final int currentPotentialOffset : POTENTIAL_MOVE_COORDINATES) {
             int potentialDestinationCoordinate = this.pieceCoordinate + currentPotentialOffset;
-            if (BoardUtilities.isInBoundary(potentialDestinationCoordinate) && !BoardUtilities.isDen(potentialDestinationCoordinate, this.pieceColor)) {
+            if (BoardUtils.isInBoundary(potentialDestinationCoordinate) && !BoardUtils.isDen(potentialDestinationCoordinate, this.pieceColor)) {
                 if (isColumnZeroExclusion(this.pieceCoordinate, currentPotentialOffset) || isColumnSixExclusion(this.pieceCoordinate, currentPotentialOffset)) {
                     continue;
                 }
@@ -54,8 +54,8 @@ public class Rat extends Piece {
                     if (this.pieceColor != pieceAtDestinationColor && (pieceAtDestination.getPieceDefenseRank() == Animal.ELEPHANT.ordinal() ||
                             pieceAtDestination.getPieceDefenseRank() == Animal.RAT.ordinal()) ||
                             pieceAtDestination.getPieceDefenseRank() == Animal.TRAPPED_ANIMAL.ordinal()) {
-                        if (BoardUtilities.isLand(this.pieceCoordinate) && !BoardUtilities.isRiver(potentialDestinationCoordinate) ||
-                                BoardUtilities.isRiver(this.pieceCoordinate) && BoardUtilities.isRiver(potentialDestinationCoordinate)) {
+                        if (BoardUtils.isLand(this.pieceCoordinate) && !BoardUtils.isRiver(potentialDestinationCoordinate) ||
+                                BoardUtils.isRiver(this.pieceCoordinate) && BoardUtils.isRiver(potentialDestinationCoordinate)) {
                             validMoves.add(new CaptureMove(board, this, potentialDestinationCoordinate, pieceAtDestination));
                         }
                     }
@@ -67,10 +67,10 @@ public class Rat extends Piece {
     }
 
     private static boolean isColumnZeroExclusion(final int currentCoordinate, final int potentialOffset) {
-        return (BoardUtilities.COLUMN_ZERO[currentCoordinate] && (potentialOffset == -1));
+        return (BoardUtils.COLUMN_ZERO[currentCoordinate] && (potentialOffset == -1));
     }
 
     private static boolean isColumnSixExclusion(final int currentCoordinate, final int potentialOffset) {
-        return (BoardUtilities.COLUMN_SIX[currentCoordinate] && (potentialOffset == 1));
+        return (BoardUtils.COLUMN_SIX[currentCoordinate] && (potentialOffset == 1));
     }
 }

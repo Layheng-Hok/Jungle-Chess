@@ -1,10 +1,11 @@
 package model.board;
 
 import model.player.PlayerColor;
+import view.GameFrame;
 
 import java.util.*;
 
-public class BoardUtilities {
+public class BoardUtils {
     public static final int START_TERRAIN_INDEX = 0;
     public static final int NUM_TERRAINS = 63;
     public static final int NUM_TERRAINS_PER_ROW = 7;
@@ -14,7 +15,7 @@ public class BoardUtilities {
     public static final Map<String, Integer> POSITION_TO_COORDINATE = initializePositionToCoordinateMap();
 
 
-    private BoardUtilities() {
+    private BoardUtils() {
         throw new RuntimeException("You cannot instantiate an object of \"BoardTools\" class.");
     }
 
@@ -102,6 +103,15 @@ public class BoardUtilities {
             i++;
         }
         return Collections.unmodifiableList(moveHistory);
+    }
+
+    public static boolean isGameOverScenario(final Board board) {
+        return board.getCurrentPlayer().isDenPenetrated()
+                || board.getCurrentPlayer().getActivePieces().isEmpty()
+                || board.getCurrentPlayer().getValidMoves().isEmpty()
+                || GameFrame.get().getPlayerPanel().getBlueCurrentTimerSecondsBlitzMode() == 0
+                || GameFrame.get().getPlayerPanel().getRedCurrentTimerSecondsBlitzMode() == 0
+                || GameFrame.get().isGameResigned();
     }
 
     public int getCoordinateAtPosition(final String position) {

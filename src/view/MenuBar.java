@@ -1,14 +1,11 @@
 package view;
 
 import model.Controller;
-import model.board.BoardUtilities;
+import model.board.BoardUtils;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MenuBar {
     public static JCheckBoxMenuItem blitzModeCheckBoxMenuItem;
@@ -108,7 +105,7 @@ public class MenuBar {
                         "AI is still thinking. Please wait.");
                 return;
             }
-            if (GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
+            if (BoardUtils.isGameOverScenario(GameFrame.get().getChessBoard())) {
                 return;
             }
             if (blitzModeCheckBoxMenuItem.isSelected()) {
@@ -145,10 +142,10 @@ public class MenuBar {
                         "AI is still thinking. Please wait.");
                 return;
             }
-            if (GameFrame.isGameOverScenario(GameFrame.get().getChessBoard())) {
+            if (BoardUtils.isGameOverScenario(GameFrame.get().getChessBoard())) {
                 return;
             }
-            for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+            for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                 GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
             }
             GameFrame.get().setGlitchMode(glitchEffectCheckBoxMenuItem.isSelected());

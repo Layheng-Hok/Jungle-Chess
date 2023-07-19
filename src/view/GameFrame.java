@@ -102,7 +102,7 @@ public class GameFrame extends Observable {
             super(new GridLayout(9, 7));
             this.boardTerrains = new ArrayList<>();
             setBoardImage("chessboard1.png");
-            for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+            for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                 final TerrainPanel terrainPanel = new TerrainPanel(this, i);
                 this.boardTerrains.add(terrainPanel);
                 add(terrainPanel);
@@ -210,7 +210,7 @@ public class GameFrame extends Observable {
                         sourceTerrain = null;
                         humanMovedPiece = null;
                     } else if (isLeftMouseButton(e)) {
-                        if (isGameOverScenario(GameFrame.get().getChessBoard())) {
+                        if (BoardUtils.isGameOverScenario(GameFrame.get().getChessBoard())) {
                             deselectLeftMouseButton();
                             return;
                         }
@@ -345,17 +345,17 @@ public class GameFrame extends Observable {
         }
 
         private void assignTerrainColor(final int coordinate) {
-            if (BoardUtilities.isLand(coordinate)) {
+            if (BoardUtils.isLand(coordinate)) {
                 setBackground(new Color(40, 180, 99));
-            } else if (BoardUtilities.isRiver(coordinate)) {
+            } else if (BoardUtils.isRiver(coordinate)) {
                 setBackground(new Color(99, 184, 255));
-            } else if (BoardUtilities.isEnemyTrap(coordinate, PlayerColor.BLUE)) {
+            } else if (BoardUtils.isEnemyTrap(coordinate, PlayerColor.BLUE)) {
                 setBackground(new Color(230, 126, 34));
-            } else if (BoardUtilities.isEnemyTrap(coordinate, PlayerColor.RED)) {
+            } else if (BoardUtils.isEnemyTrap(coordinate, PlayerColor.RED)) {
                 setBackground(new Color(230, 126, 34));
-            } else if (BoardUtilities.isDen(coordinate, PlayerColor.BLUE)) {
+            } else if (BoardUtils.isDen(coordinate, PlayerColor.BLUE)) {
                 setBackground(new Color(52, 152, 219));
-            } else if (BoardUtilities.isDen(coordinate, PlayerColor.RED)) {
+            } else if (BoardUtils.isDen(coordinate, PlayerColor.RED)) {
                 setBackground(new Color(236, 112, 99));
             }
             setOpaque(false);
@@ -536,7 +536,7 @@ public class GameFrame extends Observable {
         @Override
         public void update(final Observable o, final Object arg) {
             if (GameFrame.get().gameConfiguration.isAIPlayer(GameFrame.get().getChessBoard().getCurrentPlayer()) &&
-                    !isGameOverScenario(GameFrame.get().getChessBoard())) {
+                    !BoardUtils.isGameOverScenario(GameFrame.get().getChessBoard())) {
                 final IntelligenceHub intelligenceHub = new IntelligenceHub();
                 intelligenceHub.execute();
             }
@@ -599,7 +599,7 @@ public class GameFrame extends Observable {
 
     public void restartGame() {
         chessBoard = Board.constructStandardBoard();
-        for (int i = 0; i < BoardUtilities.NUM_TERRAINS; i++) {
+        for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
             GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
         }
         GameFrame.get().setNormalModeGameOver(false);
@@ -677,15 +677,6 @@ public class GameFrame extends Observable {
             }
             Controller.handleWinningStateForHavingNoMoreValidMovesConditions();
         }
-    }
-
-    public static boolean isGameOverScenario(final Board board) {
-        return board.getCurrentPlayer().isDenPenetrated()
-                || board.getCurrentPlayer().getActivePieces().isEmpty()
-                || board.getCurrentPlayer().getValidMoves().isEmpty()
-                || GameFrame.get().getPlayerPanel().getBlueCurrentTimerSecondsBlitzMode() == 0
-                || GameFrame.get().getPlayerPanel().getRedCurrentTimerSecondsBlitzMode() == 0
-                || GameFrame.get().isGameResigned();
     }
 
     public void setLoadBoard(Board loadBoard, MoveLog loadMoveLog, int roundNumber) {
