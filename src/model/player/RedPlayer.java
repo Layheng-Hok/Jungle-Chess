@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public class RedPlayer extends Player {
     public RedPlayer(final Board board, final Collection<Move> blueStandardValidMoves, final Collection<Move> redStandardValidMoves) {
-        super(board, redStandardValidMoves, blueStandardValidMoves);
+        super(board, redStandardValidMoves);
     }
 
     @Override

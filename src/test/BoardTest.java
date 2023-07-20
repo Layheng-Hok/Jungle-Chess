@@ -257,28 +257,32 @@ class BoardTest {
     @DisplayName("Test Undo Moves")
     @Tag("unfinished")
     void testUndoMoves() {
-//        final Board initialBoard = Board.constructStandardBoard();
-//        final Move move1 = Move.MoveFactory.createMove(initialBoard, 48,41);
-//        final MoveTransition t1 = initialBoard.getCurrentPlayer().makeMove(move1);
-//        assertTrue(t1.getMoveStatus().isDone());
-//        final Move move2 = Move.MoveFactory.createMove(t1.getToBoard(), 20, 27);
-//        final MoveTransition t2 = t1.getToBoard().getCurrentPlayer().makeMove(move2);
-//        assertTrue(t2.getMoveStatus().isDone());
-//        final Move move3 = Move.MoveFactory.createMove(t2.getToBoard(), 41, 34);
-//        final MoveTransition t3 = t2.getToBoard().getCurrentPlayer().makeMove(move3);
-//        assertTrue(t3.getMoveStatus().isDone());
-//        final Move move4 = Move.MoveFactory.createMove(t3.getToBoard(), 16, 17);
-//        final MoveTransition t4 = t3.getToBoard().getCurrentPlayer().makeMove(move4);
-//        assertTrue(t4.getMoveStatus().isDone());
-//        final Move move5 = Move.MoveFactory.createMove(t4.getToBoard(), 34, 27);
-//        final MoveTransition t5 = t4.getToBoard().getCurrentPlayer().makeMove(move5);
-//        assertTrue(t5.getMoveStatus().isDone());
-//        final Move move4Undo = move5.undo().getTransitionMove();
-//        final Move move3Undo = move4Undo.undo().getTransitionMove();
-//        final Move move2Undo = move3Undo.undo().getTransitionMove();
-//        final Move move1Undo = move2Undo.undo().getTransitionMove();
-//        final Board boardAfterUndo = move1Undo.undo().getTransitionMove().getBoard();
-//        assertEquals(initialBoard, boardAfterUndo);
+        final Board initialBoard = Board.constructStandardBoard();
+        final Move move1 = Move.MoveFactory.createMove(initialBoard, 48, 41);
+        final MoveTransition t1 = initialBoard.getCurrentPlayer().makeMove(move1);
+        assertTrue(t1.getMoveStatus().isDone());
+        final Move move2 = Move.MoveFactory.createMove(t1.getToBoard(), 20, 27);
+        final MoveTransition t2 = t1.getToBoard().getCurrentPlayer().makeMove(move2);
+        assertTrue(t2.getMoveStatus().isDone());
+        final Move move3 = Move.MoveFactory.createMove(t2.getToBoard(), 41, 34);
+        final MoveTransition t3 = t2.getToBoard().getCurrentPlayer().makeMove(move3);
+        assertTrue(t3.getMoveStatus().isDone());
+        final Move move4 = Move.MoveFactory.createMove(t3.getToBoard(), 16, 17);
+        final MoveTransition t4 = t3.getToBoard().getCurrentPlayer().makeMove(move4);
+        assertTrue(t4.getMoveStatus().isDone());
+        final Move move5 = Move.MoveFactory.createMove(t4.getToBoard(), 34, 27);
+        final MoveTransition t5 = t4.getToBoard().getCurrentPlayer().makeMove(move5);
+        assertTrue(t5.getMoveStatus().isDone());
+        final Board boardAfterFirstUndo = t5.getToBoard().getCurrentPlayer().unmakeMove(move5).getToBoard();
+        assertEquals(t4.getToBoard(), boardAfterFirstUndo);
+        final Board boardAfterSecondUndo = boardAfterFirstUndo.getCurrentPlayer().unmakeMove(move4).getToBoard();
+        assertEquals(t3.getToBoard(), boardAfterSecondUndo);
+        final Board boardAfterThirdUndo = boardAfterSecondUndo.getCurrentPlayer().unmakeMove(move3).getToBoard();
+        assertEquals(t2.getToBoard(), boardAfterThirdUndo);
+        final Board boardAfterFourthUndo = boardAfterThirdUndo.getCurrentPlayer().unmakeMove(move2).getToBoard();
+        assertEquals(t1.getToBoard(), boardAfterFourthUndo);
+        final Board boardAfterUndoAllMoves = boardAfterFourthUndo.getCurrentPlayer().unmakeMove(move1).getToBoard();
+        assertEquals(initialBoard, boardAfterUndoAllMoves);
     }
 
     @Test

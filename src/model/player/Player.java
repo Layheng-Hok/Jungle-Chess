@@ -9,7 +9,7 @@ public abstract class Player {
     protected final Board board;
     protected final Collection<Move> validMoves;
 
-    Player(Board board, Collection<Move> validMoves, Collection<Move> opponentMoves) {
+    Player(Board board, Collection<Move> validMoves) {
         this.board = board;
         this.validMoves = validMoves;
     }
@@ -32,6 +32,10 @@ public abstract class Player {
         }
         final Board transitionBoard = move.execute();
         return new MoveTransition(this.board, transitionBoard, move, MoveStatus.DONE);
+    }
+
+    public MoveTransition unmakeMove (final Move move) {
+        return new MoveTransition(this.board, move.undo(), move, MoveStatus.DONE);
     }
 
     public Collection<Move> getValidMoves() {

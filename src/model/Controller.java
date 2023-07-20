@@ -889,14 +889,35 @@ public class Controller {
         for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
             GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
         }
-        if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.AI &&
-                GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
+        if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
             if (GameFrame.get().getMoveLog().size() > 1) {
-                Move lastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
-                GameFrame.get().setChessBoard(lastMove.undo());
-                if (lastMove.equals(GameFrame.get().getComputerMove()) && GameFrame.get().getMoveLog().size() > 0) {
-                    Move secondLastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
-                    GameFrame.get().setChessBoard(secondLastMove.undo());
+                final Move lastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
+                GameFrame.get().setLastMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
+                GameFrame.get().setChessBoard(GameFrame.get().getChessBoard().getCurrentPlayer().unmakeMove(lastMove).getToBoard());
+                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+                GameFrame.get().getPlayerPanel().undo();
+                GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
+            } else if (GameFrame.get().getMoveLog().size() == 1) {
+                GameFrame.get().setLastMove(null);
+                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+                GameFrame.get().restartGame();
+            }
+            System.out.println("Undo");
+        } else {
+            if (GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.AI
+                    && GameFrame.get().getMoveLog().size() == 2) {
+                GameFrame.get().setLastMove(null);
+                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+                GameFrame.get().restartGame();
+                System.out.println("Undo");
+                return;
+            }
+            if (GameFrame.get().getMoveLog().size() > 1) {
+                final Move lastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
+                GameFrame.get().setChessBoard(GameFrame.get().getChessBoard().getCurrentPlayer().unmakeMove(lastMove).getToBoard());
+                if (lastMove.equals(GameFrame.get().getComputerMove())) {
+                    final Move secondLastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
+                    GameFrame.get().setChessBoard(GameFrame.get().getChessBoard().getCurrentPlayer().unmakeMove(secondLastMove).getToBoard());
                     GameFrame.get().setLastMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
                     GameFrame.get().setComputerMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
                 }
@@ -908,44 +929,7 @@ public class Controller {
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 GameFrame.get().restartGame();
             }
-            System.out.println(GameFrame.get().getMoveLog().size());
             System.out.println("Undo");
-        } else if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.AI) {
-            if (GameFrame.get().getMoveLog().size() > 0) {
-                Move lastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
-                GameFrame.get().setChessBoard(lastMove.undo());
-                if (lastMove.equals(GameFrame.get().getComputerMove())) {
-                    Move secondLastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
-                    GameFrame.get().setChessBoard(secondLastMove.undo());
-                    if (GameFrame.get().getMoveLog().size() > 0) {
-                        GameFrame.get().setLastMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
-                        GameFrame.get().setComputerMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
-                    } else {
-                        GameFrame.get().setLastMove(null);
-                        GameFrame.get().setComputerMove(null);
-                    }
-                }
-                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-                if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.AI) {
-                    GameFrame.get().getPlayerPanel().undo();
-                }
-                GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
-                System.out.println("Undo");
-            }
-        } else if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
-            if (GameFrame.get().getMoveLog().size() > 1) {
-                Move lastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
-                GameFrame.get().setLastMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
-                GameFrame.get().setChessBoard(lastMove.undo());
-                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-                GameFrame.get().getPlayerPanel().undo();
-                GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
-                System.out.println("Undo");
-            } else if (GameFrame.get().getMoveLog().size() == 1) {
-                GameFrame.get().setLastMove(null);
-                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-                GameFrame.get().restartGame();
-            }
         }
     }
 
