@@ -255,7 +255,7 @@ class BoardTest {
 
     @Test
     @DisplayName("Test Undo Moves")
-    @Tag("unfinished")
+    @Tag("finished")
     void testUndoMoves() {
         final Board initialBoard = Board.constructStandardBoard();
         final Move move1 = Move.MoveFactory.createMove(initialBoard, 48, 41);
