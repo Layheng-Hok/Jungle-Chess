@@ -58,20 +58,14 @@ public abstract class Piece {
 
     public abstract Piece movePiece(final Move move);
 
-    public int getPieceCoordinate() {
-        return this.pieceCoordinate;
-    }
-
-    public boolean isFirstMove() {
-        return this.isFirstMove;
-    }
+    public abstract int positionDevelopmentScore();
 
     public Animal getPieceType() {
         return this.pieceType;
     }
 
-    public int getPiecePower() {
-        return this.pieceType.getPiecePower();
+    public int getPieceCoordinate() {
+        return this.pieceCoordinate;
     }
 
     public PlayerColor getPieceColor() {
@@ -90,7 +84,11 @@ public abstract class Piece {
         this.pieceDefenseRank = pieceDefenseRank;
     }
 
-    public Piece undoMove(Move move) {
-        return move.getMovedPiece();
+    public int getPiecePower() {
+        return this.pieceType.getPiecePower();
+    }
+
+    public boolean isFirstMove() {
+        return this.isFirstMove;
     }
 }

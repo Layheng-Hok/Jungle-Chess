@@ -22,4 +22,9 @@ public class Wolf extends CommonPiece {
     public Wolf movePiece(Move move) {
         return new Wolf(move.getDestinationCoordinate(), move.getMovedPiece().getPieceColor());
     }
+
+    @Override
+    public int positionDevelopmentScore() {
+        return this.pieceColor.wolfDevelopmentScore(this.pieceCoordinate);
+    }
 }

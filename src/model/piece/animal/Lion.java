@@ -22,4 +22,9 @@ public class Lion extends SpecialPiece {
     public Lion movePiece(Move move) {
         return new Lion(move.getDestinationCoordinate(), move.getMovedPiece().getPieceColor());
     }
+
+    @Override
+    public int positionDevelopmentScore() {
+        return this.pieceColor.lionDevelopmentScore(this.pieceCoordinate);
+    }
 }

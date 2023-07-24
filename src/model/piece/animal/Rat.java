@@ -37,6 +37,11 @@ public class Rat extends Piece {
     }
 
     @Override
+    public int positionDevelopmentScore() {
+        return this.pieceColor.ratDevelopmentScore(this.pieceCoordinate);
+    }
+
+    @Override
     public Collection<Move> determineValidMoves(final Board board) {
         final List<Move> validMoves = new ArrayList<>();
         for (final int currentPotentialOffset : POTENTIAL_MOVE_COORDINATES) {

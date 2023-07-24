@@ -2,14 +2,14 @@ package model.piece.animal;
 
 public enum Animal {
     TRAPPED_ANIMAL (0, "Trapped Animal"),
-    RAT (600, "Rat"),
-    CAT (100, "Cat"),
-    DOG (200,  "Dog"),
-    WOLF (300, "Wolf"),
+    RAT (500, "Rat"),
+    CAT (200, "Cat"),
+    DOG (300,  "Dog"),
+    WOLF (400, "Wolf"),
     LEOPARD (500, "Leopard"),
-    TIGER (700, "Tiger"),
-    LION(800, "Lion"),
-    ELEPHANT(800, "Elephant");
+    TIGER (800, "Tiger"),
+    LION(900, "Lion"),
+    ELEPHANT(1000, "Elephant");
 
     private final int piecePower;
     private final String pieceName;

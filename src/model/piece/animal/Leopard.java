@@ -23,4 +23,9 @@ public class Leopard extends CommonPiece {
     public Leopard movePiece(Move move) {
         return new Leopard(move.getDestinationCoordinate(), move.getMovedPiece().getPieceColor());
     }
+
+    @Override
+    public int positionDevelopmentScore() {
+        return this.pieceColor.leopardDevelopmentScore(this.pieceCoordinate);
+    }
 }

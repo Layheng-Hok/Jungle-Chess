@@ -34,6 +34,11 @@ public class Elephant extends Piece {
     }
 
     @Override
+    public int positionDevelopmentScore() {
+        return this.pieceColor.elephantDevelopmentScore(this.pieceCoordinate);
+    }
+
+    @Override
     public Collection<Move> determineValidMoves(final Board board) {
         final List<Move> validMoves = new ArrayList<>();
         for (final int currentPotentialOffset : POTENTIAL_MOVE_COORDINATES) {

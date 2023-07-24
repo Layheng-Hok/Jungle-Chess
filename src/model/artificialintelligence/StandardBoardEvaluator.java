@@ -9,7 +9,7 @@ import model.player.Player;
 public final class StandardBoardEvaluator implements BoardEvaluator {
     private final static int DEPTH_MULTIPLIER = 100;
     private final static int MOBILITY_MULTIPLIER = 5;
-    private final static int CAPTURE_MOVES_MULTIPLIER = 10;
+    private final static int CAPTURE_MOVES_MULTIPLIER = 1;
     private final static int INTO_ENEMY_TRAP_WITH_ENEMY_NEARBY_PENALTY = -10000;
     private final static int INTO_ENEMY_TRAP_WITHOUT_ENEMY_NEARBY_BONUS = 50000;
     private final static int ENEMY_DEN_PENETRATED_MULTIPLIER = 50000;
@@ -62,10 +62,10 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
                 "Net Score: " + evaluate(board, depth) + "\n");
     }
 
-    static int pieceValue(final Player player) {
+    private static int pieceValue(final Player player) {
         int pieceValueScore = 0;
         for (final Piece piece : player.getActivePieces()) {
-            pieceValueScore += piece.getPiecePower();
+            pieceValueScore += (piece.getPiecePower() + piece.positionDevelopmentScore());
         }
         return pieceValueScore;
     }
@@ -78,7 +78,7 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
         return (int) ((player.getValidMoves().size() * 10.0f) / player.getEnemyPlayer().getValidMoves().size());
     }
 
-    static int captureMoves(final Player player) {
+    private static int captureMoves(final Player player) {
         int captureScore = 0;
         for (final Move move : player.getValidMoves()) {
             if (move.isCaptureMove()) {

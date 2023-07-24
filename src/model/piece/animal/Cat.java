@@ -22,4 +22,9 @@ public class Cat extends CommonPiece {
     public Cat movePiece(Move move) {
         return new Cat(move.getDestinationCoordinate(), move.getMovedPiece().getPieceColor());
     }
+
+    @Override
+    public int positionDevelopmentScore() {
+        return this.pieceColor.catDevelopmentScore(this.pieceCoordinate);
+    }
 }
