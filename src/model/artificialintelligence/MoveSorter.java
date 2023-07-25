@@ -36,7 +36,6 @@ enum MoveSorter {
         @Override
         Collection<Move> sort(final Collection<Move> moves) {
             return Ordering.from((Comparator<Move>) (move1, move2) -> ComparisonChain.start()
-                    .compareTrueFirst(getIntoEnemyDen(move1), getIntoEnemyDen(move2))
                     .compareTrueFirst(move1.isCaptureMove(), move2.isCaptureMove())
                     .compare(move2.getMovedPiece().getPiecePower(), move1.getMovedPiece().getPiecePower())
                     .result()).immutableSortedCopy(moves);
