@@ -5,8 +5,6 @@ import com.google.common.collect.Ordering;
 import model.board.Board;
 import model.board.Move;
 import model.board.MoveTransition;
-import model.piece.Piece;
-import model.piece.animal.Animal;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -16,7 +14,8 @@ enum MoveSorter {
         @Override
         Collection<Move> sort(final Collection<Move> moves) {
             return Ordering.from((Comparator<Move>) (move1, move2) -> ComparisonChain.start()
-                    .compare(mvvlva(move2), mvvlva(move1))
+                    .compareTrueFirst(move1.isCaptureMove(), move2.isCaptureMove())
+                    .compare(move2.getMovedPiece().getPiecePower(), move1.getMovedPiece().getPiecePower())
                     .result()).immutableSortedCopy(moves);
         }
     },
@@ -27,15 +26,6 @@ enum MoveSorter {
             return Ordering.from((Comparator<Move>) (move1, move2) -> ComparisonChain.start()
                     .compareTrueFirst(getIntoEnemyDen(move1), getIntoEnemyDen(move2))
                     .compareTrueFirst(getIntoEnemyTrapWithoutEnemyNearby(move1), getIntoEnemyTrapWithoutEnemyNearby(move2))
-                    .compare(mvvlva(move2), mvvlva(move1))
-                    .result()).immutableSortedCopy(moves);
-        }
-    },
-
-    SIMPLE {
-        @Override
-        Collection<Move> sort(final Collection<Move> moves) {
-            return Ordering.from((Comparator<Move>) (move1, move2) -> ComparisonChain.start()
                     .compareTrueFirst(move1.isCaptureMove(), move2.isCaptureMove())
                     .compare(move2.getMovedPiece().getPiecePower(), move1.getMovedPiece().getPiecePower())
                     .result()).immutableSortedCopy(moves);
@@ -149,14 +139,5 @@ enum MoveSorter {
             }
         }
         return false;
-    }
-
-    private static int mvvlva(final Move move) {
-        final Piece movedPiece = move.getMovedPiece();
-        if (move.isCaptureMove()) {
-            final Piece capturedPiece = move.getCapturedPiece();
-            return (capturedPiece.getPiecePower() - movedPiece.getPiecePower()) + Animal.LION.getPiecePower() * 100;
-        }
-        return Animal.LION.getPiecePower() - movedPiece.getPiecePower();
     }
 }
