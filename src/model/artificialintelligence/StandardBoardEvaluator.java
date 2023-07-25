@@ -10,11 +10,11 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     private final static int DEPTH_MULTIPLIER = 100;
     private final static int MOBILITY_MULTIPLIER = 5;
     private final static int CAPTURE_MOVES_MULTIPLIER = 1;
-    private final static int INTO_ENEMY_TRAP_WITH_ENEMY_NEARBY_PENALTY = -10000;
-    private final static int INTO_ENEMY_TRAP_WITHOUT_ENEMY_NEARBY_BONUS = 50000;
-    private final static int ENEMY_DEN_PENETRATED_MULTIPLIER = 50000;
-    private static final int ENEMY_RUNNING_OUT_OF_VALID_MOVES_MULTIPLIER = 50000;
-    private static final int ENEMY_RUNNING_OUT_OF_PIECES_MULTIPLIER = 50000;
+    private final static int INTO_ENEMY_TRAP_WITH_ENEMY_NEARBY_PENALTY = -10_000;
+    private final static int INTO_ENEMY_TRAP_WITHOUT_ENEMY_NEARBY_BONUS = 50_000;
+    private final static int ENEMY_DEN_PENETRATED_MULTIPLIER = 500_000;
+    private static final int ENEMY_RUNNING_OUT_OF_VALID_MOVES_MULTIPLIER = 500_000;
+    private static final int ENEMY_RUNNING_OUT_OF_PIECES_MULTIPLIER = 500_000;
     private static final StandardBoardEvaluator INSTANCE = new StandardBoardEvaluator();
 
     public static StandardBoardEvaluator get() {
