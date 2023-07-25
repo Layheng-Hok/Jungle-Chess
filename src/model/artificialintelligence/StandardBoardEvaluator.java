@@ -11,7 +11,7 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
     private final static int MOBILITY_MULTIPLIER = 5;
     private final static int CAPTURE_MOVES_MULTIPLIER = 1;
     private final static int INTO_ENEMY_TRAP_WITH_ENEMY_NEARBY_PENALTY = -10_000;
-    private final static int INTO_ENEMY_TRAP_WITHOUT_ENEMY_NEARBY_BONUS = 50_000;
+    private final static int INTO_ENEMY_TRAP_WITHOUT_ENEMY_NEARBY_BONUS = 500_000;
     private final static int ENEMY_DEN_PENETRATED_MULTIPLIER = 500_000;
     private static final int ENEMY_RUNNING_OUT_OF_VALID_MOVES_MULTIPLIER = 500_000;
     private static final int ENEMY_RUNNING_OUT_OF_PIECES_MULTIPLIER = 500_000;
@@ -226,7 +226,7 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
         return getIntoEnemyTrapScore * depthBonus(depth);
     }
 
-    static int isEnemyDenPenetrated(Player player, int depth) {
+    private static int isEnemyDenPenetrated(Player player, int depth) {
         return player.getEnemyPlayer().isDenPenetrated() ? ENEMY_DEN_PENETRATED_MULTIPLIER * depthBonus(depth) : 0;
     }
 
