@@ -24,7 +24,7 @@ class GameOverScenarioTest {
 
     @Test
     @DisplayName("Test Den Penetrated")
-    @Tag("finished")
+    @Tag("fast")
     void testDenPenetrated() {
         final Board.Builder builder1 = new Board.Builder();
         builder1.setPiece(new Rat(4, PlayerColor.BLUE));
@@ -57,7 +57,7 @@ class GameOverScenarioTest {
 
     @Test
     @DisplayName("Test Empty Active Pieces")
-    @Tag("finished")
+    @Tag("fast")
     void testEmptyActivePieces() {
         final Board.Builder builder1 = new Board.Builder();
         builder1.setPiece(new Cat(38, PlayerColor.BLUE));
@@ -90,7 +90,7 @@ class GameOverScenarioTest {
 
     @Test
     @DisplayName("Test Empty Valid Moves")
-    @Tag("finished")
+    @Tag("fast")
     void testEmptyValidMoves() {
         final Board.Builder builder1 = new Board.Builder();
         builder1.setPiece(new Dog(49, PlayerColor.BLUE));

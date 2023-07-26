@@ -27,7 +27,7 @@ class BoardTest {
 
     @Test
     @DisplayName("Test Board Initialization")
-    @Tag("finished")
+    @Tag("fast")
     void testBoardInitialization() {
         final Board board = Board.constructStandardBoard();
         assertAll("Check initial state of players",
@@ -57,7 +57,7 @@ class BoardTest {
 
     @Test
     @DisplayName("Test Board Move")
-    @Tag("finished")
+    @Tag("fast")
     void testBoardMove() {
         final Board board = Board.constructStandardBoard();
         final Move move = Move.MoveFactory.createMove(board, 56, 49);
@@ -74,7 +74,7 @@ class BoardTest {
 
     @Test
     @DisplayName("Test Board Consistency")
-    @Tag("finished")
+    @Tag("fast")
     void testBoardConsistency() {
         final Board board = Board.constructStandardBoard();
         final MoveTransition t1 = board.getCurrentPlayer()
@@ -238,7 +238,7 @@ class BoardTest {
 
     @Test
     @DisplayName("Test Invalid Move")
-    @Tag("finished")
+    @Tag("fast")
     void testInvalidMove() {
         Board initialBoard = Board.constructStandardBoard();
         final MoveTransition t1 = initialBoard.getCurrentPlayer().
@@ -255,7 +255,7 @@ class BoardTest {
 
     @Test
     @DisplayName("Test Undo Moves")
-    @Tag("finished")
+    @Tag("fast")
     void testUndoMoves() {
         final Board initialBoard = Board.constructStandardBoard();
         final Move move1 = Move.MoveFactory.createMove(initialBoard, 48, 41);
@@ -287,7 +287,7 @@ class BoardTest {
 
     @Test
     @DisplayName("Test Algebraic Notation")
-    @Tag("finished")
+    @Tag("fast")
     void testAlgebraicNotation() {
         final String[] expectedPositions = {
                 "a9", "b9", "c9", "d9", "e9", "f9", "g9",
@@ -310,7 +310,7 @@ class BoardTest {
 
     @RepeatedTest(3)
     @DisplayName("Check Standard Board Memory Usage")
-    @Tag("finished")
+    @Tag("fast")
     void mem(RepetitionInfo repetitionInfo) {
         if (repetitionInfo.getCurrentRepetition() == 1) {
             System.out.println("Memory usage of 1 board:");

@@ -27,7 +27,7 @@ class PieceTest {
 
     @Test
     @DisplayName("Test Rat's Swimming Ability")
-    @Tag("finished")
+    @Tag("fast")
     void testRatSwimmingAbility() {
         final Board.Builder builder = new Board.Builder();
         builder.setPiece(new Rat(40, PlayerColor.BLUE));
@@ -50,7 +50,7 @@ class PieceTest {
 
     @Test
     @DisplayName("Test Lion and Tiger's Horizontal Jumping Ability")
-    @Tag("finished")
+    @Tag("fast")
     void testLionAndTigerHorizontalJumpingAbility() {
         final Board.Builder builder = new Board.Builder();
         builder.setPiece(new Lion(16, PlayerColor.BLUE));
@@ -85,7 +85,7 @@ class PieceTest {
 
     @Test
     @DisplayName("Test Lion and Tiger's Vertical Jumping Ability")
-    @Tag("finished")
+    @Tag("fast")
     void testLionAndTigerVerticalJumpingAbility() {
         final Board.Builder builder = new Board.Builder();
         builder.setPiece(new Lion(21, PlayerColor.BLUE));
@@ -119,7 +119,7 @@ class PieceTest {
 
     @Test
     @DisplayName("Test Rat's Valid Moves in the Middle of Empty Board")
-    @Tag("finished")
+    @Tag("fast")
     void testRatValidMovesInTheMiddleOfEmptyBoard() {
         final Board.Builder builder = new Board.Builder();
         builder.setPiece(new Rat(31, PlayerColor.BLUE));
@@ -138,7 +138,7 @@ class PieceTest {
 
     @Test
     @DisplayName("Test Wolf's Valid Moves in the Middle of Empty Board")
-    @Tag("finished")
+    @Tag("fast")
     void testWolfValidMovesInTheMiddleOfEmptyBoard() {
         final Board.Builder builder = new Board.Builder();
         builder.setPiece(new Wolf(31, PlayerColor.BLUE));
@@ -155,7 +155,7 @@ class PieceTest {
 
     @Test
     @DisplayName("Test Lion's Valid Moves in the Middle of Empty Board")
-    @Tag("finished")
+    @Tag("fast")
     void testLionValidMovesInTheMiddleOfEmptyBoard() {
         final Board.Builder builder = new Board.Builder();
         builder.setPiece(new Lion(31, PlayerColor.BLUE));
@@ -174,7 +174,7 @@ class PieceTest {
 
     @Test
     @DisplayName("Test Elephant's Valid Moves in the Middle of Empty Board")
-    @Tag("finished")
+    @Tag("fast")
     void testElephantValidMovesInTheMiddleOfEmptyBoard() {
         final Board.Builder builder = new Board.Builder();
         builder.setPiece(new Elephant(31, PlayerColor.BLUE));
@@ -191,7 +191,7 @@ class PieceTest {
 
     @Test
     @DisplayName("Test Piece's Valid Moves at Top-Left Corner of Empty Board")
-    @Tag("finished")
+    @Tag("fast")
     void testPieceValidMovesAtTopLeftCornerOfEmptyBoard() {
         final Board.Builder builder = new Board.Builder();
         builder.setPiece(new Leopard(0, PlayerColor.RED));
@@ -208,7 +208,7 @@ class PieceTest {
 
     @Test
     @DisplayName("Test Piece's Valid Moves at Top-Right Corner of Empty Board")
-    @Tag("finished")
+    @Tag("fast")
     void testPieceValidMovesAtTopRightCornerOfEmptyBoard() {
         final Board.Builder builder = new Board.Builder();
         builder.setPiece(new Cat(6, PlayerColor.RED));
@@ -225,7 +225,7 @@ class PieceTest {
 
     @Test
     @DisplayName("Test Piece's Valid Moves at Bottom-Left Corner of Empty Board")
-    @Tag("finished")
+    @Tag("fast")
     void testPieceValidMovesAtBottomLeftCornerOfEmptyBoard() {
         final Board.Builder builder = new Board.Builder();
         builder.setPiece(new Dog(56, PlayerColor.RED));
@@ -242,7 +242,7 @@ class PieceTest {
 
     @Test
     @DisplayName("Test Piece's Valid Moves at Bottom-Right Corner of Empty Board")
-    @Tag("finished")
+    @Tag("fast")
     void testPieceValidMovesAtBottomRightCornerOfEmptyBoard() {
         final Board.Builder builder = new Board.Builder();
         builder.setPiece(new Wolf(62, PlayerColor.RED));
@@ -259,7 +259,7 @@ class PieceTest {
 
     @Test
     @DisplayName("Test Piece's Equality")
-    @Tag("finished")
+    @Tag("fast")
     void testPieceEquality() {
         final Board board1 = Board.constructStandardBoard();
         final Board board2 = Board.constructStandardBoard();
@@ -303,7 +303,7 @@ class PieceTest {
 
     @Test
     @DisplayName("Test Hash Code")
-    @Tag("finished")
+    @Tag("fast")
     void testHashCode() {
         final Board board = Board.constructStandardBoard();
         final Set<Piece> pieceSet = Sets.newHashSet(board.getAllPieces());
