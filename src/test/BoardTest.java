@@ -310,7 +310,7 @@ class BoardTest {
 
     @RepeatedTest(3)
     @DisplayName("Check Standard Board Memory Usage")
-    @Tag("fast")
+    @Tag("slow")
     void mem(RepetitionInfo repetitionInfo) {
         if (repetitionInfo.getCurrentRepetition() == 1) {
             System.out.println("Memory usage of 1 board:");
