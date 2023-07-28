@@ -73,7 +73,7 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
                     }
                 }
                 final String quiescenceInfo = " " + score(currentPlayer, highestSeenValue, lowestSeenValue) + " q: " + this.quiescenceCount;
-                s = "\t" + this + "(" + this.searchDepth + "), m: (" + moveCounter + "/" + numMoves + ") " + move + ", best:  " + optimalMove
+                s = "\t" + this + "(" + this.searchDepth + "), move: (" + moveCounter + "/" + numMoves + ") " + move + ", best: " + optimalMove
                         + quiescenceInfo + ", t: " + calculateTimeTaken(potentialMoveStartTime, System.nanoTime());
             } else {
                 s = "\t" + this + "(" + this.searchDepth + ")" + ", m: (" + moveCounter + "/" + numMoves + ") " + move + " is illegal! best: " + optimalMove;
@@ -154,19 +154,18 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
     }
 
     private int calculateQuiescenceDepth(final Board toBoard, final int depth) {
-//        if (depth == 1 && this.quiescenceCount < MAX_QUIESCENCE) {
-//            int activityMeasure = 0;
-//            for (final Move move : BoardUtils.lastNMoves(toBoard, 2)) {
-//                if (move.isCaptureMove()) {
-//                    activityMeasure += 1;
-//                }
-//            }
-//            if (activityMeasure >= 2) {
-//                this.quiescenceCount++;
-//                return 2;
-//            }
-//        }
-//        return depth - 1;
+        if (depth == 1 && this.quiescenceCount < MAX_QUIESCENCE) {
+            int activityMeasure = 0;
+            for (final Move move : BoardUtils.lastNMoves(toBoard, 2)) {
+                if (move.isCaptureMove()) {
+                    activityMeasure += 1;
+                }
+            }
+            if (activityMeasure >= 2) {
+                this.quiescenceCount++;
+                return 2;
+            }
+        }
         return depth - 1;
     }
 

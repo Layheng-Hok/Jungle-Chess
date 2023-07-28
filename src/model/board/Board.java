@@ -158,7 +158,7 @@ public class Board {
         builder.setNextMovePlayer(PlayerColor.BLUE);
         return builder.build();
     }
-
+    
     public static Board constructSpecificBoard(ArrayList<String> animalList, ArrayList<Integer> coordinateList, String lastTurn) {
         final Builder builder = new Builder();
 
@@ -243,14 +243,12 @@ public class Board {
             return this;
         }
 
-        public Builder setNextMovePlayer(final PlayerColor nextPlayerColor) {
+        public void setNextMovePlayer(final PlayerColor nextPlayerColor) {
             this.nextMovePlayer = nextPlayerColor;
-            return this;
         }
 
-        public Builder setMoveTransition(final Move transitionMove) {
+        public void setMoveTransition(final Move transitionMove) {
             this.transitionMove = transitionMove;
-            return this;
         }
 
         public Board build() {
