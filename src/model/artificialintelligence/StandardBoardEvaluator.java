@@ -7,14 +7,14 @@ import model.piece.Piece;
 import model.player.Player;
 
 public final class StandardBoardEvaluator implements BoardEvaluator {
-    private final static int DEPTH_MULTIPLIER = 100;
+    private final static int DEPTH_MULTIPLIER = 10;
     private final static int MOBILITY_MULTIPLIER = 5;
     private final static int CAPTURE_MOVES_MULTIPLIER = 1;
-    private final static int INTO_ENEMY_TRAP_WITH_ENEMY_NEARBY_PENALTY = -10_000;
-    private final static int INTO_ENEMY_TRAP_WITHOUT_ENEMY_NEARBY_BONUS = 500_000;
-    private final static int ENEMY_DEN_PENETRATED_MULTIPLIER = 500_000;
-    private static final int ENEMY_RUNNING_OUT_OF_VALID_MOVES_MULTIPLIER = 500_000;
-    private static final int ENEMY_RUNNING_OUT_OF_PIECES_MULTIPLIER = 500_000;
+    private final static int INTO_ENEMY_TRAP_WITH_ENEMY_NEARBY_PENALTY = -1_000;
+    private final static int INTO_ENEMY_TRAP_WITHOUT_ENEMY_NEARBY_BONUS = 5_000;
+    private final static int ENEMY_DEN_PENETRATED_MULTIPLIER = 50_000;
+    private static final int ENEMY_RUNNING_OUT_OF_VALID_MOVES_MULTIPLIER = 25_000;
+    private static final int ENEMY_RUNNING_OUT_OF_PIECES_MULTIPLIER = 25_000;
     private static final StandardBoardEvaluator INSTANCE = new StandardBoardEvaluator();
 
     public static StandardBoardEvaluator get() {
@@ -28,49 +28,59 @@ public final class StandardBoardEvaluator implements BoardEvaluator {
 
     @VisibleForTesting
     private int scorePlayer(final Player player, final int depth) {
-        return pieceValue(player)
-                + mobility(player)
+        return pieceValue(player, depth)
+                + mobility(player, depth)
                 + captureMoves(player)
-                + getIntoEnemyTrapWithEnemyNearby(player)
-                + getIntoEnemyTrapWithoutEnemyNearby(player, depth)
-                + isEnemyDenPenetrated(player, depth)
-                + isEnemyRunningOutOfValidMoves(player, depth)
-                + isEnemyRunningOutOfPieces(player, depth);
+//                + getIntoEnemyTrapWithEnemyNearby(player)
+//                + getIntoEnemyTrapWithoutEnemyNearby(player, depth)
+                + isEnemyDenPenetrated(player, depth);
+        //   + isEnemyRunningOutOfValidMoves(player, depth)
+        //  + isEnemyRunningOutOfPieces(player, depth);
     }
 
     public String evaluationDetails(final Board board, final int depth) {
         return ("Blue Board's Evaluation" + " \n" +
-                "Piece Value: " + pieceValue(board.bluePlayer()) + "\n" +
-                "Mobility: " + mobility(board.bluePlayer()) + "\n" +
+                "Piece Value: " + pieceValue(board.bluePlayer(), depth) + "\n" +
+                "Mobility: " + mobility(board.bluePlayer(), depth) + "\n" +
                 "Capture Move: " + captureMoves(board.bluePlayer()) + "\n" +
-                "Get Into Enemy's Trap With Enemy Nearby: " + getIntoEnemyTrapWithEnemyNearby(board.bluePlayer()) + "\n" +
-                "Get Into Enemy's Trap Without Enemy Nearby: " + getIntoEnemyTrapWithoutEnemyNearby(board.bluePlayer(), depth) + "\n" +
+//                "Get Into Enemy's Trap With Enemy Nearby: " + getIntoEnemyTrapWithEnemyNearby(board.bluePlayer()) + "\n" +
+//                "Get Into Enemy's Trap Without Enemy Nearby: " + getIntoEnemyTrapWithoutEnemyNearby(board.bluePlayer(), depth) + "\n" +
                 "Is Enemy Den Penetrated: " + isEnemyDenPenetrated(board.bluePlayer(), depth) + "\n" +
-                "Is Enemy Running Out Of Valid Moves: " + isEnemyRunningOutOfValidMoves(board.bluePlayer(), depth) + "\n" +
-                "Is Enemy Running Out Of Pieces: " + isEnemyRunningOutOfPieces(board.bluePlayer(), depth) + "\n" +
+                //     "Is Enemy Running Out Of Valid Moves: " + isEnemyRunningOutOfValidMoves(board.bluePlayer(), depth) + "\n" +
+                //  "Is Enemy Running Out Of Pieces: " + isEnemyRunningOutOfPieces(board.bluePlayer(), depth) + "\n" +
                 "-------------------------------\n" +
                 "Red Board's Evaluation" + " \n" +
-                "Piece Value: " + pieceValue(board.redPlayer()) + "\n" +
-                "Mobility: " + mobility(board.redPlayer()) + "\n" +
+                "Piece Value: " + pieceValue(board.redPlayer(), depth) + "\n" +
+                "Mobility: " + mobility(board.redPlayer(), depth) + "\n" +
                 "Capture Move: " + captureMoves(board.redPlayer()) + "\n" +
-                "Get Into Enemy's Trap With Enemy Nearby: " + getIntoEnemyTrapWithEnemyNearby(board.redPlayer()) + "\n" +
-                "Get Into Enemy's Trap Without Enemy Nearyby: " + getIntoEnemyTrapWithoutEnemyNearby(board.redPlayer(), depth) + "\n" +
+//                "Get Into Enemy's Trap With Enemy Nearby: " + getIntoEnemyTrapWithEnemyNearby(board.redPlayer()) + "\n" +
+//                "Get Into Enemy's Trap Without Enemy Nearyby: " + getIntoEnemyTrapWithoutEnemyNearby(board.redPlayer(), depth) + "\n" +
                 "Is Enemy Den Penetrated: " + isEnemyDenPenetrated(board.redPlayer(), depth) + "\n" +
-                "Is Enemy Running Out Of Valid Moves: " + isEnemyRunningOutOfValidMoves(board.bluePlayer(), depth) + "\n" +
-                "Is Enemy Running Out Of Pieces: " + isEnemyRunningOutOfPieces(board.bluePlayer(), depth) + "\n" +
+                //      "Is Enemy Running Out Of Valid Moves: " + isEnemyRunningOutOfValidMoves(board.bluePlayer(), depth) + "\n" +
+                //   "Is Enemy Running Out Of Pieces: " + isEnemyRunningOutOfPieces(board.bluePlayer(), depth) + "\n" +
                 "-------------------------------\n" +
                 "Net Score: " + evaluate(board, depth) + "\n");
     }
 
-    private static int pieceValue(final Player player) {
+    private static int pieceValue(final Player player, int depth) {
         int pieceValueScore = 0;
+        int enemyOutOfPiecesBonus = 0;
         for (final Piece piece : player.getActivePieces()) {
             pieceValueScore += (piece.getPiecePower() + piece.positionDevelopmentScore());
         }
-        return pieceValueScore;
+        if (player.getEnemyPlayer().getActivePieces().isEmpty()) {
+            enemyOutOfPiecesBonus = ENEMY_RUNNING_OUT_OF_PIECES_MULTIPLIER * depthBonus(depth);
+        }
+        return pieceValueScore + enemyOutOfPiecesBonus;
     }
 
-    private static int mobility(Player player) {
+    private static int mobility(Player player, int depth) {
+        if (player.getEnemyPlayer().getValidMoves().isEmpty() && player.getEnemyPlayer().getActivePieces().isEmpty()) {
+            return ENEMY_RUNNING_OUT_OF_VALID_MOVES_MULTIPLIER * depthBonus(depth);
+        }
+        if (player.getEnemyPlayer().getValidMoves().isEmpty() && !player.getEnemyPlayer().getActivePieces().isEmpty()) {
+            return 2 * ENEMY_RUNNING_OUT_OF_VALID_MOVES_MULTIPLIER * depthBonus(depth);
+        }
         return MOBILITY_MULTIPLIER * mobilityRatio(player);
     }
 

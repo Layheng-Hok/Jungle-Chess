@@ -39,8 +39,8 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
         final long startTime = System.currentTimeMillis();
         final Player currentPlayer = board.getCurrentPlayer();
         Move optimalMove = Move.MoveFactory.getNullMove();
-        int highestSeenValue = Integer.MIN_VALUE;
-        int lowestSeenValue = Integer.MAX_VALUE;
+        int highestSeenValue = Integer.MIN_VALUE; // alpha = highestSeenValue
+        int lowestSeenValue = Integer.MAX_VALUE;  // beta = lowestSeenValue
         int currentValue;
         int moveCounter = 1;
         final int numMoves = board.getCurrentPlayer().getValidMoves().size();
@@ -74,7 +74,6 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
                 }
                 final String quiescenceInfo = " " + score(currentPlayer, highestSeenValue, lowestSeenValue) + " q: " + this.quiescenceCount;
                 s = "\t" + this + "(" + this.searchDepth + "), m: (" + moveCounter + "/" + numMoves + ") " + move + ", best:  " + optimalMove
-
                         + quiescenceInfo + ", t: " + calculateTimeTaken(potentialMoveStartTime, System.nanoTime());
             } else {
                 s = "\t" + this + "(" + this.searchDepth + ")" + ", m: (" + moveCounter + "/" + numMoves + ") " + move + " is illegal! best: " + optimalMove;
@@ -98,7 +97,9 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
     }
 
     public int max(final Board board, final int depth, final int highest, final int lowest) {
-        if (depth == 0 || BoardUtils.isGameOverScenario(board)) {
+        // alpha = highest (currentHighest)
+        // beta = lowest
+        if (depth == 0 || BoardUtils.isGameOverScenarioStandardConditions(board)) {
             this.numEvaluatedBoards++;
             return this.evaluator.evaluate(board, depth);
         }
@@ -112,7 +113,7 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
                                 currentHighest, lowest));
                 if (currentHighest >= lowest) {
                     this.cutOffsProduced++;
-                    return lowest;
+                    return currentHighest;
                 }
             }
         }
@@ -120,7 +121,9 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
     }
 
     public int min(final Board board, final int depth, final int highest, final int lowest) {
-        if (depth == 0 || BoardUtils.isGameOverScenario(board)) {
+        // alpha = highest
+        // beta = lowest (currentLowest)
+        if (depth == 0 || BoardUtils.isGameOverScenarioStandardConditions(board)) {
             this.numEvaluatedBoards++;
             return this.evaluator.evaluate(board, depth);
         }
@@ -134,7 +137,7 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
                                 highest, currentLowest));
                 if (currentLowest <= highest) {
                     this.cutOffsProduced++;
-                    return highest;
+                    return currentLowest;
                 }
             }
         }
@@ -151,23 +154,24 @@ public class AlphaBetaPruningWithMoveOrdering extends Observable implements Move
     }
 
     private int calculateQuiescenceDepth(final Board toBoard, final int depth) {
-        if (depth == 1 && this.quiescenceCount < MAX_QUIESCENCE) {
-            int activityMeasure = 0;
-            for (final Move move : BoardUtils.lastNMoves(toBoard, 2)) {
-                if (move.isCaptureMove()) {
-                    activityMeasure += 1;
-                }
-            }
-            if (activityMeasure >= 2) {
-                this.quiescenceCount++;
-                return 2;
-            }
-        }
+//        if (depth == 1 && this.quiescenceCount < MAX_QUIESCENCE) {
+//            int activityMeasure = 0;
+//            for (final Move move : BoardUtils.lastNMoves(toBoard, 2)) {
+//                if (move.isCaptureMove()) {
+//                    activityMeasure += 1;
+//                }
+//            }
+//            if (activityMeasure >= 2) {
+//                this.quiescenceCount++;
+//                return 2;
+//            }
+//        }
+//        return depth - 1;
         return depth - 1;
     }
 
     private static String calculateTimeTaken(final long start, final long end) {
-        final long timeTaken = (end - start) / 1000000;
+        final long timeTaken = (end - start) / 1_000_000;
         return timeTaken + " ms";
     }
 }

@@ -105,13 +105,26 @@ public class BoardUtils {
         return Collections.unmodifiableList(moveHistory);
     }
 
-    public static boolean isGameOverScenario(final Board board) {
+    public static boolean isGameOverScenarioStandardConditions(final Board board) {
         return board.getCurrentPlayer().isDenPenetrated()
                 || board.getCurrentPlayer().getActivePieces().isEmpty()
-                || board.getCurrentPlayer().getValidMoves().isEmpty()
-                || GameFrame.get().getPlayerPanel().getBlueCurrentTimerSecondsBlitzMode() == 0
+                || board.getCurrentPlayer().getValidMoves().isEmpty();
+    }
+
+    private static boolean isGameOverScenarioSpecialGameModeConditions() {
+        return GameFrame.get().getPlayerPanel().getBlueCurrentTimerSecondsBlitzMode() == 0
                 || GameFrame.get().getPlayerPanel().getRedCurrentTimerSecondsBlitzMode() == 0
-                || GameFrame.get().isGameResigned();
+                || GameFrame.get().isGameResigned()
+                || isGameDrawnScenario();
+    }
+
+    public static boolean isGameDrawnScenario() {
+        return GameFrame.get().getPlayerPanel().getRoundNumber() == 200;
+    }
+
+    public static boolean isGameOverScenario(final Board board) {
+        return isGameOverScenarioStandardConditions(board)
+                || isGameOverScenarioSpecialGameModeConditions();
     }
 
     public static int getCoordinateAtPosition(final String position) {

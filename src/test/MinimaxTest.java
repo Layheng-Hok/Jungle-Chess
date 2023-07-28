@@ -105,7 +105,7 @@ class MinimaxTest {
         final MoveStrategy minimax = new Minimax(6);
         final Move move = minimax.execute(board);
         assertEquals(Move.MoveFactory.createMove(board, 4, 3), move);
-        assertTrue(BoardUtils.isGameOverScenario(move.execute()));
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(move.execute()));
     }
 
     @Test
@@ -124,7 +124,7 @@ class MinimaxTest {
         final MoveStrategy minimax = new Minimax(4);
         final Move move = minimax.execute(board);
         assertEquals(Move.MoveFactory.createMove(board, 60, 59), move);
-        assertTrue(BoardUtils.isGameOverScenario(move.execute()));
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(move.execute()));
     }
 
     @Test
@@ -147,7 +147,7 @@ class MinimaxTest {
         assertTrue(move.isCaptureMove());
         assertTrue(boardAfterExecution.redPlayer().getActivePieces().isEmpty());
         assertTrue(boardAfterExecution.redPlayer().getValidMoves().isEmpty());
-        assertTrue(BoardUtils.isGameOverScenario(boardAfterExecution));
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(boardAfterExecution));
     }
 
     @Test
@@ -170,7 +170,7 @@ class MinimaxTest {
         assertTrue(move.isCaptureMove());
         assertTrue(boardAfterExecution.bluePlayer().getActivePieces().isEmpty());
         assertTrue(boardAfterExecution.bluePlayer().getValidMoves().isEmpty());
-        assertTrue(BoardUtils.isGameOverScenario(boardAfterExecution));
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(boardAfterExecution));
     }
 
     @Test
@@ -190,7 +190,7 @@ class MinimaxTest {
         final Board boardAfterExecution = move.execute();
         assertEquals(Move.MoveFactory.createMove(board, 58, 57), move);
         assertTrue(boardAfterExecution.redPlayer().getValidMoves().isEmpty());
-        assertTrue(BoardUtils.isGameOverScenario(boardAfterExecution));
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(boardAfterExecution));
     }
 
     @Test
@@ -210,7 +210,7 @@ class MinimaxTest {
         final Board boardAfterExecution = move.execute();
         assertEquals(Move.MoveFactory.createMove(board, 38, 41), move);
         assertTrue(boardAfterExecution.bluePlayer().getValidMoves().isEmpty());
-        assertTrue(BoardUtils.isGameOverScenario(boardAfterExecution));
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(boardAfterExecution));
     }
 
     @Test
@@ -230,18 +230,18 @@ class MinimaxTest {
         final Move move1 = minimax1.execute(initialBoard);
         final Board board1 = move1.execute();
         assertEquals(Move.MoveFactory.createMove(initialBoard, 11, 4), move1);
-        assertFalse(BoardUtils.isGameOverScenario(board1));
+        assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board1));
 
         final MoveStrategy minimax2 = new Minimax(searchDepth);
         final Move move2 = minimax2.execute(board1);
         final Board board2 = move2.execute();
-        assertFalse(BoardUtils.isGameOverScenario(board2));
+        assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board2));
 
         final MoveStrategy minimax3 = new Minimax(searchDepth);
         final Move move3 = minimax3.execute(board2);
         final Board board3 = move3.execute();
         assertEquals(Move.MoveFactory.createMove(board2, 4, 3), move3);
-        assertTrue(BoardUtils.isGameOverScenario(board3));
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(board3));
     }
 
     @Test
@@ -261,18 +261,18 @@ class MinimaxTest {
         final Move move1 = minimax1.execute(initialBoard);
         final Board board1 = move1.execute();
         assertEquals(Move.MoveFactory.createMove(initialBoard, 61, 60), move1);
-        assertFalse(BoardUtils.isGameOverScenario(board1));
+        assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board1));
 
         final MoveStrategy minimax2 = new Minimax(searchDepth);
         final Move move2 = minimax2.execute(board1);
         final Board board2 = move2.execute();
-        assertFalse(BoardUtils.isGameOverScenario(board2));
+        assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board2));
 
         final MoveStrategy minimax3 = new Minimax(searchDepth);
         final Move move3 = minimax3.execute(board2);
         final Board board3 = move3.execute();
         assertEquals(Move.MoveFactory.createMove(board2, 60, 59), move3);
-        assertTrue(BoardUtils.isGameOverScenario(board3));
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(board3));
     }
 
     @Test
@@ -291,18 +291,18 @@ class MinimaxTest {
         final Move move1 = minimax1.execute(initialBoard);
         final Board board1 = move1.execute();
         assertEquals(Move.MoveFactory.createMove(initialBoard, 18, 17), move1);
-        assertFalse(BoardUtils.isGameOverScenario(board1));
+        assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board1));
 
         final MoveStrategy minimax2 = new Minimax(searchDepth);
         final Move move2 = minimax2.execute(board1);
         final Board board2 = move2.execute();
-        assertFalse(BoardUtils.isGameOverScenario(board2));
+        assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board2));
 
         final MoveStrategy minimax3 = new Minimax(searchDepth);
         final Move move3 = minimax3.execute(board2);
         final Board board3 = move3.execute();
         assertEquals(Move.MoveFactory.createMove(board2, 17, 24), move3);
-        assertTrue(BoardUtils.isGameOverScenario(board3));
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(board3));
     }
 
     @Test
@@ -321,12 +321,12 @@ class MinimaxTest {
         final Move move1 = minimax1.execute(initialBoard);
         final Board board1 = move1.execute();
         assertEquals(Move.MoveFactory.createMove(initialBoard, 23, 30), move1);
-        assertFalse(BoardUtils.isGameOverScenario(board1));
+        assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board1));
 
         final MoveStrategy minimax2 = new Minimax(searchDepth);
         final Move move2 = minimax2.execute(board1);
         final Board board2 = move2.execute();
-        assertFalse(BoardUtils.isGameOverScenario(board2));
+        assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board2));
 
         final MoveStrategy minimax3 = new Minimax(searchDepth);
         final Move move3 = minimax3.execute(board2);
@@ -351,19 +351,19 @@ class MinimaxTest {
         final Move move1 = minimax1.execute(initialBoard);
         final Board board1 = move1.execute();
         assertEquals(Move.MoveFactory.createMove(initialBoard, 58, 57), move1);
-        assertFalse(BoardUtils.isGameOverScenario(board1));
+        assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board1));
 
         final MoveStrategy minimax2 = new Minimax(searchDepth);
         final Move move2 = minimax2.execute(board1);
         final Board board2 = move2.execute();
         assertEquals(Move.MoveFactory.createMove(board1, 56, 49), move2);
-        assertFalse(BoardUtils.isGameOverScenario(board2));
+        assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board2));
 
         final MoveStrategy minimax3 = new Minimax(searchDepth);
         final Move move3 = minimax3.execute(board2);
         final Board board3 = move3.execute();
         assertEquals(Move.MoveFactory.createMove(board2, 57, 56), move3);
-        assertTrue(BoardUtils.isGameOverScenario(board3));
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(board3));
     }
 
     @Test
@@ -383,18 +383,18 @@ class MinimaxTest {
         final Move move1 = minimax1.execute(initialBoard);
         final Board board1 = move1.execute();
         assertEquals(Move.MoveFactory.createMove(initialBoard, 2, 1), move1);
-        assertFalse(BoardUtils.isGameOverScenario(board1));
+        assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board1));
 
         final MoveStrategy minimax2 = new Minimax(searchDepth);
         final Move move2 = minimax2.execute(board1);
         final Board board2 = move2.execute();
         assertEquals(Move.MoveFactory.createMove(board1, 0, 7), move2);
-        assertFalse(BoardUtils.isGameOverScenario(board2));
+        assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board2));
 
         final MoveStrategy minimax3 = new Minimax(searchDepth);
         final Move move3 = minimax3.execute(board2);
         final Board board3 = move3.execute();
         assertEquals(Move.MoveFactory.createMove(board2, 1, 0), move3);
-        assertTrue(BoardUtils.isGameOverScenario(board3));
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(board3));
     }
 }

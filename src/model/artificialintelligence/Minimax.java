@@ -1,5 +1,6 @@
 package model.artificialintelligence;
 
+import com.google.common.annotations.VisibleForTesting;
 import model.board.Board;
 import model.board.BoardUtils;
 import model.board.Move;
@@ -13,6 +14,8 @@ public class Minimax implements MoveStrategy {
     private long numEvaluatedBoards;
     private FreqTableRow[] freqTable;
     private int freqTableIndex;
+    @VisibleForTesting
+    private boolean seeEvaluationDetails = false;
 
     public Minimax(final int searchDepth) {
         this.evaluator = StandardBoardEvaluator.get();
@@ -70,45 +73,31 @@ public class Minimax implements MoveStrategy {
                 board.getCurrentPlayer(), optimalMove, this.numEvaluatedBoards, executionTime, (1000 * ((double) this.numEvaluatedBoards / executionTime)));
         long total = 0;
         for (final FreqTableRow row : this.freqTable) {
-            if(row != null) {
+            if (row != null) {
                 total += row.getCount();
             }
         }
-        if(this.numEvaluatedBoards != total) {
+        if (this.numEvaluatedBoards != total) {
             System.out.println("Something is wrong with the # of boards evaluated!");
         }
         return optimalMove;
-    }
-
-    private int min(final Board board, final int depth) {
-        if (depth == 0) {
-            this.numEvaluatedBoards++;
-            this.freqTable[this.freqTableIndex].increment();
-            return this.evaluator.evaluate(board, depth);
-        }
-        if (BoardUtils.isGameOverScenario(board)) {
-            return this.evaluator.evaluate(board, depth);
-        }
-        int lowestSeenValue = Integer.MAX_VALUE;
-        for (final Move move : board.getCurrentPlayer().getValidMoves()) {
-            final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
-            if (moveTransition.getMoveStatus().isDone()) {
-                final int currentValue = max(moveTransition.getToBoard(), depth - 1);
-                if (currentValue <= lowestSeenValue) {
-                    lowestSeenValue = currentValue;
-                }
-            }
-        }
-        return lowestSeenValue;
     }
 
     private int max(final Board board, final int depth) {
         if (depth == 0) {
             this.numEvaluatedBoards++;
             this.freqTable[this.freqTableIndex].increment();
+            if (seeEvaluationDetails) {
+                System.out.println(StandardBoardEvaluator.get().evaluationDetails(board, depth));
+            }
             return this.evaluator.evaluate(board, depth);
         }
-        if (BoardUtils.isGameOverScenario(board)) {
+        if (BoardUtils.isGameOverScenarioStandardConditions(board)) {
+            this.numEvaluatedBoards++;
+            this.freqTable[this.freqTableIndex].increment();
+            if (seeEvaluationDetails) {
+                System.out.println(StandardBoardEvaluator.get().evaluationDetails(board, depth));
+            }
             return this.evaluator.evaluate(board, depth);
         }
         int highestSeenValue = Integer.MIN_VALUE;
@@ -122,6 +111,36 @@ public class Minimax implements MoveStrategy {
             }
         }
         return highestSeenValue;
+    }
+
+    private int min(final Board board, final int depth) {
+        if (depth == 0) {
+            this.numEvaluatedBoards++;
+            this.freqTable[this.freqTableIndex].increment();
+            if (seeEvaluationDetails) {
+                System.out.println(StandardBoardEvaluator.get().evaluationDetails(board, depth));
+            }
+            return this.evaluator.evaluate(board, depth);
+        }
+        if (BoardUtils.isGameOverScenarioStandardConditions(board)) {
+            this.numEvaluatedBoards++;
+            this.freqTable[this.freqTableIndex].increment();
+            if (seeEvaluationDetails) {
+                System.out.println(StandardBoardEvaluator.get().evaluationDetails(board, depth));
+            }
+            return this.evaluator.evaluate(board, depth);
+        }
+        int lowestSeenValue = Integer.MAX_VALUE;
+        for (final Move move : board.getCurrentPlayer().getValidMoves()) {
+            final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
+            if (moveTransition.getMoveStatus().isDone()) {
+                final int currentValue = max(moveTransition.getToBoard(), depth - 1);
+                if (currentValue <= lowestSeenValue) {
+                    lowestSeenValue = currentValue;
+                }
+            }
+        }
+        return lowestSeenValue;
     }
 
     private static class FreqTableRow {
@@ -143,7 +162,7 @@ public class Minimax implements MoveStrategy {
 
         @Override
         public String toString() {
-            return BoardUtils.getPositionAtCoordinate(this.move.getCurrentCoordinate()) +
+            return BoardUtils.getPositionAtCoordinate(this.move.getCurrentCoordinate()) + " to " +
                     BoardUtils.getPositionAtCoordinate(this.move.getDestinationCoordinate()) + " with frequency of " + this.count;
         }
     }

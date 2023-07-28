@@ -48,7 +48,7 @@ class BoardTest {
         }
         assertEquals(16, Iterables.size(allPieces));
         assertEquals(48, Iterables.size(allMoves));
-        assertFalse(BoardUtils.isGameOverScenario(board));
+        assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board));
         assertEquals(StandardBoardEvaluator.get().evaluate(board, 0), 0);
         for (int i = 21; i <= 41; i++) {
             assertNull(board.getPiece(i));
@@ -210,7 +210,7 @@ class BoardTest {
                 () -> assertEquals(7, lastMoveBoard.bluePlayer().getActivePieces().size()),
                 () -> assertEquals(17, lastMoveBoard.redPlayer().getValidMoves().size()),
                 () -> assertEquals(21, lastMoveBoard.bluePlayer().getValidMoves().size()),
-                () -> assertFalse(BoardUtils.isGameOverScenario(lastMoveBoard))
+                () -> assertFalse(BoardUtils.isGameOverScenarioStandardConditions(lastMoveBoard))
         );
         assertAll("Check position of the remaining pieces",
                 () -> assertEquals(Animal.LION, lastMoveBoard.getPiece(BoardUtils.getCoordinateAtPosition("a9")).getPieceType()),

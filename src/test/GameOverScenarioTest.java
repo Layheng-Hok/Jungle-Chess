@@ -38,7 +38,7 @@ class GameOverScenarioTest {
                 makeMove(Move.MoveFactory.createMove(board1, 4, 3));
         assertTrue(t1.getMoveStatus().isDone());
         assertTrue(t1.getToBoard().redPlayer().isDenPenetrated());
-        assertTrue(BoardUtils.isGameOverScenario(t1.getToBoard()));
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(t1.getToBoard()));
 
         final Board.Builder builder2 = new Board.Builder();
         builder2.setPiece(new Rat(12, PlayerColor.BLUE));
@@ -52,7 +52,7 @@ class GameOverScenarioTest {
                 makeMove(Move.MoveFactory.createMove(board2, 60, 59));
         assertTrue(t2.getMoveStatus().isDone());
         assertTrue(t2.getToBoard().bluePlayer().isDenPenetrated());
-        assertTrue(BoardUtils.isGameOverScenario(t2.getToBoard()));
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(t2.getToBoard()));
     }
 
     @Test
@@ -71,7 +71,7 @@ class GameOverScenarioTest {
         assertTrue(t1.getMoveStatus().isDone());
         assertTrue(t1.getTransitionMove().isCaptureMove());
         assertTrue(t1.getToBoard().redPlayer().getActivePieces().isEmpty());
-        assertTrue(BoardUtils.isGameOverScenario(t1.getToBoard()));
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(t1.getToBoard()));
 
         final Board.Builder builder2 = new Board.Builder();
         builder2.setPiece(new Lion(10, PlayerColor.BLUE));
@@ -85,7 +85,7 @@ class GameOverScenarioTest {
         assertTrue(t2.getMoveStatus().isDone());
         assertTrue(t2.getTransitionMove().isCaptureMove());
         assertTrue(t2.getToBoard().bluePlayer().getActivePieces().isEmpty());
-        assertTrue(BoardUtils.isGameOverScenario(t2.getToBoard()));
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(t2.getToBoard()));
     }
 
     @Test
@@ -103,7 +103,7 @@ class GameOverScenarioTest {
                 makeMove(Move.MoveFactory.createMove(board1, 58, 57));
         assertTrue(t1.getMoveStatus().isDone());
         assertTrue(t1.getToBoard().redPlayer().getValidMoves().isEmpty());
-        assertTrue(BoardUtils.isGameOverScenario(t1.getToBoard()));
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(t1.getToBoard()));
 
         final Board.Builder builder2 = new Board.Builder();
         builder2.setPiece(new Cat(27, PlayerColor.BLUE));
@@ -133,6 +133,6 @@ class GameOverScenarioTest {
                 makeMove(Move.MoveFactory.createMove(t2.getToBoard(), 24, 31));
         assertTrue(t3.getMoveStatus().isDone());
         assertTrue(t3.getToBoard().bluePlayer().getValidMoves().isEmpty());
-        assertTrue(BoardUtils.isGameOverScenario(t3.getToBoard()));
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(t3.getToBoard()));
     }
 }
