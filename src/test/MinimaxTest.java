@@ -90,7 +90,7 @@ class MinimaxTest {
     }
 
     @Test
-    @DisplayName("Test Endgame in One (Blue Wins With Enemy'sDen Penetrated)")
+    @DisplayName("Test Endgame in One (Blue Wins With Enemy's Den Penetrated)")
     @Tag("fast")
     void testEndgameInOne1() {
         final Board.Builder builder = new Board.Builder();
@@ -332,6 +332,7 @@ class MinimaxTest {
         final Move move3 = minimax3.execute(board2);
         final Board board3 = move3.execute();
         assertEquals(Move.MoveFactory.createMove(board2, 42, 35), move3);
+        assertTrue(BoardUtils.isGameOverScenarioStandardConditions(board3));
     }
 
     @Test
