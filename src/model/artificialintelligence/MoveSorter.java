@@ -15,7 +15,7 @@ enum MoveSorter {
         Collection<Move> sort(final Collection<Move> moves) {
             return Ordering.from((Comparator<Move>) (move1, move2) -> ComparisonChain.start()
                     .compareTrueFirst(move1.isCaptureMove(), move2.isCaptureMove())
-                    .compare(move2.getMovedPiece().getPiecePower(), move1.getMovedPiece().getPiecePower())
+                    .compare(move1.getMovedPiece().getPieceType().getMovePriority(), move2.getMovedPiece().getPieceType().getMovePriority())
                     .result()).immutableSortedCopy(moves);
         }
     },
@@ -27,7 +27,7 @@ enum MoveSorter {
                     .compareTrueFirst(getIntoEnemyDen(move1), getIntoEnemyDen(move2))
                     .compareTrueFirst(getIntoEnemyTrapWithoutEnemyNearby(move1), getIntoEnemyTrapWithoutEnemyNearby(move2))
                     .compareTrueFirst(move1.isCaptureMove(), move2.isCaptureMove())
-                    .compare(move2.getMovedPiece().getPiecePower(), move1.getMovedPiece().getPiecePower())
+                    .compare(move1.getMovedPiece().getPieceType().getMovePriority(), move2.getMovedPiece().getPieceType().getMovePriority())
                     .result()).immutableSortedCopy(moves);
         }
     };
