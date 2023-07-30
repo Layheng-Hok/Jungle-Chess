@@ -9,10 +9,10 @@ import model.board.MoveTransition;
 import java.util.Collection;
 import java.util.Comparator;
 
-enum MoveSorter {
+public enum MoveSorter {
     STANDARD {
         @Override
-        Collection<Move> sort(final Collection<Move> moves) {
+        public Collection<Move> sort(final Collection<Move> moves) {
             return Ordering.from((Comparator<Move>) (move1, move2) -> ComparisonChain.start()
                     .compareTrueFirst(move1.isCaptureMove(), move2.isCaptureMove())
                     .compare(move1.getMovedPiece().getPieceType().getMovePriority(), move2.getMovedPiece().getPieceType().getMovePriority())
@@ -22,7 +22,7 @@ enum MoveSorter {
 
     EXPENSIVE {
         @Override
-        Collection<Move> sort(final Collection<Move> moves) {
+        public Collection<Move> sort(final Collection<Move> moves) {
             return Ordering.from((Comparator<Move>) (move1, move2) -> ComparisonChain.start()
                     .compareTrueFirst(getIntoEnemyDen(move1), getIntoEnemyDen(move2))
                     .compareTrueFirst(getIntoEnemyTrapWithoutEnemyNearby(move1), getIntoEnemyTrapWithoutEnemyNearby(move2))
@@ -32,7 +32,7 @@ enum MoveSorter {
         }
     };
 
-    abstract Collection<Move> sort(Collection<Move> moves);
+    public abstract Collection<Move> sort(Collection<Move> moves);
 
     private static boolean getIntoEnemyDen(final Move move) {
         final Board board = move.getBoard();
