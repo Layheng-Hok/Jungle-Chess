@@ -5,6 +5,8 @@ import com.google.common.collect.Ordering;
 import model.board.Board;
 import model.board.Move;
 import model.board.MoveTransition;
+import model.piece.Piece;
+import model.player.Player;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -41,103 +43,67 @@ public enum MoveSorter {
     }
 
     private static boolean getIntoEnemyTrapWithoutEnemyNearby(final Move move) {
-        if (move.getMovedPiece().getPieceColor().isBlue()) {
+        final Player moveMaker = move.getBoard().getCurrentPlayer();
+        boolean isInEnemyTrap = false;
+        boolean isEnemyNearTrap = false;
+        if (moveMaker.getAllyColor().isBlue()) {
             if (move.getDestinationCoordinate() == 2) {
-                if (!move.getBoard().getTerrain(1).isTerrainOccupied()
-                        || !move.getBoard().getTerrain(9).isTerrainOccupied()) {
-                    return true;
-                }
-                if (move.getBoard().getTerrain(1).isTerrainOccupied()
-                        && move.getBoard().getTerrain(1).getPiece().getPieceColor().isBlue()) {
-                    return true;
-                }
-                if (move.getBoard().getTerrain(9).isTerrainOccupied()
-                        && move.getBoard().getTerrain(9).getPiece().getPieceColor().isBlue()) {
-                    return true;
+                isInEnemyTrap = true;
+                for (final Piece enemyPiece : moveMaker.getEnemyPlayer().getActivePieces()) {
+                    if (enemyPiece.getPieceCoordinate() == 1 || enemyPiece.getPieceCoordinate() == 9) {
+                        isEnemyNearTrap = true;
+                        break;
+                    }
                 }
             }
             if (move.getDestinationCoordinate() == 4) {
-                if (!move.getBoard().getTerrain(5).isTerrainOccupied()
-                        || !move.getBoard().getTerrain(11).isTerrainOccupied()) {
-                    return true;
-                }
-                if (move.getBoard().getTerrain(5).isTerrainOccupied()
-                        && move.getBoard().getTerrain(5).getPiece().getPieceColor().isBlue()) {
-                    return true;
-                }
-                if (move.getBoard().getTerrain(11).isTerrainOccupied()
-                        && move.getBoard().getTerrain(11).getPiece().getPieceColor().isBlue()) {
-                    return true;
+                isInEnemyTrap = true;
+                for (final Piece enemyPiece : moveMaker.getEnemyPlayer().getActivePieces()) {
+                    if (enemyPiece.getPieceCoordinate() == 5 || enemyPiece.getPieceCoordinate() == 11) {
+                        isEnemyNearTrap = true;
+                        break;
+                    }
                 }
             }
             if (move.getDestinationCoordinate() == 10) {
-                if (!move.getBoard().getTerrain(9).isTerrainOccupied()
-                        || !move.getBoard().getTerrain(11).isTerrainOccupied()
-                        || !move.getBoard().getTerrain(17).isTerrainOccupied()) {
-                    return true;
-                }
-                if (move.getBoard().getTerrain(9).isTerrainOccupied()
-                        && move.getBoard().getTerrain(9).getPiece().getPieceColor().isBlue()) {
-                    return true;
-                }
-                if (move.getBoard().getTerrain(11).isTerrainOccupied()
-                        && move.getBoard().getTerrain(11).getPiece().getPieceColor().isBlue()) {
-                    return true;
-                }
-                if (move.getBoard().getTerrain(17).isTerrainOccupied()
-                        && move.getBoard().getTerrain(17).getPiece().getPieceColor().isBlue()) {
-                    return true;
+                isInEnemyTrap = true;
+                for (final Piece enemyPiece : moveMaker.getEnemyPlayer().getActivePieces()) {
+                    if (enemyPiece.getPieceCoordinate() == 9 || enemyPiece.getPieceCoordinate() == 11 || enemyPiece.getPieceCoordinate() == 17) {
+                        isEnemyNearTrap = true;
+                        break;
+                    }
                 }
             }
-        } else if (move.getMovedPiece().getPieceColor().isRed()) {
+        } else if (moveMaker.getAllyColor().isRed()) {
             if (move.getDestinationCoordinate() == 52) {
-                if (!move.getBoard().getTerrain(45).isTerrainOccupied()
-                        || !move.getBoard().getTerrain(51).isTerrainOccupied()
-                        || !move.getBoard().getTerrain(53).isTerrainOccupied()) {
-                    return true;
-                }
-                if (move.getBoard().getTerrain(45).isTerrainOccupied()
-                        && move.getBoard().getTerrain(45).getPiece().getPieceColor().isRed()) {
-                    return true;
-                }
-                if (move.getBoard().getTerrain(51).isTerrainOccupied()
-                        && move.getBoard().getTerrain(51).getPiece().getPieceColor().isRed()) {
-                    return true;
-                }
-                if (move.getBoard().getTerrain(53).isTerrainOccupied()
-                        && move.getBoard().getTerrain(53).getPiece().getPieceColor().isRed()) {
-                    return true;
-                }
-                if (move.getDestinationCoordinate() == 58) {
-                    if (!move.getBoard().getTerrain(51).isTerrainOccupied()
-                            || !move.getBoard().getTerrain(57).isTerrainOccupied()) {
-                        return true;
-                    }
-                    if (move.getBoard().getTerrain(51).isTerrainOccupied()
-                            && move.getBoard().getTerrain(51).getPiece().getPieceColor().isRed()) {
-                        return true;
-                    }
-                    if (move.getBoard().getTerrain(57).isTerrainOccupied()
-                            && move.getBoard().getTerrain(57).getPiece().getPieceColor().isRed()) {
-                        return true;
+                isInEnemyTrap = true;
+                for (final Piece enemyPiece : moveMaker.getEnemyPlayer().getActivePieces()) {
+                    if (enemyPiece.getPieceCoordinate() == 45 || enemyPiece.getPieceCoordinate() == 51 || enemyPiece.getPieceCoordinate() == 53) {
+                        isEnemyNearTrap = true;
+                        break;
                     }
                 }
-                if (move.getDestinationCoordinate() == 60) {
-                    if (!move.getBoard().getTerrain(53).isTerrainOccupied()
-                            || !move.getBoard().getTerrain(61).isTerrainOccupied()) {
-                        return true;
-                    }
-                    if (move.getBoard().getTerrain(53).isTerrainOccupied()
-                            && move.getBoard().getTerrain(53).getPiece().getPieceColor().isRed()) {
-                        return true;
-                    }
-                    if (move.getBoard().getTerrain(61).isTerrainOccupied()
-                            && move.getBoard().getTerrain(61).getPiece().getPieceColor().isRed()) {
-                        return true;
+            }
+            if (move.getDestinationCoordinate() == 58) {
+                isInEnemyTrap = true;
+                for (final Piece enemyPiece : moveMaker.getEnemyPlayer().getActivePieces()) {
+                    if (enemyPiece.getPieceCoordinate() == 51 || enemyPiece.getPieceCoordinate() == 57) {
+                        isEnemyNearTrap = true;
+                        break;
                     }
                 }
+            }
+            if (move.getDestinationCoordinate() == 60) {
+                isInEnemyTrap = true;
+                for (final Piece enemyPiece : moveMaker.getEnemyPlayer().getActivePieces()) {
+                    if (enemyPiece.getPieceCoordinate() == 53 || enemyPiece.getPieceCoordinate() == 61) {
+                        isEnemyNearTrap = true;
+                        break;
+                    }
+                }
+
             }
         }
-        return false;
+        return isInEnemyTrap && !isEnemyNearTrap;
     }
 }
