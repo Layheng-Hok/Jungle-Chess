@@ -1,6 +1,6 @@
 package test;
 
-import model.artificialintelligence.AlphaBetaPruningWithMoveOrdering;
+import model.artificialintelligence.PruningOrderingQuiescenceSearch;
 import model.artificialintelligence.MoveSorter;
 import model.artificialintelligence.MoveStrategy;
 import model.board.Board;
@@ -39,7 +39,7 @@ public class AlphaBetaTest {
         final Board board = builder.build();
         assertFalse(board.redPlayer().isDenPenetrated());
 
-        final MoveStrategy alphaBeta = new AlphaBetaPruningWithMoveOrdering(6);
+        final MoveStrategy alphaBeta = new PruningOrderingQuiescenceSearch(6);
         final Move move = alphaBeta.execute(board);
         assertEquals(Move.MoveFactory.createMove(board, 4, 3), move);
         assertTrue(BoardUtils.isGameOverScenarioStandardConditions(move.execute()));
@@ -58,7 +58,7 @@ public class AlphaBetaTest {
         final Board board = builder.build();
         assertFalse(board.bluePlayer().isDenPenetrated());
 
-        final MoveStrategy alphaBeta = new AlphaBetaPruningWithMoveOrdering(6);
+        final MoveStrategy alphaBeta = new PruningOrderingQuiescenceSearch(6);
         final Move move = alphaBeta.execute(board);
         assertEquals(Move.MoveFactory.createMove(board, 60, 59), move);
         assertTrue(BoardUtils.isGameOverScenarioStandardConditions(move.execute()));
@@ -77,7 +77,7 @@ public class AlphaBetaTest {
         assertFalse(board.redPlayer().getActivePieces().isEmpty());
         assertFalse(board.redPlayer().getValidMoves().isEmpty());
 
-        final MoveStrategy alphaBeta = new AlphaBetaPruningWithMoveOrdering(6);
+        final MoveStrategy alphaBeta = new PruningOrderingQuiescenceSearch(6);
         final Move move = alphaBeta.execute(board);
         final Board boardAfterExecution = move.execute();
         assertEquals(Move.MoveFactory.createMove(board, 38, 31), move);
@@ -100,7 +100,7 @@ public class AlphaBetaTest {
         assertFalse(board.bluePlayer().getActivePieces().isEmpty());
         assertFalse(board.redPlayer().getValidMoves().isEmpty());
 
-        final MoveStrategy alphaBeta = new AlphaBetaPruningWithMoveOrdering(6);
+        final MoveStrategy alphaBeta = new PruningOrderingQuiescenceSearch(6);
         final Move move = alphaBeta.execute(board);
         final Board boardAfterExecution = move.execute();
         assertEquals(Move.MoveFactory.createMove(board, 11, 10), move);
@@ -123,18 +123,18 @@ public class AlphaBetaTest {
         builder.setNextMovePlayer(PlayerColor.BLUE);
         final Board initialBoard = builder.build();
 
-        final MoveStrategy alphaBeta1 = new AlphaBetaPruningWithMoveOrdering(searchDepth);
+        final MoveStrategy alphaBeta1 = new PruningOrderingQuiescenceSearch(searchDepth);
         final Move move1 = alphaBeta1.execute(initialBoard);
         final Board board1 = move1.execute();
         assertEquals(Move.MoveFactory.createMove(initialBoard, 11, 4), move1);
         assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board1));
 
-        final MoveStrategy alphaBeta2 = new AlphaBetaPruningWithMoveOrdering(searchDepth);
+        final MoveStrategy alphaBeta2 = new PruningOrderingQuiescenceSearch(searchDepth);
         final Move move2 = alphaBeta2.execute(board1);
         final Board board2 = move2.execute();
         assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board2));
 
-        final MoveStrategy alphaBeta3 = new AlphaBetaPruningWithMoveOrdering(searchDepth);
+        final MoveStrategy alphaBeta3 = new PruningOrderingQuiescenceSearch(searchDepth);
         final Move move3 = alphaBeta3.execute(board2);
         final Board board3 = move3.execute();
         assertEquals(Move.MoveFactory.createMove(board2, 4, 3), move3);
@@ -154,18 +154,18 @@ public class AlphaBetaTest {
         builder.setNextMovePlayer(PlayerColor.RED);
         final Board initialBoard = builder.build();
 
-        final MoveStrategy alphaBeta1 = new AlphaBetaPruningWithMoveOrdering(searchDepth);
+        final MoveStrategy alphaBeta1 = new PruningOrderingQuiescenceSearch(searchDepth);
         final Move move1 = alphaBeta1.execute(initialBoard);
         final Board board1 = move1.execute();
         assertEquals(Move.MoveFactory.createMove(initialBoard, 61, 60), move1);
         assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board1));
 
-        final MoveStrategy alphaBeta2 = new AlphaBetaPruningWithMoveOrdering(searchDepth);
+        final MoveStrategy alphaBeta2 = new PruningOrderingQuiescenceSearch(searchDepth);
         final Move move2 = alphaBeta2.execute(board1);
         final Board board2 = move2.execute();
         assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board2));
 
-        final MoveStrategy alphaBeta3 = new AlphaBetaPruningWithMoveOrdering(searchDepth);
+        final MoveStrategy alphaBeta3 = new PruningOrderingQuiescenceSearch(searchDepth);
         final Move move3 = alphaBeta3.execute(board2);
         final Board board3 = move3.execute();
         assertEquals(Move.MoveFactory.createMove(board2, 60, 59), move3);
@@ -184,18 +184,18 @@ public class AlphaBetaTest {
         builder.setNextMovePlayer(PlayerColor.BLUE);
         final Board initialBoard = builder.build();
 
-        final MoveStrategy alphaBeta1 = new AlphaBetaPruningWithMoveOrdering(searchDepth);
+        final MoveStrategy alphaBeta1 = new PruningOrderingQuiescenceSearch(searchDepth);
         final Move move1 = alphaBeta1.execute(initialBoard);
         final Board board1 = move1.execute();
         assertEquals(Move.MoveFactory.createMove(initialBoard, 18, 17), move1);
         assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board1));
 
-        final MoveStrategy alphaBeta2 = new AlphaBetaPruningWithMoveOrdering(searchDepth);
+        final MoveStrategy alphaBeta2 = new PruningOrderingQuiescenceSearch(searchDepth);
         final Move move2 = alphaBeta2.execute(board1);
         final Board board2 = move2.execute();
         assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board2));
 
-        final MoveStrategy alphaBeta3 = new AlphaBetaPruningWithMoveOrdering(searchDepth);
+        final MoveStrategy alphaBeta3 = new PruningOrderingQuiescenceSearch(searchDepth);
         final Move move3 = alphaBeta3.execute(board2);
         final Board board3 = move3.execute();
         assertEquals(Move.MoveFactory.createMove(board2, 17, 24), move3);
@@ -214,18 +214,18 @@ public class AlphaBetaTest {
         builder.setNextMovePlayer(PlayerColor.RED);
         final Board initialBoard = builder.build();
 
-        final MoveStrategy alphaBeta1 = new AlphaBetaPruningWithMoveOrdering(searchDepth);
+        final MoveStrategy alphaBeta1 = new PruningOrderingQuiescenceSearch(searchDepth);
         final Move move1 = alphaBeta1.execute(initialBoard);
         final Board board1 = move1.execute();
         assertEquals(Move.MoveFactory.createMove(initialBoard, 23, 30), move1);
         assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board1));
 
-        final MoveStrategy alphaBeta2 = new AlphaBetaPruningWithMoveOrdering(searchDepth);
+        final MoveStrategy alphaBeta2 = new PruningOrderingQuiescenceSearch(searchDepth);
         final Move move2 = alphaBeta2.execute(board1);
         final Board board2 = move2.execute();
         assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board2));
 
-        final MoveStrategy alphaBeta3 = new AlphaBetaPruningWithMoveOrdering(searchDepth);
+        final MoveStrategy alphaBeta3 = new PruningOrderingQuiescenceSearch(searchDepth);
         final Move move3 = alphaBeta3.execute(board2);
         final Board board3 = move3.execute();
         assertEquals(Move.MoveFactory.createMove(board2, 42, 35), move3);
@@ -246,30 +246,30 @@ public class AlphaBetaTest {
         builder.setNextMovePlayer(PlayerColor.BLUE);
         final Board initialBoard = builder.build();
 
-        final MoveStrategy alphaBeta1 = new AlphaBetaPruningWithMoveOrdering(searchDepth);
+        final MoveStrategy alphaBeta1 = new PruningOrderingQuiescenceSearch(searchDepth);
         final Move move1 = alphaBeta1.execute(initialBoard);
         final Board board1 = move1.execute();
         assertEquals(Move.MoveFactory.createMove(initialBoard, 17, 10), move1);
         assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board1));
 
-        final MoveStrategy alphaBeta2 = new AlphaBetaPruningWithMoveOrdering(searchDepth);
+        final MoveStrategy alphaBeta2 = new PruningOrderingQuiescenceSearch(searchDepth);
         final Move move2 = alphaBeta2.execute(board1);
         final Board board2 = move2.execute();
         assertEquals(Move.MoveFactory.createMove(board1, 9, 10), move2);
         assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board2));
 
-        final MoveStrategy alphaBeta3 = new AlphaBetaPruningWithMoveOrdering(searchDepth);
+        final MoveStrategy alphaBeta3 = new PruningOrderingQuiescenceSearch(searchDepth);
         final Move move3 = alphaBeta3.execute(board2);
         final Board board3 = move3.execute();
         assertEquals(Move.MoveFactory.createMove(board2, 11, 10), move3);
         assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board3));
 
-        final MoveStrategy alphaBeta4 = new AlphaBetaPruningWithMoveOrdering(searchDepth);
+        final MoveStrategy alphaBeta4 = new PruningOrderingQuiescenceSearch(searchDepth);
         final Move move4 = alphaBeta4.execute(board3);
         final Board board4 = move4.execute();
         assertFalse(BoardUtils.isGameOverScenarioStandardConditions(board4));
 
-        final MoveStrategy alphaBeta5 = new AlphaBetaPruningWithMoveOrdering(searchDepth);
+        final MoveStrategy alphaBeta5 = new PruningOrderingQuiescenceSearch(searchDepth);
         final Move move5 = alphaBeta5.execute(board4);
         final Board board5 = move5.execute();
         assertEquals(Move.MoveFactory.createMove(board4, 10, 3), move5);

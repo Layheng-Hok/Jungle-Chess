@@ -1,5 +1,7 @@
 package model.board;
 
+import model.piece.Piece;
+import model.player.Player;
 import model.player.PlayerColor;
 import view.GameFrame;
 
@@ -103,6 +105,25 @@ public class BoardUtils {
             i++;
         }
         return Collections.unmodifiableList(moveHistory);
+    }
+
+    public static boolean getIntoEnemyTrap(final Move move) {
+        final Player moveMaker = move.getBoard().getCurrentPlayer();
+        boolean isInEnemyTrap = false;
+        if (moveMaker.getAllyColor().isBlue()) {
+            if (move.getDestinationCoordinate() == 2
+                    || move.getDestinationCoordinate() == 4
+                    || move.getDestinationCoordinate() == 10) {
+                isInEnemyTrap = true;
+            }
+        } else if (moveMaker.getAllyColor().isRed()) {
+            if (move.getDestinationCoordinate() == 52
+                    || move.getDestinationCoordinate() == 58
+                    || move.getDestinationCoordinate() == 60) {
+                isInEnemyTrap = true;
+            }
+        }
+        return isInEnemyTrap;
     }
 
     public static boolean isGameOverScenarioStandardConditions(final Board board) {

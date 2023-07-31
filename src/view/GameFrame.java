@@ -555,13 +555,13 @@ public class GameFrame extends Observable {
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.MEDIUM) {
                 isAIThinking = true;
-                final MoveStrategy alphaBeta = new AlphaBetaPruningWithMoveOrdering(5);
+                final MoveStrategy alphaBeta = new AlphaBetaWithMoveOrdering(6);
                 return alphaBeta.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.HARD) {
                 isAIThinking = true;
-                final MoveStrategy alphaBeta = new AlphaBetaPruningWithMoveOrdering(6);
-                return alphaBeta.execute(GameFrame.get().getChessBoard());
+                final MoveStrategy intelligenceStack = new PruningOrderingQuiescenceSearch(6);
+                return intelligenceStack.execute(GameFrame.get().getChessBoard());
             }
             return null;
         }
