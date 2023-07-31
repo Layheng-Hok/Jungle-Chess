@@ -394,14 +394,14 @@ public class MenuBar {
 
         soundEffectAudioControlMenuItem = new JCheckBoxMenuItem("\uD83D\uDD0A  Sound Effect");
         soundEffectAudioControlMenuItem.setSelected(false);
-        soundEffectAudioControlMenuItem.addActionListener(e -> MainMenu.get().soundEffectButton.doClick());
+        soundEffectAudioControlMenuItem.addActionListener(e -> MainMenuFrame.get().soundEffectButton.doClick());
         settingMenu.add(soundEffectAudioControlMenuItem);
 
         bgmAudioControlMenuItem = new JCheckBoxMenuItem("\uD83C\uDFB5  Background Music");
         bgmAudioControlMenuItem.setSelected(false);
         bgmAudioControlMenuItem.addActionListener(e -> {
-            MainMenu.get().bgmButton.doClick();
-            if (!MainMenu.get().isGrayScaleBGMButton()) {
+            MainMenuFrame.get().bgmButton.doClick();
+            if (!MainMenuFrame.get().isGrayScaleBGMButton()) {
                 AudioPlayer.LoopPlayer.playGameBGM();
             }
         });

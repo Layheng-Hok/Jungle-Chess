@@ -69,7 +69,7 @@ public class DifficultyFrame extends JFrame {
                     GameFrame.get().setBlitzModeGameOver(false);
                     GameFrame.get().getPlayerPanel().initBlitzMode();
                 }
-                if (!MainMenu.get().isGrayScaleBGMButton()) {
+                if (!MainMenuFrame.get().isGrayScaleBGMButton()) {
                     AudioPlayer.LoopPlayer.playGameBGM();
                 }
                 this.setVisible(false);
@@ -100,7 +100,7 @@ public class DifficultyFrame extends JFrame {
                     GameFrame.get().setBlitzModeGameOver(false);
                     GameFrame.get().getPlayerPanel().initBlitzMode();
                 }
-                if (!MainMenu.get().isGrayScaleBGMButton()) {
+                if (!MainMenuFrame.get().isGrayScaleBGMButton()) {
                     AudioPlayer.LoopPlayer.playGameBGM();
                 }
                 this.setVisible(false);
@@ -131,7 +131,7 @@ public class DifficultyFrame extends JFrame {
                     GameFrame.get().setBlitzModeGameOver(false);
                     GameFrame.get().getPlayerPanel().initBlitzMode();
                 }
-                if (!MainMenu.get().isGrayScaleBGMButton()) {
+                if (!MainMenuFrame.get().isGrayScaleBGMButton()) {
                     AudioPlayer.LoopPlayer.playGameBGM();
                 }
                 this.setVisible(false);
@@ -150,7 +150,7 @@ public class DifficultyFrame extends JFrame {
         backButton.addActionListener((e) -> {
             AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
             this.setVisible(false);
-            MainMenu.get().setVisible(true);
+            MainMenuFrame.get().setVisible(true);
             System.out.println("Back To Main Menu");
         });
     }

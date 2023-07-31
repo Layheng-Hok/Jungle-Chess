@@ -68,7 +68,7 @@ public class AudioPlayer {
         private static Clip clip;
 
         public static void playAnimalSoundEffect(Piece piece) {
-            if (!MainMenu.get().isGrayScaleSoundEffectButton()) {
+            if (!MainMenuFrame.get().isGrayScaleSoundEffectButton()) {
                 String animalName = piece.getPieceType().toString().toLowerCase();
                 String path = defaultAudioPath + animalName + ".wav";
                 try {
@@ -86,7 +86,7 @@ public class AudioPlayer {
         }
 
         public static void playSoundEffect(String path) {
-            if (!MainMenu.get().isGrayScaleSoundEffectButton()) {
+            if (!MainMenuFrame.get().isGrayScaleSoundEffectButton()) {
                 try {
                     File soundPath = new File(defaultAudioPath + path);
                     if (soundPath.exists()) {

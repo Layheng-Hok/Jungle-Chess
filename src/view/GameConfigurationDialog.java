@@ -10,14 +10,14 @@ import java.awt.event.ActionListener;
 
 import static view.GameFrame.defaultImagesPath;
 
-public class GameConfiguration extends JDialog {
+public class GameConfigurationDialog extends JDialog {
     private PlayerType bluePlayerType;
     private PlayerType redPlayerType;
     private static final String HUMAN = "Human";
     private static final String COMPUTER = "Computer";
     private boolean isReady = false;
 
-    GameConfiguration(final JFrame frame, final boolean modal) {
+    GameConfigurationDialog(final JFrame frame, final boolean modal) {
         super(frame, modal);
         setTitle("PICK A SIDE");
         final JPanel gameConfigPanel = new JPanel(new GridLayout(0, 1));
@@ -26,6 +26,7 @@ public class GameConfiguration extends JDialog {
         final JRadioButton redHumanButton = new JRadioButton(HUMAN);
         final JRadioButton redComputerButton = new JRadioButton(COMPUTER);
         blueHumanButton.setActionCommand(HUMAN);
+
         final ButtonGroup blueGroup = new ButtonGroup();
         blueGroup.add(blueHumanButton);
         blueGroup.add(blueComputerButton);
@@ -37,10 +38,10 @@ public class GameConfiguration extends JDialog {
         redComputerButton.setSelected(true);
 
         getContentPane().add(gameConfigPanel);
-        gameConfigPanel.add(new JLabel("Blue"));
+        gameConfigPanel.add(new JLabel("      Blue Side"));
         gameConfigPanel.add(blueHumanButton);
         gameConfigPanel.add(blueComputerButton);
-        gameConfigPanel.add(new JLabel("Red"));
+        gameConfigPanel.add(new JLabel("      Red Side"));
         gameConfigPanel.add(redHumanButton);
         gameConfigPanel.add(redComputerButton);
 
@@ -67,9 +68,10 @@ public class GameConfiguration extends JDialog {
         redComputerButton.addActionListener(redButtonListener);
 
         okButton.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
             bluePlayerType = blueComputerButton.isSelected() ? PlayerType.AI : PlayerType.HUMAN;
             redPlayerType = redComputerButton.isSelected() ? PlayerType.AI : PlayerType.HUMAN;
-            GameConfiguration.this.setVisible(false);
+            GameConfigurationDialog.this.setVisible(false);
             isReady = true;
             System.out.println("Set Up Game");
         });
@@ -109,10 +111,6 @@ public class GameConfiguration extends JDialog {
 
     public void setRedPlayerType(PlayerType redPlayerType) {
         this.redPlayerType = redPlayerType;
-    }
-
-    int getSearchDepth() {
-        return 4;
     }
 
     boolean isReady() {

@@ -30,7 +30,7 @@ public class GameFrame extends Observable {
     private final PlayerPanel playerPanel;
     private final CapturedPiecesPanel capturedPiecesPanel;
     private final BoardPanel boardPanel;
-    private final GameConfiguration gameConfiguration;
+    private final GameConfigurationDialog gameConfiguration;
     private MoveLog moveLog;
     private Board chessBoard;
     private Move lastMove;
@@ -64,7 +64,7 @@ public class GameFrame extends Observable {
         this.capturedPiecesPanel = new CapturedPiecesPanel();
         this.boardPanel = new BoardPanel();
         setMenuBarAndPanels();
-        this.gameConfiguration = new GameConfiguration(this.gameFrame, true);
+        this.gameConfiguration = new GameConfigurationDialog(this.gameFrame, true);
     }
 
     private void setBasicGameFrameAttributes() {
@@ -517,7 +517,7 @@ public class GameFrame extends Observable {
         }
     }
 
-    public void setupUpdate(final GameConfiguration AIGameConfiguration) {
+    public void setupUpdate(final GameConfigurationDialog AIGameConfiguration) {
         setChanged();
         notifyObservers(AIGameConfiguration);
     }
@@ -586,12 +586,21 @@ public class GameFrame extends Observable {
                 e.printStackTrace();
             }
             isAIThinking = false;
+            if (BotModeDialog.isBotGame()){
+                isAIThinking = true;
+                if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue()) {
+                    BotModeDialog.setBlueBotDifficulty();
+                } else  if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isRed())  {
+                    BotModeDialog.setRedBotDifficulty();
+                }
+                GameFrame.get().moveMadeUpdate(PlayerType.HUMAN);
+            }
         }
     }
 
     public void show() {
         restartGame();
-        if (!MainMenu.get().isGrayScaleBGMButton()) {
+        if (!MainMenuFrame.get().isGrayScaleBGMButton()) {
             AudioPlayer.LoopPlayer.playGameBGM();
         }
         GameFrame.get().setVisible(true);
@@ -698,7 +707,7 @@ public class GameFrame extends Observable {
         gameFrame.dispose();
     }
 
-    public GameConfiguration getGameConfiguration() {
+    public GameConfigurationDialog getGameConfiguration() {
         return this.gameConfiguration;
     }
 

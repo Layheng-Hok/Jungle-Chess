@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 
 import static view.GameFrame.defaultImagesPath;
 
-public class MainMenu extends JFrame {
+public class MainMenuFrame extends JFrame {
     public JButton bgmButton;
     public JButton soundEffectButton;
     public final ImageIcon soundEffectIcon = new ImageIcon(new ImageIcon(defaultImagesPath + "soundeffect.png").getImage().getScaledInstance
@@ -22,9 +22,9 @@ public class MainMenu extends JFrame {
     public final ImageIcon grayBGMIcon = new ImageIcon(grayBGMImage);
     private boolean grayScaleSoundEffectButton = true;
     private boolean grayScaleBGMButton = true;
-    private static final MainMenu INSTANCE = new MainMenu();
+    private static final MainMenuFrame INSTANCE = new MainMenuFrame();
 
-    public MainMenu() {
+    public MainMenuFrame() {
         this.setTitle("Jungle Chess (斗兽棋) - Main Menu");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(null);
@@ -34,7 +34,7 @@ public class MainMenu extends JFrame {
         this.createOnePlayerButton();
         this.createTwoPlayerButton();
         this.createSavedGamesButton();
-        this.createGoOnlineButton();
+        this.createBotModeButton();
         this.createSoundEffectButton();
         this.createBackgroundMusicButton();
         this.setBackground();
@@ -117,16 +117,18 @@ public class MainMenu extends JFrame {
         });
     }
 
-    private void createGoOnlineButton() {
-        final String goOnlineImagePath = defaultImagesPath + "goonline.png";
-        final ImageIcon goOnlineImage = new ImageIcon(new ImageIcon(goOnlineImagePath).getImage().getScaledInstance
+    private void createBotModeButton() {
+        final String botModeImagePath = defaultImagesPath + "botMode.png";
+        final ImageIcon botModeImage = new ImageIcon(new ImageIcon(botModeImagePath).getImage().getScaledInstance
                 (178, 74, Image.SCALE_DEFAULT));
-        final JButton goOnlineButton = new JButton(goOnlineImage);
-        goOnlineButton.setBounds(170, 640, 180, 80);
-        this.add(goOnlineButton);
-        goOnlineButton.setIcon(goOnlineImage);
-        goOnlineButton.addActionListener(e -> {
+        final JButton botModeButton = new JButton(botModeImage);
+        botModeButton.setBounds(170, 640, 180, 80);
+        this.add(botModeButton);
+        botModeButton.setIcon(botModeImage);
+        botModeButton.addActionListener(e -> {
             AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            final BotModeDialog botModeDialog = new BotModeDialog(this, true);
+            botModeDialog.promptUser();
         });
     }
 
@@ -204,7 +206,7 @@ public class MainMenu extends JFrame {
         this.grayScaleBGMButton = grayScaleBGMButton;
     }
 
-    public static MainMenu get() {
+    public static MainMenuFrame get() {
         return INSTANCE;
     }
 }

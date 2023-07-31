@@ -131,7 +131,7 @@ public class Controller {
                     GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
                     GameFrame.get().restartGame();
                     GameFrame.get().dispose();
-                    MainMenu.get().setVisible(true);
+                    MainMenuFrame.get().setVisible(true);
                     GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(true);
                     if (!GameFrame.get().isBlitzMode()) {
                         GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
@@ -152,11 +152,11 @@ public class Controller {
     public static void loadSavedGame() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("database"));
-        fileChooser.showOpenDialog(MainMenu.get());
+        fileChooser.showOpenDialog(MainMenuFrame.get());
         File file = fileChooser.getSelectedFile();
 
         if (!file.getName().endsWith(".txt")) {
-            JOptionPane.showMessageDialog(MainMenu.get(),
+            JOptionPane.showMessageDialog(MainMenuFrame.get(),
                     "The file extension is either missing or not supported.",
                     "File Load Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -170,7 +170,7 @@ public class Controller {
                 readList.add(line);
             }
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(MainMenu.get(),
+            JOptionPane.showMessageDialog(MainMenuFrame.get(),
                     "Error reading file.",
                     "File Read Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -187,7 +187,7 @@ public class Controller {
         try {
             playerTypeList = new ArrayList<>(Arrays.asList(playerTypeLine.split(" ")));
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(MainMenu.get(),
+            JOptionPane.showMessageDialog(MainMenuFrame.get(),
                     "The file is either corrupted or invalid.",
                     "File Load Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -196,7 +196,7 @@ public class Controller {
         try {
             numMoves = Integer.parseInt(readList.remove(0));
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(MainMenu.get(),
+            JOptionPane.showMessageDialog(MainMenuFrame.get(),
                     "The file is either corrupted or invalid.",
                     "File Load Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -208,7 +208,7 @@ public class Controller {
             String[] moveTokens = moveLine.split(" ");
             try {
                 if (moveTokens.length != 3) {
-                    JOptionPane.showMessageDialog(MainMenu.get(),
+                    JOptionPane.showMessageDialog(MainMenuFrame.get(),
                             "The file is either corrupted or invalid.",
                             "File Load Error",
                             JOptionPane.ERROR_MESSAGE);
@@ -219,7 +219,7 @@ public class Controller {
                 try {
                     currentCoordinateList.add(Integer.parseInt(moveTokens[1]));
                 } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(MainMenu.get(),
+                    JOptionPane.showMessageDialog(MainMenuFrame.get(),
                             "The file is either corrupted or invalid.",
                             "File Load Error",
                             JOptionPane.ERROR_MESSAGE);
@@ -228,14 +228,14 @@ public class Controller {
                 try {
                     destinationCoordinateList.add(Integer.parseInt(moveTokens[2]));
                 } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(MainMenu.get(),
+                    JOptionPane.showMessageDialog(MainMenuFrame.get(),
                             "The file is either corrupted or invalid.",
                             "File Load Error",
                             JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(MainMenu.get(),
+                JOptionPane.showMessageDialog(MainMenuFrame.get(),
                         "The file is either corrupted or invalid.",
                         "File Load Error",
                         JOptionPane.ERROR_MESSAGE);
@@ -256,7 +256,7 @@ public class Controller {
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(MainMenu.get(),
+            JOptionPane.showMessageDialog(MainMenuFrame.get(),
                     "The file is either corrupted or invalid.",
                     "File Load Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -269,7 +269,7 @@ public class Controller {
         for (int i = 0; i < playerList.size(); i++) {
             if (i % 2 == 0) {
                 if (!playerList.get(i).equals("bl")) {
-                    JOptionPane.showMessageDialog(MainMenu.get(),
+                    JOptionPane.showMessageDialog(MainMenuFrame.get(),
                             "The file is either corrupted or invalid.",
                             "File Load Error",
                             JOptionPane.ERROR_MESSAGE);
@@ -279,7 +279,7 @@ public class Controller {
                 }
             } else {
                 if (!playerList.get(i).equals("re")) {
-                    JOptionPane.showMessageDialog(MainMenu.get(),
+                    JOptionPane.showMessageDialog(MainMenuFrame.get(),
                             "The file is either corrupted or invalid.",
                             "File Load Error",
                             JOptionPane.ERROR_MESSAGE);
@@ -313,7 +313,7 @@ public class Controller {
             GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.HUMAN);
             GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
         } else {
-            JOptionPane.showMessageDialog(MainMenu.get(),
+            JOptionPane.showMessageDialog(MainMenuFrame.get(),
                     "The file is either corrupted or invalid.",
                     "File Load Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -321,7 +321,7 @@ public class Controller {
         }
         if (!BoardUtils.isGameOverScenario(loadedBoard) && (playerTypeList.get(0).equals("ai") && nextPlayer.equals("bl")
                 || playerTypeList.get(1).equals("ai") && nextPlayer.equals("re"))) {
-            JOptionPane.showMessageDialog(MainMenu.get(),
+            JOptionPane.showMessageDialog(MainMenuFrame.get(),
                     "The file is either corrupted or invalid.",
                     "File Load Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -338,7 +338,7 @@ public class Controller {
             if (index == 9) {
                 String[] tokens = line.split("\\s+");
                 if (tokens.length != 2 && tokens.length != 3) {
-                    JOptionPane.showMessageDialog(MainMenu.get(),
+                    JOptionPane.showMessageDialog(MainMenuFrame.get(),
                             "The file is either corrupted or invalid.",
                             "File Load Error",
                             JOptionPane.ERROR_MESSAGE);
@@ -350,14 +350,14 @@ public class Controller {
                     try {
                         timer = Integer.parseInt(tokens[1]);
                     } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(MainMenu.get(),
+                        JOptionPane.showMessageDialog(MainMenuFrame.get(),
                                 "The file is either corrupted or invalid.",
                                 "File Load Error",
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     if (!mode.equals("normal") || (timer < 10 && timer != 0) || timer > 100) {
-                        JOptionPane.showMessageDialog(MainMenu.get(),
+                        JOptionPane.showMessageDialog(MainMenuFrame.get(),
                                 "The file is either corrupted or invalid.",
                                 "File Load Error",
                                 JOptionPane.ERROR_MESSAGE);
@@ -379,7 +379,7 @@ public class Controller {
                     try {
                         blueTimer = Integer.parseInt(tokens[1]);
                     } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(MainMenu.get(),
+                        JOptionPane.showMessageDialog(MainMenuFrame.get(),
                                 "The file is either corrupted or invalid.",
                                 "File Load Error",
                                 JOptionPane.ERROR_MESSAGE);
@@ -388,14 +388,14 @@ public class Controller {
                     try {
                         redTimer = Integer.parseInt(tokens[2]);
                     } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(MainMenu.get(),
+                        JOptionPane.showMessageDialog(MainMenuFrame.get(),
                                 "The file is either corrupted or invalid.",
                                 "File Load Error",
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     if (!mode.equals("blitz") || blueTimer < 0 || blueTimer > 900 || redTimer < 0 || redTimer > 900) {
-                        JOptionPane.showMessageDialog(MainMenu.get(),
+                        JOptionPane.showMessageDialog(MainMenuFrame.get(),
                                 "The file is either corrupted or invalid.",
                                 "File Load Error",
                                 JOptionPane.ERROR_MESSAGE);
@@ -413,7 +413,7 @@ public class Controller {
                 } else if (line.equals("resign")) {
                     GameFrame.get().setGameResigned(true);
                 } else {
-                    JOptionPane.showMessageDialog(MainMenu.get(),
+                    JOptionPane.showMessageDialog(MainMenuFrame.get(),
                             "The file is either corrupted or invalid.",
                             "File Load Error",
                             JOptionPane.ERROR_MESSAGE);
@@ -437,7 +437,7 @@ public class Controller {
         System.out.println(expectedBoard);
         if (!expectedBoard.equals(loadedBoard)) {
             System.out.println("Board is incorrect");
-            JOptionPane.showMessageDialog(MainMenu.get(),
+            JOptionPane.showMessageDialog(MainMenuFrame.get(),
                     "The file is either corrupted or invalid.",
                     "File Load Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -461,7 +461,7 @@ public class Controller {
                 }
                 ProgressFrame progressFrame = new ProgressFrame("Replay");
                 progressFrame.addProgressListener(() -> {
-                    MainMenu.get().setVisible(false);
+                    MainMenuFrame.get().setVisible(false);
                     GameFrame.get().setVisible(true);
                     loadReplay();
                 });
@@ -469,7 +469,7 @@ public class Controller {
                 System.out.println("Board is correct");
                 ProgressFrame progressFrame = new ProgressFrame("Loading");
                 progressFrame.addProgressListener(() -> {
-                    MainMenu.get().setVisible(false);
+                    MainMenuFrame.get().setVisible(false);
                     GameFrame.get().setVisible(true);
                     if (!GameFrame.get().isBlitzMode()
                             && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
@@ -486,7 +486,7 @@ public class Controller {
                         GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().start();
                         GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().start();
                     }
-                    if (!MainMenu.get().isGrayScaleBGMButton()) {
+                    if (!MainMenuFrame.get().isGrayScaleBGMButton()) {
                         AudioPlayer.LoopPlayer.playGameBGM();
                     }
                     System.out.println("Load a Saved Game");
@@ -497,7 +497,7 @@ public class Controller {
 
     public static void loadReplay() {
         if (firstReplay) {
-            if (!MainMenu.get().isGrayScaleBGMButton()) {
+            if (!MainMenuFrame.get().isGrayScaleBGMButton()) {
                 AudioPlayer.LoopPlayer.playGameBGM();
             }
         }
@@ -582,13 +582,13 @@ public class Controller {
 
     public static void updateGameSetting(int themeIndex) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("database/setting.txt"))) {
-            if (MainMenu.get().isGrayScaleSoundEffectButton()) {
+            if (MainMenuFrame.get().isGrayScaleSoundEffectButton()) {
                 writer.write("off");
             } else {
                 writer.write("on");
             }
             writer.newLine();
-            if (MainMenu.get().isGrayScaleBGMButton()) {
+            if (MainMenuFrame.get().isGrayScaleBGMButton()) {
                 writer.write("off");
             } else {
                 writer.write("on");
@@ -630,13 +630,13 @@ public class Controller {
             System.out.println("Look and feel not found");
         }
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("database/setting.txt"))) {
-            if (MainMenu.get().isGrayScaleSoundEffectButton()) {
+            if (MainMenuFrame.get().isGrayScaleSoundEffectButton()) {
                 writer.write("off");
             } else {
                 writer.write("on");
             }
             writer.newLine();
-            if (MainMenu.get().isGrayScaleBGMButton()) {
+            if (MainMenuFrame.get().isGrayScaleBGMButton()) {
                 writer.write("off");
             } else {
                 writer.write("on");
@@ -668,40 +668,40 @@ public class Controller {
         }
         try {
             if (setting[0].equals("on")) {
-                MainMenu.get().setGrayScaleSoundEffectButton(false);
-                MainMenu.get().soundEffectButton.setIcon(MainMenu.get().soundEffectIcon);
+                MainMenuFrame.get().setGrayScaleSoundEffectButton(false);
+                MainMenuFrame.get().soundEffectButton.setIcon(MainMenuFrame.get().soundEffectIcon);
                 MenuBar.soundEffectAudioControlMenuItem.setSelected(true);
                 Controller.updateGameSetting();
                 System.out.println("Sound Effect is on");
             } else if (setting[0].equals("off")) {
-                MainMenu.get().setGrayScaleSoundEffectButton(true);
-                MainMenu.get().soundEffectButton.setIcon(MainMenu.get().graySoundEffectIcon);
+                MainMenuFrame.get().setGrayScaleSoundEffectButton(true);
+                MainMenuFrame.get().soundEffectButton.setIcon(MainMenuFrame.get().graySoundEffectIcon);
                 MenuBar.soundEffectAudioControlMenuItem.setSelected(false);
                 Controller.updateGameSetting();
                 System.out.println("Sound Effect is off");
             }
             if (setting[1].equals("on")) {
-                MainMenu.get().setGrayScaleBGMButton(false);
-                MainMenu.get().bgmButton.setIcon(MainMenu.get().bgmIcon);
+                MainMenuFrame.get().setGrayScaleBGMButton(false);
+                MainMenuFrame.get().bgmButton.setIcon(MainMenuFrame.get().bgmIcon);
                 MenuBar.bgmAudioControlMenuItem.setSelected(true);
                 AudioPlayer.LoopPlayer.playMenuBGM();
                 Controller.updateGameSetting();
                 System.out.println("BGM is on");
             } else if (setting[1].equals("off")) {
-                MainMenu.get().setGrayScaleBGMButton(true);
-                MainMenu.get().bgmButton.setIcon(MainMenu.get().grayBGMIcon);
+                MainMenuFrame.get().setGrayScaleBGMButton(true);
+                MainMenuFrame.get().bgmButton.setIcon(MainMenuFrame.get().grayBGMIcon);
                 MenuBar.bgmAudioControlMenuItem.setSelected(false);
                 Controller.updateGameSetting();
                 System.out.println("BGM is off");
             }
         } catch (NullPointerException ignored) {
-            MainMenu.get().setGrayScaleSoundEffectButton(false);
-            MainMenu.get().soundEffectButton.setIcon(MainMenu.get().soundEffectIcon);
+            MainMenuFrame.get().setGrayScaleSoundEffectButton(false);
+            MainMenuFrame.get().soundEffectButton.setIcon(MainMenuFrame.get().soundEffectIcon);
             MenuBar.soundEffectAudioControlMenuItem.setSelected(true);
             Controller.updateGameSetting();
             System.out.println("Sound Effect is on");
-            MainMenu.get().setGrayScaleBGMButton(false);
-            MainMenu.get().bgmButton.setIcon(MainMenu.get().bgmIcon);
+            MainMenuFrame.get().setGrayScaleBGMButton(false);
+            MainMenuFrame.get().bgmButton.setIcon(MainMenuFrame.get().bgmIcon);
             MenuBar.bgmAudioControlMenuItem.setSelected(true);
             AudioPlayer.LoopPlayer.playMenuBGM();
             Controller.updateGameSetting();
@@ -737,7 +737,7 @@ public class Controller {
             e.printStackTrace();
         }
         SwingUtilities.updateComponentTreeUI(GameFrame.get().gameFrame);
-        SwingUtilities.updateComponentTreeUI(MainMenu.get());
+        SwingUtilities.updateComponentTreeUI(MainMenuFrame.get());
         SwingUtilities.updateComponentTreeUI(DifficultyFrame.get());
         SwingUtilities.updateComponentTreeUI(GameFrame.get().getGameConfiguration());
         switch (themeIndex) {
@@ -795,8 +795,8 @@ public class Controller {
         GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.HUMAN);
         GameFrame.get().restartGame();
         GameFrame.get().dispose();
-        MainMenu.get().setVisible(true);
-        if (!MainMenu.get().isGrayScaleBGMButton()) {
+        MainMenuFrame.get().setVisible(true);
+        if (!MainMenuFrame.get().isGrayScaleBGMButton()) {
             AudioPlayer.LoopPlayer.playMenuBGM();
         }
         GameFrame.get().getPlayerPanel().setStopTimerInNormalMode(true);

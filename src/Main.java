@@ -1,11 +1,11 @@
 import model.Controller;
-import view.MainMenu;
+import view.MainMenuFrame;
 
 import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
         Controller.loadGameSetting();
-        SwingUtilities.invokeLater(() -> MainMenu.get().setVisible(true));
+        SwingUtilities.invokeLater(() -> MainMenuFrame.get().setVisible(true));
     }
 }
