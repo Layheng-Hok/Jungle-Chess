@@ -107,6 +107,62 @@ public class BoardUtils {
         return Collections.unmodifiableList(moveHistory);
     }
 
+    public static void checkThreeFoldRepetition(MoveLog currentPlayerMoveLog) {
+        if (currentPlayerMoveLog.size() < 6) {
+            return;
+        }
+        final Piece last2MovesPiece = currentPlayerMoveLog.getMove(currentPlayerMoveLog.size() - 2).getMovedPiece();
+        final Piece last4MovesPiece = currentPlayerMoveLog.getMove(currentPlayerMoveLog.size() - 4).getMovedPiece();
+        final Piece last6MovesPiece = currentPlayerMoveLog.getMove(currentPlayerMoveLog.size() - 6).getMovedPiece();
+        if (last2MovesPiece.equalsTypeTwo(last4MovesPiece) && last4MovesPiece.equalsTypeTwo(last6MovesPiece)) {
+            final int last2MovesDestination = currentPlayerMoveLog.getMove(currentPlayerMoveLog.size() - 2).getDestinationCoordinate();
+            final int last4MovesDestination = currentPlayerMoveLog.getMove(currentPlayerMoveLog.size() - 4).getDestinationCoordinate();
+            final int last6MovesDestination = currentPlayerMoveLog.getMove(currentPlayerMoveLog.size() - 6).getDestinationCoordinate();
+            if (last2MovesDestination == last4MovesDestination && last4MovesDestination == last6MovesDestination) {
+                if (clearRepetitionMoveLog(currentPlayerMoveLog)) {
+                    if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue()) {
+                        GameFrame.get().getBlueMoveLog().clear();
+                    } else if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isRed()) {
+                        GameFrame.get().getRedMoveLog().clear();
+                    }
+                    return;
+                }
+                List<Move> currentPlayerOldValidMoves = (List<Move>) GameFrame.get().getChessBoard().getCurrentPlayer().getValidMoves();
+                List<Move> currentPlayerNewValidMoves = new ArrayList<>();
+                for (Move currentPlayerOldValidMove : currentPlayerOldValidMoves) {
+                    if (currentPlayerOldValidMove.getDestinationCoordinate() != last2MovesDestination) {
+                        currentPlayerNewValidMoves.add(currentPlayerOldValidMove);
+                    } else if (currentPlayerOldValidMove.getDestinationCoordinate() == last2MovesDestination) {
+                        currentPlayerNewValidMoves.add(Move.MoveFactory.createBannedRepetitiveMove(
+                                currentPlayerOldValidMove.getBoard(),
+                                currentPlayerOldValidMove.getCurrentCoordinate(),
+                                currentPlayerOldValidMove.getDestinationCoordinate()));
+                    }
+                }
+                GameFrame.get().getChessBoard().getCurrentPlayer().setValidMoves(Collections.unmodifiableList(currentPlayerNewValidMoves));
+            }
+        }
+    }
+
+    private static boolean clearRepetitionMoveLog(MoveLog currentPlayerMoveLog) {
+        boolean shouldBeCleared = false;
+        if (currentPlayerMoveLog.size() < 7) {
+            return false;
+        }
+        final Piece last3MovesPiece = currentPlayerMoveLog.getMove(currentPlayerMoveLog.size() - 3).getMovedPiece();
+        final Piece last5MovesPiece = currentPlayerMoveLog.getMove(currentPlayerMoveLog.size() - 5).getMovedPiece();
+        final Piece last7MovesPiece = currentPlayerMoveLog.getMove(currentPlayerMoveLog.size() - 7).getMovedPiece();
+        if (last3MovesPiece.equalsTypeTwo(last5MovesPiece) && last5MovesPiece.equalsTypeTwo(last7MovesPiece)) {
+            final int last3MovesDestination = currentPlayerMoveLog.getMove(currentPlayerMoveLog.size() - 3).getDestinationCoordinate();
+            final int last5MovesDestination = currentPlayerMoveLog.getMove(currentPlayerMoveLog.size() - 5).getDestinationCoordinate();
+            final int last7MovesDestination = currentPlayerMoveLog.getMove(currentPlayerMoveLog.size() - 7).getDestinationCoordinate();
+            if (last3MovesDestination == last5MovesDestination && last5MovesDestination == last7MovesDestination) {
+                shouldBeCleared = true;
+            }
+        }
+        return shouldBeCleared;
+    }
+
     public static boolean getIntoEnemyTrap(final Move move) {
         final Player moveMaker = move.getBoard().getCurrentPlayer();
         boolean isInEnemyTrap = false;
@@ -140,7 +196,7 @@ public class BoardUtils {
     }
 
     public static boolean isGameDrawnScenario() {
-        return GameFrame.get().getPlayerPanel().getRoundNumber() == 200;
+        return GameFrame.get().getPlayerPanel().getRoundNumber() == 201;
     }
 
     public static boolean isGameOverScenario(final Board board) {

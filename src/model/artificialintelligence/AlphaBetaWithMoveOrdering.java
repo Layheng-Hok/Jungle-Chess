@@ -44,39 +44,41 @@ public class AlphaBetaWithMoveOrdering extends Observable implements MoveStrateg
         System.out.println(board.getCurrentPlayer() + " is thinking with with a depth of " + this.searchDepth);
         System.out.println("\tOrdered moves : " + MoveSorter.EXPENSIVE.sort(board.getCurrentPlayer().getValidMoves()));
         for (final Move move : MoveSorter.EXPENSIVE.sort(board.getCurrentPlayer().getValidMoves())) {
-            final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
-            final String s;
-            if (moveTransition.getMoveStatus().isDone()) {
-                final long potentialMoveStartTime = System.nanoTime();
-                currentValue = currentPlayer.getAllyColor().isBlue() ?
-                        min(moveTransition.getToBoard(), this.searchDepth - 1, highestSeenValue, lowestSeenValue) :
-                        max(moveTransition.getToBoard(), this.searchDepth - 1, highestSeenValue, lowestSeenValue);
-                if (currentPlayer.getAllyColor().isBlue() && currentValue > highestSeenValue) {
-                    highestSeenValue = currentValue;
-                    optimalMove = move;
-                    if (moveTransition.getToBoard().redPlayer().isDenPenetrated()
-                            || moveTransition.getToBoard().redPlayer().getActivePieces().isEmpty()
-                            || moveTransition.getToBoard().redPlayer().getValidMoves().isEmpty()) {
-                        break;
+            if (!move.isBannedRepetitiveMove()) {
+                final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
+                final String s;
+                if (moveTransition.getMoveStatus().isDone()) {
+                    final long potentialMoveStartTime = System.nanoTime();
+                    currentValue = currentPlayer.getAllyColor().isBlue() ?
+                            min(moveTransition.getToBoard(), this.searchDepth - 1, highestSeenValue, lowestSeenValue) :
+                            max(moveTransition.getToBoard(), this.searchDepth - 1, highestSeenValue, lowestSeenValue);
+                    if (currentPlayer.getAllyColor().isBlue() && currentValue > highestSeenValue) {
+                        highestSeenValue = currentValue;
+                        optimalMove = move;
+                        if (moveTransition.getToBoard().redPlayer().isDenPenetrated()
+                                || moveTransition.getToBoard().redPlayer().getActivePieces().isEmpty()
+                                || moveTransition.getToBoard().redPlayer().getValidMoves().isEmpty()) {
+                            break;
+                        }
+                    } else if (currentPlayer.getAllyColor().isRed() && currentValue < lowestSeenValue) {
+                        lowestSeenValue = currentValue;
+                        optimalMove = move;
+                        if (moveTransition.getToBoard().bluePlayer().isDenPenetrated()
+                                || moveTransition.getToBoard().bluePlayer().getActivePieces().isEmpty()
+                                || moveTransition.getToBoard().bluePlayer().getValidMoves().isEmpty()) {
+                            break;
+                        }
                     }
-                } else if (currentPlayer.getAllyColor().isRed() && currentValue < lowestSeenValue) {
-                    lowestSeenValue = currentValue;
-                    optimalMove = move;
-                    if (moveTransition.getToBoard().bluePlayer().isDenPenetrated()
-                            || moveTransition.getToBoard().bluePlayer().getActivePieces().isEmpty()
-                            || moveTransition.getToBoard().bluePlayer().getValidMoves().isEmpty()) {
-                        break;
-                    }
+                    s = "\t" + this + " (" + this.searchDepth + "), move: (" + moveCounter + "/" + numMoves + ") " + move + ", best: " + optimalMove
+                            + " " + score(currentPlayer, highestSeenValue, lowestSeenValue) + ", t: " + calculateTimeTaken(potentialMoveStartTime, System.nanoTime());
+                } else {
+                    s = "\t" + this + " (" + this.searchDepth + ")" + ", m: (" + moveCounter + "/" + numMoves + ") " + move + " is illegal! best: " + optimalMove;
                 }
-                s = "\t" + this + " (" + this.searchDepth + "), move: (" + moveCounter + "/" + numMoves + ") " + move + ", best: " + optimalMove
-                        + " " + score(currentPlayer, highestSeenValue, lowestSeenValue)  + ", t: " + calculateTimeTaken(potentialMoveStartTime, System.nanoTime());
-            } else {
-                s = "\t" + this + " (" + this.searchDepth + ")" + ", m: (" + moveCounter + "/" + numMoves + ") " + move + " is illegal! best: " + optimalMove;
+                System.out.println(s);
+                setChanged();
+                notifyObservers(s);
+                moveCounter++;
             }
-            System.out.println(s);
-            setChanged();
-            notifyObservers(s);
-            moveCounter++;
         }
         final long executionTime = System.currentTimeMillis() - startTime;
         final String result = String.format("%s selects %s [#total boards evaluated = %d," +

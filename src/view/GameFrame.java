@@ -32,6 +32,8 @@ public class GameFrame extends Observable {
     private final BoardPanel boardPanel;
     private final GameConfigurationDialog gameConfiguration;
     private MoveLog moveLog;
+    private MoveLog blueMoveLog;
+    private MoveLog redMoveLog;
     private Board chessBoard;
     private Move lastMove;
     private Move computerMove;
@@ -90,6 +92,8 @@ public class GameFrame extends Observable {
     private void initGameState() {
         this.chessBoard = Board.constructStandardBoard();
         this.moveLog = new MoveLog();
+        this.blueMoveLog = new MoveLog();
+        this.redMoveLog = new MoveLog();
         this.addObserver(new AIGameObserver());
         this.boardDirection = Controller.BoardDirection.NORMAL;
     }
@@ -232,7 +236,14 @@ public class GameFrame extends Observable {
                             }
                         } else {
                             final Move move = Move.MoveFactory.createMove(chessBoard, sourceTerrain.getPieceCoordinate(), terrainCoordinate);
-                            if (!(move.equals(Move.NULL_MOVE))) {
+                            if (move.isBannedRepetitiveMove()) {
+                                JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                                        "You cannot enter the same board position\n" +
+                                                "for more than three times repeatedly.",
+                                        "Banned Repetitive Move", JOptionPane.INFORMATION_MESSAGE);
+                                return;
+                            }
+                            if (!move.equals(Move.MoveFactory.getNullMove())) {
                                 lastMove = move;
                             }
                             if (move.isCaptureMove()) {
@@ -243,6 +254,11 @@ public class GameFrame extends Observable {
                                 chessBoard = transition.getToBoard();
                                 playerPanel.redo(chessBoard);
                                 moveLog.addMove(move);
+                                if (transition.getFromBoard().getCurrentPlayer().getAllyColor().isBlue()){
+                                    blueMoveLog.addMove(move);
+                                } else if (transition.getFromBoard().getCurrentPlayer().getAllyColor().isRed()) {
+                                    redMoveLog.addMove(move);
+                                }
                             }
                             sourceTerrain = null;
                             humanMovedPiece = null;
@@ -254,6 +270,11 @@ public class GameFrame extends Observable {
                             }
                             boardPanel.drawBoard(chessBoard);
                             checkWin();
+                            if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue()) {
+                                BoardUtils.checkThreeFoldRepetition(GameFrame.get().getBlueMoveLog());
+                            } else if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isRed()) {
+                                BoardUtils.checkThreeFoldRepetition(GameFrame.get().getRedMoveLog());
+                            }
                         });
                     }
                 }
@@ -440,21 +461,31 @@ public class GameFrame extends Observable {
 
         private void highlightValidMoves(final Board board) {
             for (final Move move : selectedPieceValidMoves(board)) {
-                if (!move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
+                if (!move.isBannedRepetitiveMove()) {
+                    if (!move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
+                        try {
+                            String dotColor = GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue() ? "blue" : "red";
+                            ImageIcon dotIcon = new ImageIcon(ImageIO.read(new File(defaultImagesPath + dotColor + "dot.png")));
+                            Image resizedImage = dotIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+                            add(new JLabel(new ImageIcon(resizedImage)));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else if (move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
+                        setBorder(BorderFactory.createEmptyBorder());
+                        setBackground(new Color(0, 0, 0, 0));
+                        setBorder(capturedPieceBorder);
+                        setBackground(greenBackground);
+                        setOpaque(true);
+                    }
+                } else if (move.isBannedRepetitiveMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
                     try {
-                        String dotColor = GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue() ? "blue" : "red";
-                        ImageIcon dotIcon = new ImageIcon(ImageIO.read(new File(defaultImagesPath + dotColor + "dot.png")));
+                        ImageIcon dotIcon = new ImageIcon(ImageIO.read(new File(defaultImagesPath + "bannedmove.png")));
                         Image resizedImage = dotIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
                         add(new JLabel(new ImageIcon(resizedImage)));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else if (move.isCaptureMove() && move.getDestinationCoordinate() == this.terrainCoordinate) {
-                    setBorder(BorderFactory.createEmptyBorder());
-                    setBackground(new Color(0, 0, 0, 0));
-                    setBorder(capturedPieceBorder);
-                    setBackground(greenBackground);
-                    setOpaque(true);
                 }
             }
         }
@@ -505,8 +536,15 @@ public class GameFrame extends Observable {
         }
 
         private Collection<Move> selectedPieceValidMoves(final Board board) {
+            List<Move> selectedPiecesValidMoves = new ArrayList<>();
+            final List<Move> currentPlayerValidMoves = (List<Move>) board.getCurrentPlayer().getValidMoves();
             if (humanMovedPiece != null && humanMovedPiece.getPieceColor() == board.getCurrentPlayer().getAllyColor()) {
-                return humanMovedPiece.determineValidMoves(board);
+                for (final Move move : currentPlayerValidMoves) {
+                    if (move.getMovedPiece() == humanMovedPiece) {
+                        selectedPiecesValidMoves.add(move);
+                    }
+                }
+                return Collections.unmodifiableList(selectedPiecesValidMoves);
             }
             return Collections.emptyList();
         }
@@ -550,7 +588,7 @@ public class GameFrame extends Observable {
         protected Move doInBackground() {
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.EASY) {
                 isAIThinking = true;
-                final MoveStrategy minimax = new Minimax(4);
+                final MoveStrategy minimax = new Minimax(1);
                 return minimax.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.MEDIUM) {
@@ -560,7 +598,7 @@ public class GameFrame extends Observable {
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.HARD) {
                 isAIThinking = true;
-                final MoveStrategy intelligenceStack = new PruningOrderingQuiescenceSearch(6);
+                final MoveStrategy intelligenceStack = new PruningOrderingQuiescenceSearch(3);
                 return intelligenceStack.execute(GameFrame.get().getChessBoard());
             }
             return null;
@@ -578,19 +616,29 @@ public class GameFrame extends Observable {
                 GameFrame.get().updateComputerMove(optimalMove);
                 GameFrame.get().setChessBoard(GameFrame.get().getChessBoard().getCurrentPlayer().makeMove(optimalMove).getToBoard());
                 GameFrame.get().getMoveLog().addMove(optimalMove);
+                if (optimalMove.getBoard().getCurrentPlayer().getAllyColor().isBlue()){
+                    GameFrame.get().getBlueMoveLog().addMove(optimalMove);
+                } else if (optimalMove.getBoard().getCurrentPlayer().getAllyColor().isRed()) {
+                    GameFrame.get().getRedMoveLog().addMove(optimalMove);
+                }
                 GameFrame.get().getPlayerPanel().redo(GameFrame.get().chessBoard);
                 GameFrame.get().getCapturedPiecesPanel().redo(GameFrame.get().getMoveLog());
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
                 GameFrame.get().checkWin();
+                if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue()) {
+                    BoardUtils.checkThreeFoldRepetition(GameFrame.get().getBlueMoveLog());
+                } else if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isRed()) {
+                    BoardUtils.checkThreeFoldRepetition(GameFrame.get().getRedMoveLog());
+                }
             } catch (final Exception e) {
                 e.printStackTrace();
             }
             isAIThinking = false;
-            if (BotModeDialog.isBotGame()){
+            if (BotModeDialog.isBotGame()) {
                 isAIThinking = true;
                 if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue()) {
                     BotModeDialog.setBlueBotDifficulty();
-                } else  if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isRed())  {
+                } else if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isRed()) {
                     BotModeDialog.setRedBotDifficulty();
                 }
                 GameFrame.get().moveMadeUpdate(PlayerType.HUMAN);
@@ -615,6 +663,8 @@ public class GameFrame extends Observable {
         GameFrame.get().setBlitzModeGameOver(false);
         gameResigned = false;
         moveLog.clear();
+        blueMoveLog.clear();
+        redMoveLog.clear();
         lastMove = null;
         computerMove = null;
         boardPanel.removeAllBorders();
@@ -686,6 +736,21 @@ public class GameFrame extends Observable {
             }
             Controller.handleWinningStateForHavingNoMoreValidMovesConditions();
         }
+        if (BoardUtils.isGameDrawnScenario()) {
+            if (!GameFrame.get().isBlitzMode()) {
+                GameFrame.get().setNormalModeGameOver(true);
+            }
+            if (!GameFrame.get().isBlitzMode()
+                    && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
+            }
+            if (GameFrame.get().isBlitzMode()) {
+                GameFrame.get().setBlitzModeGameOver(true);
+                GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
+                GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
+            }
+            Controller.handleGameDrawnScenario();
+        }
     }
 
     public void setLoadBoard(Board loadBoard, MoveLog loadMoveLog, int roundNumber) {
@@ -745,6 +810,14 @@ public class GameFrame extends Observable {
 
     public MoveLog getMoveLog() {
         return moveLog;
+    }
+
+    public MoveLog getBlueMoveLog() {
+        return blueMoveLog;
+    }
+
+    public MoveLog getRedMoveLog() {
+        return redMoveLog;
     }
 
     public void setMoveLog(MoveLog moveLog) {

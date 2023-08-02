@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public abstract class Player {
     protected final Board board;
-    protected final Collection<Move> validMoves;
+    protected Collection<Move> validMoves;
 
     Player(Board board, Collection<Move> validMoves) {
         this.board = board;
@@ -40,5 +40,9 @@ public abstract class Player {
 
     public Collection<Move> getValidMoves() {
         return this.validMoves;
+    }
+
+    public void setValidMoves(Collection<Move> validMoves) {
+        this.validMoves = validMoves;
     }
 }

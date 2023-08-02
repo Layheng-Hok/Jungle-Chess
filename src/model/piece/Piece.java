@@ -41,9 +41,21 @@ public abstract class Piece {
                 && this.isFirstMove == otherPiece.isFirstMove();
     }
 
+    public boolean equalsTypeTwo(final Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof Piece)) {
+            return false;
+        }
+        final Piece otherPiece = (Piece) other;
+        return this.pieceType == otherPiece.getPieceType()
+                && this.pieceColor == otherPiece.getPieceColor();
+    }
+
     @Override
     public int hashCode() {
-      return this.cachedHashCode;
+        return this.cachedHashCode;
     }
 
     private int computeHashCode() {

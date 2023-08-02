@@ -1,13 +1,16 @@
 package model.board;
 
 import model.piece.Piece;
+import view.GameFrame;
+
+import javax.swing.*;
 
 public abstract class Move {
     protected Board board;
     protected final Piece movedPiece;
     protected int destinationCoordinate;
     protected final boolean isFirstMove;
-    public static final Move NULL_MOVE = new NullMove();
+    private static final Move NULL_MOVE = new NullMove();
 
     private Move(final Board board, final Piece movedPiece, final int destinationCoordinate) {
         this.board = board;
@@ -91,6 +94,10 @@ public abstract class Move {
     }
 
     public boolean isCaptureMove() {
+        return false;
+    }
+
+    public boolean isBannedRepetitiveMove() {
         return false;
     }
 
@@ -186,6 +193,30 @@ public abstract class Move {
         }
     }
 
+    static class BannedRepetitiveMove extends Move {
+        BannedRepetitiveMove(final Board board, final Piece movedPiece, final int destinationCoordinate) {
+            super(board, movedPiece, destinationCoordinate);
+        }
+
+        @Override
+        public Board execute() {
+            return this.board;
+        }
+
+        @Override
+        public boolean isBannedRepetitiveMove() {
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return "Banned Repetitive Move: "
+                    + movedPiece.getPieceColor().toString().toLowerCase().substring(0, 2) + " "
+                    + movedPiece.getPieceCoordinate() + " "
+                    + destinationCoordinate;
+        }
+    }
+
     public static class MoveFactory {
         private MoveFactory() {
             throw new RuntimeException("You cannot instantiate an object of \"MoveFactory\".");
@@ -202,6 +233,10 @@ public abstract class Move {
                 }
             }
             return NULL_MOVE;
+        }
+
+        public static Move createBannedRepetitiveMove(final Board board, final int currentCoordinate, final int destinationCoordinate) {
+            return new BannedRepetitiveMove(board, board.getPiece(currentCoordinate), destinationCoordinate);
         }
     }
 }

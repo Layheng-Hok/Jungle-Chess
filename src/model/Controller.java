@@ -892,6 +892,11 @@ public class Controller {
         if (GameFrame.get().getGameConfiguration().getBluePlayerType() == PlayerType.HUMAN && GameFrame.get().getGameConfiguration().getRedPlayerType() == PlayerType.HUMAN) {
             if (GameFrame.get().getMoveLog().size() > 1) {
                 final Move lastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
+                if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue()) {
+                    GameFrame.get().getBlueMoveLog().removeMove(GameFrame.get().getBlueMoveLog().size() - 1);
+                } else if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isRed()) {
+                    GameFrame.get().getRedMoveLog().removeMove(GameFrame.get().getRedMoveLog().size() - 1);
+                }
                 GameFrame.get().setLastMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
                 GameFrame.get().setChessBoard(GameFrame.get().getChessBoard().getCurrentPlayer().unmakeMove(lastMove).getToBoard());
                 GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
@@ -914,9 +919,19 @@ public class Controller {
             }
             if (GameFrame.get().getMoveLog().size() > 1) {
                 final Move lastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
+                if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue()) {
+                    GameFrame.get().getBlueMoveLog().removeMove(GameFrame.get().getBlueMoveLog().size() - 1);
+                } else if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isRed()) {
+                    GameFrame.get().getRedMoveLog().removeMove(GameFrame.get().getRedMoveLog().size() - 1);
+                }
                 GameFrame.get().setChessBoard(GameFrame.get().getChessBoard().getCurrentPlayer().unmakeMove(lastMove).getToBoard());
                 if (lastMove.equals(GameFrame.get().getComputerMove())) {
                     final Move secondLastMove = GameFrame.get().getMoveLog().removeMove(GameFrame.get().getMoveLog().size() - 1);
+                    if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue()) {
+                        GameFrame.get().getRedMoveLog().removeMove(GameFrame.get().getRedMoveLog().size() - 1);
+                    } else if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isRed()) {
+                        GameFrame.get().getBlueMoveLog().removeMove(GameFrame.get().getBlueMoveLog().size() - 1);
+                    }
                     GameFrame.get().setChessBoard(GameFrame.get().getChessBoard().getCurrentPlayer().unmakeMove(secondLastMove).getToBoard());
                     GameFrame.get().setLastMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
                     GameFrame.get().setComputerMove(GameFrame.get().getMoveLog().getMove(GameFrame.get().getMoveLog().size() - 1));
@@ -1067,7 +1082,7 @@ public class Controller {
             dialog.setResizable(false);
             dialog.setModal(true);
 
-            final JLabel valueLabel = new JLabel("Enter the timer value in seconds (10 - 100):");
+            final JLabel valueLabel = new JLabel("Enter the timer value in seconds (15 - 100):");
             JTextField textField = new JTextField(16);
             final JButton setTimerButton = new JButton("Set Timer");
             final JButton removeTimer = new JButton("Remove Timer");
@@ -1083,7 +1098,7 @@ public class Controller {
             setTimerButton.addActionListener(e -> {
                 try {
                     int timerValue = Integer.parseInt(textField.getText());
-                    if (timerValue >= 10 && timerValue <= 100) {
+                    if (timerValue >= 15 && timerValue <= 100) {
                         GameFrame.get().getPlayerPanel().setInitialTimerSecondsNormalMode(timerValue);
                         if (GameFrame.get().getMoveLog().size() == 0) {
                             GameFrame.get().restartGame();
@@ -1096,7 +1111,7 @@ public class Controller {
                         dialog.dispose();
                     } else {
                         JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
-                                "Invalid input.\nPlease enter an integer value between 10 and 100.");
+                                "Invalid input.\nPlease enter an integer value between 15 and 100.");
                     }
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
@@ -1552,6 +1567,32 @@ public class Controller {
             }
         };
         worker.execute();
+    }
+
+    public static void handleGameDrawnScenario() {
+        AudioPlayer.SinglePlayer.playSoundEffect("losing.wav");
+        String[] options = {"Save Replay", "Restart"};
+        int choice = JOptionPane.showOptionDialog(GameFrame.get().getBoardPanel(),
+                "Game Over: Game is considered a draw after 150 moves!",
+                "Game Over",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                resizedGameOverIcon,
+                options,
+                options[0]);
+        System.out.println("Game Over: Game is considered drawn after 150 moves!");
+
+        if (choice == 0) {
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedDateTime = currentDateTime.format(formatter);
+            String fileName = "Replay_" + formattedDateTime.replace(":", "-");
+            callFromSaveReplay = true;
+            writeGame(fileName);
+        } else if (choice == 1 || choice == JOptionPane.CLOSED_OPTION) {
+            restartGameWithAnimation();
+            System.out.println("Game Restarted");
+        }
     }
 
     public static void coloringTerrainsAnimationThread() {

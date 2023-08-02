@@ -47,41 +47,43 @@ public class PruningOrderingQuiescenceSearch extends Observable implements MoveS
         System.out.println(board.getCurrentPlayer() + " is thinking with with a depth of " + this.searchDepth);
         System.out.println("\tOrdered moves : " + MoveSorter.EXPENSIVE.sort(board.getCurrentPlayer().getValidMoves()));
         for (final Move move : MoveSorter.EXPENSIVE.sort(board.getCurrentPlayer().getValidMoves())) {
-            final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
-            this.quiescenceCount = 0;
-            final String s;
-            if (moveTransition.getMoveStatus().isDone()) {
-                final long potentialMoveStartTime = System.nanoTime();
-                currentValue = currentPlayer.getAllyColor().isBlue() ?
-                        min(moveTransition.getToBoard(), this.searchDepth - 1, highestSeenValue, lowestSeenValue) :
-                        max(moveTransition.getToBoard(), this.searchDepth - 1, highestSeenValue, lowestSeenValue);
-                if (currentPlayer.getAllyColor().isBlue() && currentValue > highestSeenValue) {
-                    highestSeenValue = currentValue;
-                    optimalMove = move;
-                    if (moveTransition.getToBoard().redPlayer().isDenPenetrated()
-                            || moveTransition.getToBoard().redPlayer().getActivePieces().isEmpty()
-                            || moveTransition.getToBoard().redPlayer().getValidMoves().isEmpty()) {
-                        break;
+            if (!move.isBannedRepetitiveMove()) {
+                final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
+                this.quiescenceCount = 0;
+                final String s;
+                if (moveTransition.getMoveStatus().isDone()) {
+                    final long potentialMoveStartTime = System.nanoTime();
+                    currentValue = currentPlayer.getAllyColor().isBlue() ?
+                            min(moveTransition.getToBoard(), this.searchDepth - 1, highestSeenValue, lowestSeenValue) :
+                            max(moveTransition.getToBoard(), this.searchDepth - 1, highestSeenValue, lowestSeenValue);
+                    if (currentPlayer.getAllyColor().isBlue() && currentValue > highestSeenValue) {
+                        highestSeenValue = currentValue;
+                        optimalMove = move;
+                        if (moveTransition.getToBoard().redPlayer().isDenPenetrated()
+                                || moveTransition.getToBoard().redPlayer().getActivePieces().isEmpty()
+                                || moveTransition.getToBoard().redPlayer().getValidMoves().isEmpty()) {
+                            break;
+                        }
+                    } else if (currentPlayer.getAllyColor().isRed() && currentValue < lowestSeenValue) {
+                        lowestSeenValue = currentValue;
+                        optimalMove = move;
+                        if (moveTransition.getToBoard().bluePlayer().isDenPenetrated()
+                                || moveTransition.getToBoard().bluePlayer().getActivePieces().isEmpty()
+                                || moveTransition.getToBoard().bluePlayer().getValidMoves().isEmpty()) {
+                            break;
+                        }
                     }
-                } else if (currentPlayer.getAllyColor().isRed() && currentValue < lowestSeenValue) {
-                    lowestSeenValue = currentValue;
-                    optimalMove = move;
-                    if (moveTransition.getToBoard().bluePlayer().isDenPenetrated()
-                            || moveTransition.getToBoard().bluePlayer().getActivePieces().isEmpty()
-                            || moveTransition.getToBoard().bluePlayer().getValidMoves().isEmpty()) {
-                        break;
-                    }
+                    final String quiescenceInfo = " " + score(currentPlayer, highestSeenValue, lowestSeenValue) + " q: " + this.quiescenceCount;
+                    s = "\t" + this + " (" + this.searchDepth + "), move: (" + moveCounter + "/" + numMoves + ") " + move + ", best: " + optimalMove
+                            + quiescenceInfo + ", t: " + calculateTimeTaken(potentialMoveStartTime, System.nanoTime());
+                } else {
+                    s = "\t" + this + " (" + this.searchDepth + ")" + ", m: (" + moveCounter + "/" + numMoves + ") " + move + " is illegal! best: " + optimalMove;
                 }
-                final String quiescenceInfo = " " + score(currentPlayer, highestSeenValue, lowestSeenValue) + " q: " + this.quiescenceCount;
-                s = "\t" + this + " (" + this.searchDepth + "), move: (" + moveCounter + "/" + numMoves + ") " + move + ", best: " + optimalMove
-                        + quiescenceInfo + ", t: " + calculateTimeTaken(potentialMoveStartTime, System.nanoTime());
-            } else {
-                s = "\t" + this + " (" + this.searchDepth + ")" + ", m: (" + moveCounter + "/" + numMoves + ") " + move + " is illegal! best: " + optimalMove;
+                System.out.println(s);
+                setChanged();
+                notifyObservers(s);
+                moveCounter++;
             }
-            System.out.println(s);
-            setChanged();
-            notifyObservers(s);
-            moveCounter++;
         }
         final long executionTime = System.currentTimeMillis() - startTime;
         final String result = String.format("%s selects %s [#total boards evaluated = %d," +
@@ -156,7 +158,7 @@ public class PruningOrderingQuiescenceSearch extends Observable implements MoveS
     private int calculateQuiescenceDepth(final Board toBoard, final int depth) {
         if (depth == 1 && this.quiescenceCount < MAX_QUIESCENCE) {
             int activityMeasure = 0;
-            if (BoardUtils.getIntoEnemyTrap(toBoard.getTransitionMove())){
+            if (BoardUtils.getIntoEnemyTrap(toBoard.getTransitionMove())) {
                 activityMeasure += 1;
             }
             for (final Move move : BoardUtils.lastNMoves(toBoard, 2)) {

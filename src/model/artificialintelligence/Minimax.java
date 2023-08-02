@@ -46,27 +46,29 @@ public class Minimax implements MoveStrategy {
         int moveCounter = 1;
         final int numMoves = board.getCurrentPlayer().getValidMoves().size();
         for (final Move move : board.getCurrentPlayer().getValidMoves()) {
-            final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
-            if (moveTransition.getMoveStatus().isDone()) {
-                final FreqTableRow row = new FreqTableRow(move);
-                this.freqTable[this.freqTableIndex] = row;
-                currentValue = board.getCurrentPlayer().getAllyColor().isBlue() ?
-                        min(moveTransition.getToBoard(), this.searchDepth - 1) :
-                        max(moveTransition.getToBoard(), this.searchDepth - 1);
-                System.out.println("\t" + this + " is analyzing move (" + moveCounter + "/" + numMoves + ") " + move +
-                        " scores " + currentValue + " " + this.freqTable[this.freqTableIndex]);
-                this.freqTableIndex++;
-                if (board.getCurrentPlayer().getAllyColor().isBlue() && currentValue >= highestSeenValue) {
-                    highestSeenValue = currentValue;
-                    optimalMove = move;
-                } else if (board.getCurrentPlayer().getAllyColor().isRed() && currentValue <= lowestSeenValue) {
-                    lowestSeenValue = currentValue;
-                    optimalMove = move;
+            if (!move.isBannedRepetitiveMove()) {
+                final MoveTransition moveTransition = board.getCurrentPlayer().makeMove(move);
+                if (moveTransition.getMoveStatus().isDone()) {
+                    final FreqTableRow row = new FreqTableRow(move);
+                    this.freqTable[this.freqTableIndex] = row;
+                    currentValue = board.getCurrentPlayer().getAllyColor().isBlue() ?
+                            min(moveTransition.getToBoard(), this.searchDepth - 1) :
+                            max(moveTransition.getToBoard(), this.searchDepth - 1);
+                    System.out.println("\t" + this + " is analyzing move (" + moveCounter + "/" + numMoves + ") " + move +
+                            " scores " + currentValue + " " + this.freqTable[this.freqTableIndex]);
+                    this.freqTableIndex++;
+                    if (board.getCurrentPlayer().getAllyColor().isBlue() && currentValue >= highestSeenValue) {
+                        highestSeenValue = currentValue;
+                        optimalMove = move;
+                    } else if (board.getCurrentPlayer().getAllyColor().isRed() && currentValue <= lowestSeenValue) {
+                        lowestSeenValue = currentValue;
+                        optimalMove = move;
+                    }
+                } else {
+                    System.out.println(this + " is analyzing move (" + moveCounter + "/" + numMoves + ") " + move + " is illegal!");
                 }
-            } else {
-                System.out.println(this + " is analyzing move (" + moveCounter + "/" + numMoves + ") " + move + " is illegal!");
+                moveCounter++;
             }
-            moveCounter++;
         }
         final long executionTime = System.currentTimeMillis() - startTime;
         System.out.printf("%s selects %s [#total boards evaluated = %d, time taken = %dms, evaluation rate = %.1fboards/second]\n",

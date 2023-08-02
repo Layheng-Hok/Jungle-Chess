@@ -50,6 +50,10 @@ public class PlayerPanel extends JPanel {
         resignButton.setRolloverIcon(new ImageIcon(resizedHoverResignImage));
 
         resignButton.addActionListener(e -> {
+            for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
+                GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
+            }
+            GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
             if (!BoardUtils.isGameOverScenario(GameFrame.get().getChessBoard())) {
                 AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
                 if (!GameFrame.get().isBlitzMode()) {
@@ -103,7 +107,6 @@ public class PlayerPanel extends JPanel {
             int blueTimerX = ((getWidth() - g.getFontMetrics().stringWidth(blueTimerText)) / 2) - 50;
             int blueTimerY = timerY + 26;
             g.drawString(blueTimerText, blueTimerX, blueTimerY);
-
 
             if (redCurrentTimerSecondsBlitzMode <= 60) {
                 g.setColor(Color.RED);
@@ -225,6 +228,9 @@ public class PlayerPanel extends JPanel {
         timerNormalMode = new Timer(1000, e -> {
             currentTimerSecondsNormalMode--;
             if (currentTimerSecondsNormalMode == 0) {
+                for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
+                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
+                }
                 Board chessBoard = GameFrame.get().getChessBoard();
                 List<Move> validMoves = new ArrayList<>(chessBoard.getCurrentPlayer().getValidMoves());
                 Move selectedMove = null;
@@ -235,8 +241,10 @@ public class PlayerPanel extends JPanel {
                     }
                 }
                 if (selectedMove == null && !validMoves.isEmpty()) {
-                    int randomIndex = (int) (Math.random() * validMoves.size());
-                    selectedMove = validMoves.get(randomIndex);
+                    do {
+                        int randomIndex = (int) (Math.random() * validMoves.size());
+                        selectedMove = validMoves.get(randomIndex);
+                    } while (selectedMove.isBannedRepetitiveMove());
                 }
                 if (selectedMove != null) {
                     AudioPlayer.SinglePlayer.playSoundEffect("click.wav");
