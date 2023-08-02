@@ -196,7 +196,7 @@ public class BoardUtils {
     }
 
     public static boolean isGameDrawnScenario() {
-        return GameFrame.get().getPlayerPanel().getRoundNumber() == 201;
+        return GameFrame.get().getPlayerPanel().getRoundNumber() == 151;
     }
 
     public static boolean isGameOverScenario(final Board board) {
