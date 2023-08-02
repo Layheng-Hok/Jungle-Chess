@@ -53,6 +53,12 @@ public class Controller {
     }
 
     private static void writeGame(String fileName) {
+        if (BotModeDialog.isBotGame()) {
+            JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
+                    "Feature not supported.",
+                    "Error Message",
+                    JOptionPane.ERROR_MESSAGE);
+        }
         String location = "database\\" + fileName + ".txt";
         if (!fileName.matches("[^\\\\/:*?\"<>|]+")) {
             JOptionPane.showMessageDialog(GameFrame.get().getBoardPanel(),
