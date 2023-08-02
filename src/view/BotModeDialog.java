@@ -7,7 +7,7 @@ import java.awt.*;
 
 import static view.GameFrame.defaultImagesPath;
 
-class BotModeDialog extends JDialog {
+public class BotModeDialog extends JDialog {
     private static final String BOT1 = "Bot 1: Minimax ( 4)";
     private static final String BOT2 = "Bot 2: Bot 1 + Alpha Beta + Move Ordering (6)";
     private static final String BOT3 = "Bot 3: Bot 2 + Quiescence Search (Dynamic Depth)";
@@ -19,7 +19,7 @@ class BotModeDialog extends JDialog {
     private static final JRadioButton redBot3Button = new JRadioButton(BOT3);
     private static boolean botGame = false;
 
-    BotModeDialog(final JFrame frame, final boolean modal) {
+    public BotModeDialog(final JFrame frame, final boolean modal) {
         super(frame, modal);
         this.setTitle("Select Bot Types");
         final JPanel botModePanel = new JPanel(new GridLayout(0, 1));
