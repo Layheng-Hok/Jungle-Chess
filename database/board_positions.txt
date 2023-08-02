@@ -202,7 +202,6 @@ Board 8: Blue Player has let Red Player's lion (7) get too close to its tiger (6
 Board 9: This position immediately precedes position in board 9. If Blue Player moves g5-g6, Red Player will move its
 	 lion (8) over and chase Blue Player's tiger (7).
 
-
 	final Builder builder = new Builder();
 
         builder.setPiece(new Rat(34, PlayerColor.BLUE));
