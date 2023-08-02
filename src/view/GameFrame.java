@@ -588,7 +588,7 @@ public class GameFrame extends Observable {
         protected Move doInBackground() {
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.EASY) {
                 isAIThinking = true;
-                final MoveStrategy minimax = new Minimax(1);
+                final MoveStrategy minimax = new Minimax(4);
                 return minimax.execute(GameFrame.get().getChessBoard());
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.MEDIUM) {
@@ -598,7 +598,7 @@ public class GameFrame extends Observable {
             }
             if (DifficultyFrame.getDifficulty() == DifficultyFrame.Difficulty.HARD) {
                 isAIThinking = true;
-                final MoveStrategy intelligenceStack = new PruningOrderingQuiescenceSearch(3);
+                final MoveStrategy intelligenceStack = new PruningOrderingQuiescenceSearch(6);
                 return intelligenceStack.execute(GameFrame.get().getChessBoard());
             }
             return null;
