@@ -1,0 +1,77 @@
+Interesting board positions used for Jungle Chess (Dou Shou Qi) engine testing:
+
+If you want to use any board positions, just copy the code snippet of the respective board
+and paste it in the method called constructStandardBoard().
+Navigation: model package -> board package -> Board.class 
+            -> public static Board constructStandardBoard() { // clear everything inside the block and paste the code here }
+
+Board 1: Standard starting position
+
+  	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(48, PlayerColor.BLUE));
+        builder.setPiece(new Cat(50, PlayerColor.BLUE));
+        builder.setPiece(new Dog(54, PlayerColor.BLUE));
+        builder.setPiece(new Wolf(44, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(46, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(56, PlayerColor.BLUE));
+        builder.setPiece(new Lion(62, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(42, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(14, PlayerColor.RED));
+        builder.setPiece(new Cat(12, PlayerColor.RED));
+        builder.setPiece(new Dog(8, PlayerColor.RED));
+        builder.setPiece(new Wolf(18, PlayerColor.RED));
+        builder.setPiece(new Leopard(16, PlayerColor.RED));
+        builder.setPiece(new Tiger(6, PlayerColor.RED));
+        builder.setPiece(new Lion(0, PlayerColor.RED));
+        builder.setPiece(new Elephant(20, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.BLUE);
+        return builder.build();
+
+Board 2: Blue Player is putting pressure on the upper-right quadrant of the board with its rat (1) and lion (7), but 
+	 Blue Player needs to get its elephant (8) at a3 past Red Player's rat at b4 to win the game.
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(27, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(24, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(31, PlayerColor.BLUE));
+        builder.setPiece(new Lion(47, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(42, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(36, PlayerColor.RED));
+        builder.setPiece(new Tiger(18, PlayerColor.RED));
+        builder.setPiece(new Lion(9, PlayerColor.RED));
+        builder.setPiece(new Elephant(12, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.BLUE);
+        return builder.build();
+
+Board 3: Blue Player has moved its elephant (8) away from the river and Red Player has not. Because an elephant along
+	 the river is essential for preventing the opposing lion (7) from jumping over the water, this position should
+	 be disadvantageous for Blue Player.
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(27, PlayerColor.BLUE));
+        builder.setPiece(new Cat(43, PlayerColor.BLUE));
+        builder.setPiece(new Dog(53, PlayerColor.BLUE));
+        builder.setPiece(new Wolf(51, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(38, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(56, PlayerColor.BLUE));
+        builder.setPiece(new Lion(55, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(49, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(35, PlayerColor.RED));
+        builder.setPiece(new Cat(13, PlayerColor.RED));
+        builder.setPiece(new Dog(9, PlayerColor.RED));
+        builder.setPiece(new Wolf(11, PlayerColor.RED));
+        builder.setPiece(new Leopard(24, PlayerColor.RED));
+        builder.setPiece(new Tiger(6, PlayerColor.RED));
+        builder.setPiece(new Lion(7, PlayerColor.RED));
+        builder.setPiece(new Elephant(19, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.RED);
+        return builder.build();
