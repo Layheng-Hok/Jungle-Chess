@@ -75,3 +75,232 @@ Board 3: Blue Player has moved its elephant (8) away from the river and Red Play
 
         builder.setNextMovePlayer(PlayerColor.RED);
         return builder.build();
+
+Board 4: Red Player has developed the board more than Blue Player, who has wasted moves and allowed Red Player's rat (1)
+to move down to a3.
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(27, PlayerColor.BLUE));
+        builder.setPiece(new Cat(58, PlayerColor.BLUE));
+        builder.setPiece(new Dog(53, PlayerColor.BLUE));
+        builder.setPiece(new Wolf(51, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(46, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(57, PlayerColor.BLUE));
+        builder.setPiece(new Lion(54, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(50, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(42, PlayerColor.RED));
+        builder.setPiece(new Cat(12, PlayerColor.RED));
+        builder.setPiece(new Dog(9, PlayerColor.RED));
+        builder.setPiece(new Wolf(11, PlayerColor.RED));
+        builder.setPiece(new Leopard(38, PlayerColor.RED));
+        builder.setPiece(new Tiger(13, PlayerColor.RED));
+        builder.setPiece(new Lion(15, PlayerColor.RED));
+        builder.setPiece(new Elephant(19, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.RED);
+        return builder.build();
+
+Board 5: A should win in exactly five moves
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(6, PlayerColor.BLUE));
+        builder.setPiece(new Dog(53, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(17, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(51, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(43, PlayerColor.RED));
+	builder.setPiece(new Dog(8, PlayerColor.RED));
+        builder.setPiece(new Wolf(11, PlayerColor.RED));
+        builder.setPiece(new Leopard(15, PlayerColor.RED));
+        builder.setPiece(new Lion(54, PlayerColor.RED));
+        builder.setPiece(new Elephant(47, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.BLUE);
+        return builder.build();
+
+Board 6: Red Player has moved down the right aisle while Blue Player was moving up the left. Both players need to
+	 bring their tigers (6) into play to win.
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(61, PlayerColor.BLUE));
+        builder.setPiece(new Cat(53, PlayerColor.BLUE));
+        builder.setPiece(new Dog(50, PlayerColor.BLUE));
+        builder.setPiece(new Wolf(43, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(24, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(56, PlayerColor.BLUE));
+        builder.setPiece(new Lion(60, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(15, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(9, PlayerColor.RED));
+        builder.setPiece(new Cat(47, PlayerColor.RED));
+        builder.setPiece(new Dog(34, PlayerColor.RED));
+        builder.setPiece(new Wolf(11, PlayerColor.RED));
+        builder.setPiece(new Leopard(16, PlayerColor.RED));
+        builder.setPiece(new Tiger(5, PlayerColor.RED));
+        builder.setPiece(new Lion(8, PlayerColor.RED));
+        builder.setPiece(new Elephant(48, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.BLUE);
+        return builder.build();
+
+Board 7: Red Player has allowed Blue Player's leopard (5) to advance too far, and now Red Player's lion (7) is stuck.
+	 Red Player's leopard (5) should have moved over sooner to give the lion (7) room to operate.
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(41, PlayerColor.BLUE));
+        builder.setPiece(new Cat(50, PlayerColor.BLUE));
+        builder.setPiece(new Dog(54, PlayerColor.BLUE));
+        builder.setPiece(new Wolf(44, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(24, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(56, PlayerColor.BLUE));
+        builder.setPiece(new Lion(62, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(43, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(21, PlayerColor.RED));
+        builder.setPiece(new Cat(13, PlayerColor.RED));
+        builder.setPiece(new Dog(8, PlayerColor.RED));
+        builder.setPiece(new Wolf(18, PlayerColor.RED));
+        builder.setPiece(new Leopard(16, PlayerColor.RED));
+        builder.setPiece(new Tiger(6, PlayerColor.RED));
+        builder.setPiece(new Lion(15, PlayerColor.RED));
+        builder.setPiece(new Elephant(20, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.BLUE);
+        return builder.build();
+
+Board 8: Blue Player has let Red Player's lion (7) get too close to its tiger (6), and he is going to lose its leopard (5)
+	 in the retreat. Blue Player should have seen this coming when Red Player moved b4-b5.
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(27, PlayerColor.BLUE));
+        builder.setPiece(new Cat(50, PlayerColor.BLUE));
+        builder.setPiece(new Dog(54, PlayerColor.BLUE));
+        builder.setPiece(new Wolf(51, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(31, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(21, PlayerColor.BLUE));
+        builder.setPiece(new Lion(48, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(43, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(22, PlayerColor.RED));
+        builder.setPiece(new Cat(13, PlayerColor.RED));
+        builder.setPiece(new Dog(9, PlayerColor.RED));
+        builder.setPiece(new Wolf(18, PlayerColor.RED));
+        builder.setPiece(new Leopard(17, PlayerColor.RED));
+        builder.setPiece(new Tiger(6, PlayerColor.RED));
+        builder.setPiece(new Lion(14, PlayerColor.RED));
+        builder.setPiece(new Elephant(19, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.BLUE);
+        return builder.build();
+
+Board 9: This position immediately precedes position in board 9. If Blue Player moves g5-g6, Red Player will move its
+	 lion (8) over and chase Blue Player's tiger (7).
+
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(34, PlayerColor.BLUE));
+        builder.setPiece(new Cat(50, PlayerColor.BLUE));
+        builder.setPiece(new Dog(54, PlayerColor.BLUE));
+        builder.setPiece(new Wolf(51, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(31, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(21, PlayerColor.BLUE));
+        builder.setPiece(new Lion(48, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(43, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(22, PlayerColor.RED));
+        builder.setPiece(new Cat(13, PlayerColor.RED));
+        builder.setPiece(new Dog(9, PlayerColor.RED));
+        builder.setPiece(new Wolf(18, PlayerColor.RED));
+        builder.setPiece(new Leopard(17, PlayerColor.RED));
+        builder.setPiece(new Tiger(6, PlayerColor.RED));
+        builder.setPiece(new Lion(15, PlayerColor.RED));
+        builder.setPiece(new Elephant(19, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.BLUE);
+        return builder.build();
+
+Board 10: Blue Player has been too aggressive. Red Player's elephant (8) can by-pass Blue Player's rat (1) and drive down
+	  the center aisle or Red Player's tiger (7) could leap across the water before Blue Player's elephant (8) can
+	  move down to defend.
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(20, PlayerColor.BLUE));
+        builder.setPiece(new Cat(50, PlayerColor.BLUE));
+        builder.setPiece(new Dog(54, PlayerColor.BLUE));
+        builder.setPiece(new Wolf(44, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(46, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(56, PlayerColor.BLUE));
+        builder.setPiece(new Lion(31, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(35, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(22, PlayerColor.RED));
+        builder.setPiece(new Cat(12, PlayerColor.RED));
+        builder.setPiece(new Dog(8, PlayerColor.RED));
+        builder.setPiece(new Wolf(11, PlayerColor.RED));
+        builder.setPiece(new Leopard(9, PlayerColor.RED));
+        builder.setPiece(new Tiger(6, PlayerColor.RED));
+        builder.setPiece(new Lion(14, PlayerColor.RED));
+        builder.setPiece(new Elephant(18, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.RED);
+        return builder.build();
+
+Board 11: Red Player seems to have forgotten that a rat (1) can capture an elephant (8) and is going to be chased all the way
+	  back to its side. Blue Player should sacrifice its rat (1) to kill the elephant so its lion (7) can jump over the water.
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(48, PlayerColor.BLUE));
+        builder.setPiece(new Cat(50, PlayerColor.BLUE));
+        builder.setPiece(new Dog(61, PlayerColor.BLUE));
+        builder.setPiece(new Wolf(44, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(46, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(56, PlayerColor.BLUE));
+        builder.setPiece(new Lion(55, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(42, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(14, PlayerColor.RED));
+        builder.setPiece(new Cat(12, PlayerColor.RED));
+        builder.setPiece(new Dog(8, PlayerColor.RED));
+        builder.setPiece(new Wolf(18, PlayerColor.RED));
+        builder.setPiece(new Leopard(17, PlayerColor.RED));
+        builder.setPiece(new Tiger(6, PlayerColor.RED));
+        builder.setPiece(new Lion(0, PlayerColor.RED));
+        builder.setPiece(new Elephant(34, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.BLUE);
+        return builder.build();
+
+Board 12: Blue Player has left its leopard (5) at d5 as Red Player brought down its tiger (6) to g6. Red Player's tiger will
+	  be able to come down the center aisle and take a few pieces.
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(55, PlayerColor.BLUE));
+        builder.setPiece(new Cat(43, PlayerColor.BLUE));
+        builder.setPiece(new Dog(53, PlayerColor.BLUE));
+        builder.setPiece(new Wolf(44, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(31, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(57, PlayerColor.BLUE));
+        builder.setPiece(new Lion(54, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(49, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(35, PlayerColor.RED));
+        builder.setPiece(new Cat(12, PlayerColor.RED));
+        builder.setPiece(new Dog(8, PlayerColor.RED));
+        builder.setPiece(new Wolf(18, PlayerColor.RED));
+        builder.setPiece(new Leopard(17, PlayerColor.RED));
+        builder.setPiece(new Tiger(27, PlayerColor.RED));
+        builder.setPiece(new Lion(0, PlayerColor.RED));
+        builder.setPiece(new Elephant(19, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.RED);
+        return builder.build();
