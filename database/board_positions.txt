@@ -304,3 +304,188 @@ Board 12: Blue Player has left its leopard (5) at d5 as Red Player brought down 
 
         builder.setNextMovePlayer(PlayerColor.RED);
         return builder.build();
+
+Board 13: Standard starting position but each player is missing their own rat (1)
+
+  	final Builder builder = new Builder();
+
+        builder.setPiece(new Cat(50, PlayerColor.BLUE));
+        builder.setPiece(new Dog(54, PlayerColor.BLUE));
+        builder.setPiece(new Wolf(44, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(46, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(56, PlayerColor.BLUE));
+        builder.setPiece(new Lion(62, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(42, PlayerColor.BLUE));
+
+        builder.setPiece(new Cat(12, PlayerColor.RED));
+        builder.setPiece(new Dog(8, PlayerColor.RED));
+        builder.setPiece(new Wolf(18, PlayerColor.RED));
+        builder.setPiece(new Leopard(16, PlayerColor.RED));
+        builder.setPiece(new Tiger(6, PlayerColor.RED));
+        builder.setPiece(new Lion(0, PlayerColor.RED));
+        builder.setPiece(new Elephant(20, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.BLUE);
+        return builder.build();
+
+Board 14: Standard starting position but each player is missing their own cat (2)
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(48, PlayerColor.BLUE));
+        builder.setPiece(new Dog(54, PlayerColor.BLUE));
+        builder.setPiece(new Wolf(44, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(46, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(56, PlayerColor.BLUE));
+        builder.setPiece(new Lion(62, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(42, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(14, PlayerColor.RED));
+        builder.setPiece(new Dog(8, PlayerColor.RED));
+        builder.setPiece(new Wolf(18, PlayerColor.RED));
+        builder.setPiece(new Leopard(16, PlayerColor.RED));
+        builder.setPiece(new Tiger(6, PlayerColor.RED));
+        builder.setPiece(new Lion(0, PlayerColor.RED));
+        builder.setPiece(new Elephant(20, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.BLUE);
+        return builder.build();
+
+Board 15: Standard starting position but each player is missing their own dog (3)
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(48, PlayerColor.BLUE));
+        builder.setPiece(new Cat(50, PlayerColor.BLUE));
+        builder.setPiece(new Wolf(44, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(46, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(56, PlayerColor.BLUE));
+        builder.setPiece(new Lion(62, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(42, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(14, PlayerColor.RED));
+        builder.setPiece(new Cat(12, PlayerColor.RED));
+        builder.setPiece(new Wolf(18, PlayerColor.RED));
+        builder.setPiece(new Leopard(16, PlayerColor.RED));
+        builder.setPiece(new Tiger(6, PlayerColor.RED));
+        builder.setPiece(new Lion(0, PlayerColor.RED));
+        builder.setPiece(new Elephant(20, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.BLUE);
+        return builder.build();
+
+Board 16: Standard starting position but each player is missing their own wolf (4)
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(48, PlayerColor.BLUE));
+        builder.setPiece(new Cat(50, PlayerColor.BLUE));
+        builder.setPiece(new Dog(54, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(46, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(56, PlayerColor.BLUE));
+        builder.setPiece(new Lion(62, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(42, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(14, PlayerColor.RED));
+        builder.setPiece(new Cat(12, PlayerColor.RED));
+        builder.setPiece(new Dog(8, PlayerColor.RED));
+        builder.setPiece(new Leopard(16, PlayerColor.RED));
+        builder.setPiece(new Tiger(6, PlayerColor.RED));
+        builder.setPiece(new Lion(0, PlayerColor.RED));
+        builder.setPiece(new Elephant(20, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.BLUE);
+        return builder.build();
+
+Board 17: Standard starting position but each player is missing their own leopard (5)
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(48, PlayerColor.BLUE));
+        builder.setPiece(new Cat(50, PlayerColor.BLUE));
+        builder.setPiece(new Dog(54, PlayerColor.BLUE));
+        builder.setPiece(new Wolf(44, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(56, PlayerColor.BLUE));
+        builder.setPiece(new Lion(62, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(42, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(14, PlayerColor.RED));
+        builder.setPiece(new Cat(12, PlayerColor.RED));
+        builder.setPiece(new Dog(8, PlayerColor.RED));
+        builder.setPiece(new Wolf(18, PlayerColor.RED));
+        builder.setPiece(new Tiger(6, PlayerColor.RED));
+        builder.setPiece(new Lion(0, PlayerColor.RED));
+        builder.setPiece(new Elephant(20, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.BLUE);
+        return builder.build();
+
+Board 18: Standard starting position but each player is missing their own tiger (6)
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(48, PlayerColor.BLUE));
+        builder.setPiece(new Cat(50, PlayerColor.BLUE));
+        builder.setPiece(new Dog(54, PlayerColor.BLUE));
+        builder.setPiece(new Wolf(44, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(46, PlayerColor.BLUE));
+        builder.setPiece(new Lion(62, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(42, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(14, PlayerColor.RED));
+        builder.setPiece(new Cat(12, PlayerColor.RED));
+        builder.setPiece(new Dog(8, PlayerColor.RED));
+        builder.setPiece(new Wolf(18, PlayerColor.RED));
+        builder.setPiece(new Leopard(16, PlayerColor.RED));
+        builder.setPiece(new Lion(0, PlayerColor.RED));
+        builder.setPiece(new Elephant(20, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.BLUE);
+        return builder.build();
+
+Board 19: Standard starting position but each player is missing their own lion (7)
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(48, PlayerColor.BLUE));
+        builder.setPiece(new Cat(50, PlayerColor.BLUE));
+        builder.setPiece(new Dog(54, PlayerColor.BLUE));
+        builder.setPiece(new Wolf(44, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(46, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(56, PlayerColor.BLUE));
+        builder.setPiece(new Elephant(42, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(14, PlayerColor.RED));
+        builder.setPiece(new Cat(12, PlayerColor.RED));
+        builder.setPiece(new Dog(8, PlayerColor.RED));
+        builder.setPiece(new Wolf(18, PlayerColor.RED));
+        builder.setPiece(new Leopard(16, PlayerColor.RED));
+        builder.setPiece(new Tiger(6, PlayerColor.RED));
+        builder.setPiece(new Elephant(20, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.BLUE);
+        return builder.build();
+
+
+Board 20: Standard starting position but each player is missing their own elephant (8)
+
+	final Builder builder = new Builder();
+
+        builder.setPiece(new Rat(48, PlayerColor.BLUE));
+        builder.setPiece(new Cat(50, PlayerColor.BLUE));
+        builder.setPiece(new Dog(54, PlayerColor.BLUE));
+        builder.setPiece(new Wolf(44, PlayerColor.BLUE));
+        builder.setPiece(new Leopard(46, PlayerColor.BLUE));
+        builder.setPiece(new Tiger(56, PlayerColor.BLUE));
+
+        builder.setPiece(new Rat(14, PlayerColor.RED));
+        builder.setPiece(new Cat(12, PlayerColor.RED));
+        builder.setPiece(new Dog(8, PlayerColor.RED));
+        builder.setPiece(new Wolf(18, PlayerColor.RED));
+        builder.setPiece(new Leopard(16, PlayerColor.RED));
+        builder.setPiece(new Tiger(6, PlayerColor.RED));
+
+        builder.setNextMovePlayer(PlayerColor.BLUE);
+        return builder.build();
+
+--- THE END ---
