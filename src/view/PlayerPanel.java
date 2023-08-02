@@ -226,7 +226,9 @@ public class PlayerPanel extends JPanel {
 
     public void initTimerForNormalMode() {
         timerNormalMode = new Timer(1000, e -> {
-            currentTimerSecondsNormalMode--;
+            if (!GameFrame.get().isReplayMovesInProgress()) {
+                currentTimerSecondsNormalMode--;
+            }
             if (currentTimerSecondsNormalMode == 0) {
                 for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
                     GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
@@ -270,7 +272,9 @@ public class PlayerPanel extends JPanel {
     public void initTimerForBlueBlitzMode() {
         blueTimerBlitzMode = new Timer(1000, e -> {
             if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue()) {
-                blueCurrentTimerSecondsBlitzMode--;
+                if (!GameFrame.get().isReplayMovesInProgress()) {
+                    blueCurrentTimerSecondsBlitzMode--;
+                }
                 if (GameFrame.get().isBlitzMode()
                         && (GameFrame.get().getPlayerPanel().getBlueCurrentTimerSecondsBlitzMode() == 0
                         || GameFrame.get().getPlayerPanel().getRedCurrentTimerSecondsBlitzMode() == 0)) {
@@ -291,7 +295,9 @@ public class PlayerPanel extends JPanel {
     public void initTimerForRedBlitzMode() {
         redTimerBlitzMode = new Timer(1000, e -> {
             if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isRed()) {
-                redCurrentTimerSecondsBlitzMode--;
+                if (!GameFrame.get().isReplayMovesInProgress()) {
+                    redCurrentTimerSecondsBlitzMode--;
+                }
                 if (GameFrame.get().isBlitzMode()
                         && (GameFrame.get().getPlayerPanel().getBlueCurrentTimerSecondsBlitzMode() == 0
                         || GameFrame.get().getPlayerPanel().getRedCurrentTimerSecondsBlitzMode() == 0)) {

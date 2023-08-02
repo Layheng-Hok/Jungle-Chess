@@ -8,6 +8,9 @@ import view.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -496,88 +499,100 @@ public class Controller {
     }
 
     public static void loadReplay() {
+        System.out.println("Replay loaded");
         if (firstReplay) {
             if (!MainMenuFrame.get().isGrayScaleBGMButton()) {
                 AudioPlayer.LoopPlayer.playGameBGM();
             }
         }
+        firstReplay = false;
         GameFrame.get().setReplayMovesInProgress(true);
-        GameFrame.get().setLastMove(null);
-        GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
         GameFrame.get().getPlayerPanel().reset();
         GameFrame.get().getCapturedPiecesPanel().reset();
+        final MoveLog originalMoveLog = GameFrame.get().getMoveLog();
         MoveLog seperateMoveLog = new MoveLog();
         final int[] choice = new int[1];
         choice[0] = 2;
-        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+        final int[] index = {-1};
+        GameFrame.get().setChessBoard(Board.constructStandardBoard());
+        GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+        GameFrame.get().getBoardPanel().removeAllBorders();
+        GameFrame.get().getPlayerPanel().reset();
+        InputMap inputMap = GameFrame.get().getBoardPanel().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = GameFrame.get().getBoardPanel().getActionMap();
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "moveForward");
+        actionMap.put("moveForward", new AbstractAction() {
             @Override
-            protected Void doInBackground() throws InterruptedException {
-                for (int i = 0; i < BoardUtils.NUM_TERRAINS; i++) {
-                    GameFrame.get().getBoardPanel().getBoardTerrains().get(i).deselectLeftMouseButton();
-                }
-                GameFrame.get().setLastMove(null);
-                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-                coloringTerrainsAnimationThread();
-                GameFrame.get().setChessBoard(Board.constructStandardBoard());
-                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-                GameFrame.get().getBoardPanel().removeAllBorders();
-                GameFrame.get().getPlayerPanel().reset();
-                Thread.sleep(1000);
-                for (int i = 0; i < GameFrame.get().getMoveLog().size(); i++) {
-                    Move move = GameFrame.get().getMoveLog().getMove(i);
+            public void actionPerformed(ActionEvent e) {
+                if (index[0] < originalMoveLog.size() - 1) {
+                    System.out.println("Next move:");
+                    index[0]++;
+                    final Move move = originalMoveLog.getMove(index[0]);
                     GameFrame.get().setChessBoard(move.execute());
                     System.out.println(move);
                     seperateMoveLog.addMove(move);
                     GameFrame.get().setLastMove(move);
-                    publish();
-                    Thread.sleep(1000);
-                }
-                return null;
-            }
-
-            @Override
-            protected void process(List<Void> chunks) {
-                AudioPlayer.SinglePlayer.playSoundEffect("click.wav");
-                GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
-                GameFrame.get().getPlayerPanel().redo(GameFrame.get().getChessBoard());
-                GameFrame.get().getCapturedPiecesPanel().redo(seperateMoveLog);
-            }
-
-            @Override
-            protected void done() {
-                if (!GameFrame.get().isBlitzMode()
-                        && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
-                    GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
-                } else if (GameFrame.get().isBlitzMode()) {
-                    GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
-                    GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
-                }
-                GameFrame.get().setReplayMovesInProgress(false);
-                String[] options = {"Rewatch", "New Game"};
-                choice[0] = JOptionPane.showOptionDialog(GameFrame.get().getBoardPanel(),
-                        "Replay has ended.",
-                        "Replay",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.INFORMATION_MESSAGE,
-                        null,
-                        options,
-                        options[0]);
-                if (choice[0] == 0) {
-                    loadReplay();
-                } else if (choice[0] == 1 || choice[0] == JOptionPane.CLOSED_OPTION) {
-                    restartGameWithAnimation();
-                    if (!GameFrame.get().isBlitzMode()
-                            && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
-                        GameFrame.get().getPlayerPanel().getTimerNormalMode().start();
-                    } else if (GameFrame.get().isBlitzMode()) {
-                        GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().start();
-                        GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().start();
+                    AudioPlayer.SinglePlayer.playSoundEffect("click.wav");
+                    GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+                    GameFrame.get().getPlayerPanel().redo(GameFrame.get().getChessBoard());
+                    GameFrame.get().getCapturedPiecesPanel().redo(seperateMoveLog);
+                    if (index[0] == originalMoveLog.size() - 1) {
+                        GameFrame.get().setLastMove(null);
+                        if (!GameFrame.get().isBlitzMode()
+                                && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                            GameFrame.get().getPlayerPanel().getTimerNormalMode().stop();
+                        } else if (GameFrame.get().isBlitzMode()) {
+                            GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().stop();
+                            GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().stop();
+                        }
+                        GameFrame.get().setReplayMovesInProgress(false);
+                        String[] options = {"Rewatch", "New Game"};
+                        choice[0] = JOptionPane.showOptionDialog(GameFrame.get().getBoardPanel(),
+                                "Replay has ended.",
+                                "Replay",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.INFORMATION_MESSAGE,
+                                null,
+                                options,
+                                options[0]);
+                        if (choice[0] == 0) {
+                            loadReplay();
+                        } else if (choice[0] == 1 || choice[0] == JOptionPane.CLOSED_OPTION) {
+                            restartGameWithAnimation();
+                            if (!GameFrame.get().isBlitzMode()
+                                    && GameFrame.get().getPlayerPanel().isNormalModeWithTimer()) {
+                                GameFrame.get().getPlayerPanel().getTimerNormalMode().start();
+                            } else if (GameFrame.get().isBlitzMode()) {
+                                GameFrame.get().getPlayerPanel().getBlueTimerBlitzMode().start();
+                                GameFrame.get().getPlayerPanel().getRedTimerBlitzMode().start();
+                            }
+                        }
                     }
                 }
             }
-        };
-        worker.execute();
-        firstReplay = false;
+        });
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "moveBackward");
+        actionMap.put("moveBackward", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (seperateMoveLog.size() > 1) {
+                    index[0]--;
+                    final Move lastMove = seperateMoveLog.removeMove(seperateMoveLog.size() - 1);
+                    GameFrame.get().setLastMove(seperateMoveLog.getMove(seperateMoveLog.size() - 1));
+                    GameFrame.get().setChessBoard(GameFrame.get().getChessBoard().getCurrentPlayer().unmakeMove(lastMove).getToBoard());
+                    GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+                    GameFrame.get().getPlayerPanel().undo();
+                    GameFrame.get().getCapturedPiecesPanel().redo(seperateMoveLog);
+                    System.out.println("Undo move");
+                } else if (seperateMoveLog.size() == 1) {
+                    index[0] = -1;
+                    GameFrame.get().setLastMove(null);
+                    GameFrame.get().setChessBoard(Board.constructStandardBoard());
+                    GameFrame.get().getBoardPanel().drawBoard(GameFrame.get().getChessBoard());
+                    System.out.println("Undo move");
+                }
+            }
+        });
     }
 
     public static void updateGameSetting(int themeIndex) {
@@ -988,7 +1003,7 @@ public class Controller {
                 GameFrame.get().getPlayerPanel().reset();
                 Thread.sleep(1000);
                 for (int i = 0; i < GameFrame.get().getMoveLog().size(); i++) {
-                    Move move = GameFrame.get().getMoveLog().getMove(i);
+                    final Move move = GameFrame.get().getMoveLog().getMove(i);
                     GameFrame.get().setChessBoard(move.execute());
                     System.out.println(move);
                     seperateMoveLog.addMove(move);
