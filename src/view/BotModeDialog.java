@@ -52,7 +52,11 @@ public class BotModeDialog extends JDialog {
         okButton.addActionListener(e -> {
             AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
             botGame = true;
-            setBlueBotDifficulty();
+            if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isBlue()) {
+                BotModeDialog.setBlueBotDifficulty();
+            } else if (GameFrame.get().getChessBoard().getCurrentPlayer().getAllyColor().isRed()) {
+                BotModeDialog.setRedBotDifficulty();
+            }
             GameFrame.get().getGameConfiguration().setBluePlayerType(PlayerType.AI);
             GameFrame.get().getGameConfiguration().setRedPlayerType(PlayerType.AI);
             GameFrame.get().getGameConfiguration().setReady(true);
