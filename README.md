@@ -55,6 +55,8 @@ The implemented algorithm of the engine is a depth first search of the game tree
 
 *Formula: net score = scorePlayer(board.bluePlayer(), depth) - scorePlayer(board.redPlayer(), depth)*
 
+A positive net score suggests that blue player has an edge over red player, while a negative net score suggests that red player has an upper hand.
+
 Evaluation details:
 + Piece Value: considering each piece's power and development position.
 + Mobility: considering the ratio of size of a player's valid moves over the size of the opponent's valid moves.
@@ -62,8 +64,6 @@ Evaluation details:
 + Penetration of Opponent's Den: making a piece seeks for entering its opponent's den for the endgame winning condition.
 
 [*[See the detailed implementation]*](https://github.com/Layheng-Hok/Jungle-Chess/blob/main/src/model/artificialintelligence/StandardBoardEvaluator.java)
-
-A positive net score suggests that blue player has an edge over red player, while a negative net score suggests that red player has an upper hand.
 
 ### Minimax
 At its core, the Minimax algorithm is a technique used by AI agents to make optimal decisions while considering the potential outcomes of their actions. In Jungle Chess, where players aim to outmaneuver each other using animal pieces with varied strengths and abilities, the Minimax algorithm simulates multiple possible moves ahead to determine the best course of action.
@@ -106,3 +106,31 @@ In a position with high tactical activities, instead of immediately returning th
 By employing Quiescence Search, the AI agent can avoid making hasty decisions based on incomplete information and can better evaluate positions with high tactical activity. This is crucial in Jungle Chess, where capturing opponent pieces and tactical maneuvers play a significant role in gaining an advantage.
 
 The addition of Quiescence Search enhances the strategic depth of the AI's decision-making process, enabling it to handle complex positions more effectively and make more informed moves. This further elevates the level of play and provides a more challenging and engaging experience for both human and AI players.
+
+# Features
++ Play Human V.S. Human mode
++ Play Human V.S. A.I. mode
++ Put different types of chess bot playing against each other
++ Play in three different game modes (normal mode, blitz mode, and glitch mode)
++ Restart game
++ Undo mutiple moves
++ Replay move history
++ Change theme and chessboard
++ Flip piece icons, switch the board side
++ Save and load game
++ Audio control
+
+# Getting Started
++ Clone the repository using git clone
++ Open the project in your preferred JAVA IDE ([setting up IntelliJ IDEA](https://youtu.be/-5kIt83ldk8), [setting up Java Runtime Environment](https://youtu.be/yEa641gwY30))
++ Install all the necessary external libraries (actually, they are all pre-installed if you clone the project, you just need to add the external libraries to your project structure ([tutorial](https://youtu.be/QAJ09o3Xl_0)):
+  - [Guava](https://github.com/google/guava/releases) ([tutorial](https://youtu.be/QAJ09o3Xl_0))
+  - [FlatLaf - Look and Feel](https://www.formdev.com/flatlaf/) ([tutorial](https://youtu.be/Gxf4T-4Ix-w))
++ Set up JUnit 5 to run unit tests ([tutorial](https://youtu.be/o5pE7L2tVV8))
++ Run the program and enjoy
+
+# Author's Wishes
++ Contributions to Jungle-Chess are welcome!
++ If you find a bug or want to request a feature, feel free to submit an issue.
++ If you want to contribute your code, please submit your pull request.
++ Star the project if you like it.
