@@ -43,7 +43,7 @@ The three kinds of special terrains are explained as:
 
 Note for threefold repetition: If a player moves the same piece to the same board position for more than three times consecutively, any valid moves of that same piece to the repeated positon will be banned temporarily until the player moves any piece to a new valid position.
 
-# Game Engine (Artificial Intelligence / Chessbot)
+# Game Engine (Chess Bot / Artificial Intelligence)
 ### About Engine
 The engine is built into three different chess bots:
 + [BOT 1](https://github.com/Layheng-Hok/Jungle-Chess/blob/main/src/model/artificialintelligence/Minimax.java) implements the minimax algorithm without any further enhancements. It can search to a depth of 4.
