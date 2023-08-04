@@ -138,6 +138,8 @@ The data suggests that in these specific test scenarios provided, the impact of 
 
 Is it safe to say that Quiescence Search is not impactful and unnecessary? I would say no! It is important to note that the impact of Quiescence Search can be context-dependent. Quiescence Search is primarily aimed at addressing the horizon effect in chess algorithms by extending the search to consider capturing sequences and potential tactics beyond the initial evaluation horizon. While it can lead to better decision-making in positions where tactical considerations are critical, its impact might be limited in scenarios where tactics are less prominent or when other enhancements (such as Alpha-Beta Pruning and Move Ordering) are already providing effective results.
 
+[*[See the detailed game record]*](https://github.com/Layheng-Hok/Jungle-Chess/blob/main/database/Engine%20Testing%20Record.xlsx)
+
 # Features
 + Play Human V.S. Human mode
 + Play Human V.S. A.I. mode
