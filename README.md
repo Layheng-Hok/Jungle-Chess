@@ -41,7 +41,7 @@ The three kinds of special terrains are explained as:
   - A player clicks the resign button during their turn for Human-Human mode. In Human-AI mode, the human player loses whenever the resign button is clicked.
 + A game is considered a draw if none of winning conditions is met after 150 rounds. In other words, each player has played up to 150 moves each and there is still no winner after 300 moves in total.
 
-Note for threefold repetition: If a player moves the same piece to the same board position for more than three times consecutively, any valid moves of that same piece to the repeated positon will be banned temporarily until the player moves any piece to a new valid position.
+Note for threefold repetition: If a player moves the same piece to the same board position for more than three times consecutively, any valid moves of that same piece to the repeated position will be banned temporarily until the player moves any piece to a new valid position.
 
 # Game Engine (Chess Bot / Artificial Intelligence)
 ### About Engine
