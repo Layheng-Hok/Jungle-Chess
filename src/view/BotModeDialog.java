@@ -8,9 +8,9 @@ import java.awt.*;
 import static view.GameFrame.defaultImagesPath;
 
 public class BotModeDialog extends JDialog {
-    private static final String BOT1 = "Bot 1: Minimax ( 4)";
-    private static final String BOT2 = "Bot 2: Bot 1 + Alpha Beta + Move Ordering (6)";
-    private static final String BOT3 = "Bot 3: Bot 2 + Quiescence Search (Dynamic Depth)";
+    private static final String BOT1 = "BOT 1: Minimax ( 4)";
+    private static final String BOT2 = "BOT 2: BOT 1 + Alpha Beta + Move Ordering (6)";
+    private static final String BOT3 = "BOT 3: BOT 2 + Quiescence Search (Dynamic Depth)";
     private static final JRadioButton blueBot1Button = new JRadioButton(BOT1);
     private static final JRadioButton blueBot2Button = new JRadioButton(BOT2);
     private static final JRadioButton blueBot3Button = new JRadioButton(BOT3);
@@ -86,7 +86,7 @@ public class BotModeDialog extends JDialog {
         this.setIconImage(logo.getImage());
         this.setSize(320, 320);
         this.setResizable(false);
-        this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(MainMenuFrame.get());
         this.setVisible(false);
     }
 
