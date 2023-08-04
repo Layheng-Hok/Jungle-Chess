@@ -56,12 +56,12 @@ Note for threefold repetition: If a player moves the same piece to the same boar
 # Game Engine (Chess Bot / Artificial Intelligence)
 ### About Engine
 The engine is built into three different chess bots:
-+ [BOT 1](https://github.com/Layheng-Hok/Jungle-Chess/blob/main/src/model/artificialintelligence/Minimax.java) implements the minimax algorithm without any further enhancements. It can search to a depth of 4.
-+ [BOT 2](https://github.com/Layheng-Hok/Jungle-Chess/blob/main/src/model/artificialintelligence/AlphaBetaWithMoveOrdering.java) implements the minimax algorithm with alpha-beta pruning and move ordering enhancements. It can reach a depth of 6.
-+ [BOT 3](https://github.com/Layheng-Hok/Jungle-Chess/blob/main/src/model/artificialintelligence/PruningOrderingQuiescenceSearch.java) implements the aforementioned algorithms in BOT 2 plus quiescence search to increase the search depth for a certain situation. Thus, this bot has a dynamic search depth.
++ [BOT 1](https://github.com/Layheng-Hok/Jungle-Chess/blob/main/src/model/artificialintelligence/Minimax.java) implements the Minimax algorithm without any further enhancements. It can search to a depth of 4.
++ [BOT 2](https://github.com/Layheng-Hok/Jungle-Chess/blob/main/src/model/artificialintelligence/AlphaBetaWithMoveOrdering.java) implements the Minimax algorithm with Alpha-Beta Pruning and Move Ordering enhancements. It can reach a depth of 6.
++ [BOT 3](https://github.com/Layheng-Hok/Jungle-Chess/blob/main/src/model/artificialintelligence/PruningOrderingQuiescenceSearch.java) implements the aforementioned algorithms in BOT 2 plus Quiescence Search to increase the search depth for a situation with high tactical activities. Thus, this bot has a dynamic search depth.
 
 ### Evaluation Function
-The implemented algorithm of the engine is a depth first search of the game tree, in which the search will stop at a certain depth and evaluate the board position. Since Jungle Chess is a zero-sum game, we can represent the position in terms of benet to blue player. The same set of values can be used for both players by rotating and negating the development tables when we consider red player's pieces.
+The implemented algorithm of the engine is a depth first search of the game tree, in which the search will stop at a certain depth and evaluate the board position. Since Jungle Chess is a zero-sum game, we can represent the position in terms of benefit to blue player. The same set of values can be used for both players by rotating and negating the development tables when we consider red player's pieces.
 
 *Formula: net score = scorePlayer(board.bluePlayer(), depth) - scorePlayer(board.redPlayer(), depth)*
 
