@@ -126,7 +126,7 @@ The addition of Quiescence Search enhances the strategic depth of the AI's decis
 + Install all the necessary external libraries (actually, they are all pre-installed if you clone the project, you just need to add the external libraries to your project structure ([tutorial](https://youtu.be/QAJ09o3Xl_0))):
   - [Guava](https://github.com/google/guava/releases) ([tutorial](https://youtu.be/QAJ09o3Xl_0))
   - [FlatLaf - Look and Feel](https://www.formdev.com/flatlaf/) ([tutorial](https://youtu.be/Gxf4T-4Ix-w))
-+ Set up JUnit 5 to run unit tests ([tutorial](https://youtu.be/o5pE7L2tVV8))
++ Set up JUnit 5 to run unit tests ([tutorial](https://youtu.be/o5pE7L2tVV8)) (optional)
 + Run the program and enjoy
 
 # Author's Wishes
