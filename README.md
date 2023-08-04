@@ -107,6 +107,37 @@ By employing Quiescence Search, the AI agent can avoid making hasty decisions ba
 
 The addition of Quiescence Search enhances the strategic depth of the AI's decision-making process, enabling it to handle complex positions more effectively and make more informed moves. This further elevates the level of play and provides a more challenging and engaging experience for both human and AI players.
 
+### Performance Testing
+
+We put our three chess bots playing against each other on 20 different board positions. All of the 20 positions can be found [here](https://github.com/Layheng-Hok/Jungle-Chess/blob/main/database/board_positions.txt) along with explanations of their significance. In each board position, we played two matches on that board and each player took turn playing blue and red to make the games fair. A game was considered a draw if it lasted for more than 150 rounds, meaning that a player can make up to 150 moves each or a maximum of 300 moves in total can be made in one game.
+
+Let's review how we denote our bots:
+
+|  Notations  |              Engine Algorithms             |   
+|:-----------:|--------------------------------------------|
+| BOT 1       | Pure Minimax (no further enhancements)     | 
+| BOT 2       | BOT 1 + Alpha-Beta Pruning + Move Ordering | 
+| BOT 3       | BOT 2 + Quiescence Search                  | 
+
+With three configurations, we played a total of 120 games and each player played a total of 80 games:
+
+|  Configuration  |   Player   |   Wins   |   Draws  |  Losses  |  Opponent  |
+|:---------------:|:----------:|:--------:|:--------:|:--------:|:----------:|
+| 1               | BOT 2      | 17       | 22       | 1        | BOT 1      |
+| 2               | BOT 3      | 17       | 22       | 1        | BOT 1      |
+| 3               | BOT 3      | 8        | 21       | 11       | BOT 2      |
+
+Stats by player:
+|   Player   |   Wins   |   Draws  |  Losses  |
+|:----------:|:--------:|:--------:|:--------:|
+| BOT 1      | 2        | 44       | 34       |
+| BOT 2      | 28       | 43       | 9        |
+| BOT 3      | 25       | 43       | 12       |
+
+The data suggests that in these specific test scenarios provided, the impact of Quiescence Search on improving the performance of BOT 3 may not have been as significant as anticipated. It is interesting to see how BOT 3 did not perform any better than BOT 2 against BOT 1. What is more shocking is that BOT 2 snatched three more wins against BOT 3. This might be due to BOT 3 hesitated to make some capturing moves and ended up in a draw rather than a win against BOT 2.
+
+Is it safe to say that Quiescence Search is not impactful and unnecessary? I would say no! It is important to note that the impact of Quiescence Search can be context-dependent. Quiescence Search is primarily aimed at addressing the horizon effect in chess algorithms by extending the search to consider capturing sequences and potential tactics beyond the initial evaluation horizon. While it can lead to better decision-making in positions where tactical considerations are critical, its impact might be limited in scenarios where tactics are less prominent or when other enhancements (such as Alpha-Beta Pruning and Move Ordering) are already providing effective results.
+
 # Features
 + Play Human V.S. Human mode
 + Play Human V.S. A.I. mode
