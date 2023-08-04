@@ -7,7 +7,7 @@ Navigation: model package -> board package -> Board.class
 
 Board 1: Standard starting position
 
-  	    final Builder builder = new Builder();
+  	final Builder builder = new Builder();
 
         builder.setPiece(new Rat(48, PlayerColor.BLUE));
         builder.setPiece(new Cat(50, PlayerColor.BLUE));
@@ -33,7 +33,7 @@ Board 1: Standard starting position
 Board 2: Blue Player is putting pressure on the upper-right quadrant of the board with its rat (1) and lion (7), but 
 	 Blue Player needs to get its elephant (8) at a3 past Red Player's rat at b4 to win the game.
 
-	    final Builder builder = new Builder();
+	final Builder builder = new Builder();
 
         builder.setPiece(new Rat(27, PlayerColor.BLUE));
         builder.setPiece(new Leopard(24, PlayerColor.BLUE));
@@ -53,7 +53,7 @@ Board 3: Blue Player has moved its elephant (8) away from the river and Red Play
 	 the river is essential for preventing the opposing lion (7) from jumping over the river, this position should
 	 be disadvantageous for Blue Player.
 
-	    final Builder builder = new Builder();
+	final Builder builder = new Builder();
 
         builder.setPiece(new Rat(27, PlayerColor.BLUE));
         builder.setPiece(new Cat(43, PlayerColor.BLUE));
@@ -79,7 +79,7 @@ Board 3: Blue Player has moved its elephant (8) away from the river and Red Play
 Board 4: Red Player has developed the board more than Blue Player, who has wasted moves and allowed Red Player's rat (1)
 to move down to a3.
 
-	    final Builder builder = new Builder();
+	final Builder builder = new Builder();
 
         builder.setPiece(new Rat(27, PlayerColor.BLUE));
         builder.setPiece(new Cat(58, PlayerColor.BLUE));
@@ -104,7 +104,7 @@ to move down to a3.
 
 Board 5: A should win in exactly five moves
 
-	    final Builder builder = new Builder();
+	final Builder builder = new Builder();
 
         builder.setPiece(new Rat(6, PlayerColor.BLUE));
         builder.setPiece(new Dog(53, PlayerColor.BLUE));
@@ -124,7 +124,7 @@ Board 5: A should win in exactly five moves
 Board 6: Red Player has moved down the right aisle while Blue Player was moving up the left. Both players need to
 	 bring their tigers (6) into play to win.
 
-	    final Builder builder = new Builder();
+	final Builder builder = new Builder();
 
         builder.setPiece(new Rat(61, PlayerColor.BLUE));
         builder.setPiece(new Cat(53, PlayerColor.BLUE));
@@ -150,7 +150,7 @@ Board 6: Red Player has moved down the right aisle while Blue Player was moving 
 Board 7: Red Player has allowed Blue Player's leopard (5) to advance too far, and now Red Player's lion (7) is stuck.
 	 Red Player's leopard (5) should have moved over sooner to give the lion (7) room to operate.
 
-	    final Builder builder = new Builder();
+	final Builder builder = new Builder();
 
         builder.setPiece(new Rat(41, PlayerColor.BLUE));
         builder.setPiece(new Cat(50, PlayerColor.BLUE));
@@ -229,7 +229,7 @@ Board 10: Blue Player has been too aggressive. Red Player's elephant (8) can by-
 	  the center aisle or Red Player's tiger (7) could leap across the river before Blue Player's elephant (8) can
 	  move down to defend.
 
-	    final Builder builder = new Builder();
+	final Builder builder = new Builder();
 
         builder.setPiece(new Rat(20, PlayerColor.BLUE));
         builder.setPiece(new Cat(50, PlayerColor.BLUE));
@@ -255,7 +255,7 @@ Board 10: Blue Player has been too aggressive. Red Player's elephant (8) can by-
 Board 11: Red Player seems to have forgotten that a rat (1) can capture an elephant (8) and is going to be chased all the way
 	  back to its side. Blue Player should sacrifice its rat (1) to kill the elephant so its lion (7) can jump over the river.
 
-	    final Builder builder = new Builder();
+	final Builder builder = new Builder();
 
         builder.setPiece(new Rat(48, PlayerColor.BLUE));
         builder.setPiece(new Cat(50, PlayerColor.BLUE));
@@ -281,7 +281,7 @@ Board 11: Red Player seems to have forgotten that a rat (1) can capture an eleph
 Board 12: Blue Player has left its leopard (5) at d5 as Red Player brought down its tiger (6) to g6. Red Player's tiger will
 	  be able to come down the center aisle and take a few pieces.
 
-	    final Builder builder = new Builder();
+	final Builder builder = new Builder();
 
         builder.setPiece(new Rat(55, PlayerColor.BLUE));
         builder.setPiece(new Cat(43, PlayerColor.BLUE));
@@ -329,7 +329,7 @@ Board 13: Standard starting position but each player is missing their own rat (1
 
 Board 14: Standard starting position but each player is missing their own cat (2)
 
-	    final Builder builder = new Builder();
+	final Builder builder = new Builder();
 
         builder.setPiece(new Rat(48, PlayerColor.BLUE));
         builder.setPiece(new Dog(54, PlayerColor.BLUE));
@@ -352,7 +352,7 @@ Board 14: Standard starting position but each player is missing their own cat (2
 
 Board 15: Standard starting position but each player is missing their own dog (3)
 
-	    final Builder builder = new Builder();
+	final Builder builder = new Builder();
 
         builder.setPiece(new Rat(48, PlayerColor.BLUE));
         builder.setPiece(new Cat(50, PlayerColor.BLUE));
@@ -398,7 +398,7 @@ Board 16: Standard starting position but each player is missing their own wolf (
 
 Board 17: Standard starting position but each player is missing their own leopard (5)
 
-	    final Builder builder = new Builder();
+	final Builder builder = new Builder();
 
         builder.setPiece(new Rat(48, PlayerColor.BLUE));
         builder.setPiece(new Cat(50, PlayerColor.BLUE));
@@ -421,7 +421,7 @@ Board 17: Standard starting position but each player is missing their own leopar
 
 Board 18: Standard starting position but each player is missing their own tiger (6)
 
-	    final Builder builder = new Builder();
+	final Builder builder = new Builder();
 
         builder.setPiece(new Rat(48, PlayerColor.BLUE));
         builder.setPiece(new Cat(50, PlayerColor.BLUE));
@@ -444,7 +444,7 @@ Board 18: Standard starting position but each player is missing their own tiger 
 
 Board 19: Standard starting position but each player is missing their own lion (7)
 
-	    final Builder builder = new Builder();
+	final Builder builder = new Builder();
 
         builder.setPiece(new Rat(48, PlayerColor.BLUE));
         builder.setPiece(new Cat(50, PlayerColor.BLUE));
@@ -468,7 +468,7 @@ Board 19: Standard starting position but each player is missing their own lion (
 
 Board 20: Standard starting position but each player is missing their own elephant (8)
 
-	    final Builder builder = new Builder();
+	final Builder builder = new Builder();
 
         builder.setPiece(new Rat(48, PlayerColor.BLUE));
         builder.setPiece(new Cat(50, PlayerColor.BLUE));
