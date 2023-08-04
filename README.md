@@ -86,8 +86,8 @@ The number of leaf nodes that are evaluated at a certain depth from the initial 
 | 1         | 24                     | 
 | 2         | 576                    | 
 | 3         | 12,240                 | 
-| 4         | 260_099                | 
-| 5         | 5,111.620              |
+| 4         | 260,099                | 
+| 5         | 5,111,620              |
 | 6         | 100,453,636            | 
 
 The time complexity is O(b<sup>n</sup>) where n is the search depth and b is the maximum branching factor of the game tree, but the space complexity is O(n) because it doesn't need to retain all the information about each branch.
