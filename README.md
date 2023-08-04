@@ -4,8 +4,8 @@
 
 # Preview
 <div style="display: flex; justify-content: space-between;">
-  <img src="https://github.com/Layheng-Hok/Jungle-Chess/blob/main/resources/images/mainmenuscreen.png" width="450" style="margin-right: 5rem;">
-  <img src="https://github.com/Layheng-Hok/Jungle-Chess/blob/main/resources/images/gamescreen.png" width="450" style="margin-left: 5rem;">
+  <img src="https://github.com/Layheng-Hok/Jungle-Chess/blob/main/resources/images/mainmenuscreen.png" width="410" style="margin-right: 1rem;">
+  <img src="https://github.com/Layheng-Hok/Jungle-Chess/blob/main/resources/images/gamescreen.png" width="410" style="margin-left: 1rem;">
 </div>
 
 # Gameplay
