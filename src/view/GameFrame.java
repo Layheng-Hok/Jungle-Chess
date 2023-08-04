@@ -1,6 +1,5 @@
 package view;
 
-import model.Controller;
 import model.artificialintelligence.*;
 import model.board.*;
 import model.piece.Piece;

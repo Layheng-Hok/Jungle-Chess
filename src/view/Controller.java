@@ -1,15 +1,12 @@
-package model;
+package view;
 
 import model.board.*;
 import model.player.PlayerColor;
 import model.player.PlayerType;
-import view.MenuBar;
-import view.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.*;
 import java.time.LocalDateTime;

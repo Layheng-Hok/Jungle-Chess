@@ -1,6 +1,5 @@
 package view;
 
-import model.Controller;
 import model.player.PlayerType;
 
 import javax.swing.*;

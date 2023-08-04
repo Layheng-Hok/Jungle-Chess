@@ -1,4 +1,4 @@
-import model.Controller;
+import view.Controller;
 import view.MainMenuFrame;
 
 import javax.swing.*;

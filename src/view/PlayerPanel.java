@@ -1,6 +1,5 @@
 package view;
 
-import model.Controller;
 import model.board.Board;
 import model.board.BoardUtils;
 import model.board.Move;
