@@ -2,6 +2,12 @@
 
 斗兽棋 (Dou Shou Qi), also known by various name variations such as Jungle Chess, Animal Chess, and Beast Fighting Chess, is a traditional Chinese board game with an obscure history. The game is played on a 9×7 board and is popular with children in the far east. Jungle is a two-player strategy game and has been cited by The Playboy Winner's Guide to Board Games as resembling the Western game Stratego.
 
+# Preview
+<div style="display: flex; justify-content: space-between;">
+  <img src="https://github.com/Layheng-Hok/Jungle-Chess/blob/main/resources/images/mainmenuscreen.png" width="450" style="margin-right: 5rem;">
+  <img src="https://github.com/Layheng-Hok/Jungle-Chess/blob/main/resources/images/gamescreen.png" width="450" style="margin-left: 5rem;">
+</div>
+
 # Gameplay
 ### Pieces
 Each player owns 8 animal pieces representing different animals of various ranks, and higher ranked animals can capture the animals of lower or equal rank. But there is a special case that eleplant cannot capture the rat while the rat can capture the eleplant.
