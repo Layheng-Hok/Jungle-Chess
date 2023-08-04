@@ -406,6 +406,13 @@ public class MenuBar {
         });
         settingMenu.add(bgmAudioControlMenuItem);
 
+        final JMenuItem instructionsMenuItem = new JMenuItem("\uD83D\uDCD6  Instructions");
+        instructionsMenuItem.addActionListener(e -> {
+            AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
+            Controller.showInstructionsDialog();
+        });
+        settingMenu.add(instructionsMenuItem);
+
         final JMenuItem backMenuItem = new JMenuItem("\uD83D\uDD19  Back To Main Menu");
         backMenuItem.addActionListener(e -> {
             AudioPlayer.SinglePlayer.playSoundEffect("buttonclick.wav");
