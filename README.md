@@ -22,7 +22,7 @@ Jungle game has an interesting chessboard with differerent terrains including de
 
 The three kinds of special terrains are explained as:
 + Dens (兽穴): It is not allowed that a piece enters its own den.
-+ Trap (陷阱): If a piece entering the opponents's trap, then its rank is reduced into 0 temporarily before exiting. The trapped piece could be captured by any pieces of the defensing side.
++ Trap (陷阱): If a piece entering the opponent's trap, then its rank is reduced into 0 temporarily before exiting. The trapped piece could be captured by any pieces of the defensing side.
 + River (河流): They are located in the center of the chessboard, each comprising 6 squares in a 3×2 rectangle. Only rats could enter the river, and lions and tigers could jump across the river.
 
 ### Rules
