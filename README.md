@@ -165,7 +165,7 @@ Is it safe to say that Quiescence Search is not impactful and unnecessary? I wou
 
 # Getting Started
 + Clone the repository using git clone
-+ Open the project in your preferred JAVA IDE ([setting up IntelliJ IDEA](https://youtu.be/-5kIt83ldk8), [setting up Java Runtime Environment](https://youtu.be/yEa641gwY30))
++ Open the project in your preferred Java IDE ([setting up IntelliJ IDEA](https://youtu.be/-5kIt83ldk8), [setting up Java Runtime Environment](https://youtu.be/yEa641gwY30))
 + Install all the necessary external libraries (actually, they are all pre-installed if you clone the project, you just need to add the external libraries to your project structure ([tutorial](https://youtu.be/QAJ09o3Xl_0))):
   - [Guava](https://github.com/google/guava/releases) ([tutorial](https://youtu.be/QAJ09o3Xl_0))
   - [FlatLaf - Look and Feel](https://www.formdev.com/flatlaf/) ([tutorial](https://youtu.be/Gxf4T-4Ix-w))
