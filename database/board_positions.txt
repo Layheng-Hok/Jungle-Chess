@@ -3,7 +3,7 @@ Interesting board positions used for Jungle Chess (Dou Shou Qi) engine testing:
 If you want to use any board positions, just copy the code snippet of the respective board
 and paste it in the method called constructStandardBoard().
 Navigation: model package -> board package -> Board.class 
-            -> public static Board constructStandardBoard() { // clear everything inside the block and paste the code here }
+            -> public static Board constructStandardBoard() { /* clear everything inside the block and paste the code here */ }
 
 Board 1: Standard starting position
 
